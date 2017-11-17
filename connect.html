@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Gouter orsay</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link href="https://fonts.googleapis.com/css?family=Barlow" rel="stylesheet">
+        <link rel="stylesheet" href="CSS/style.css" />
+        <link rel="stylesheet" href="CSS/connect.css" />
+    </head>
+    <body>
+        <div class="row" id="headbar">
+            <div class="col-lg-4">
+                <div class="col-lg-4"></div>
+                <div class="col-lg-4">
+                    <img src="images/logo-Ecole-Rugby.png" alt="logo-rugby" class="img-responsive logo"/>
+                </div>
+                <div class="col-lg-4"></div>
+            </div>
+            <div class="col-lg-4">
+                <div class="row" >
+                    <h2 id="titre">Gestion des go&ucirc;ter de l'&eacute;cole de rugby d'Orsay</h2>
+                </div>
+                <div class="row" >&nbsp;</div>
+            </div>
+            <div class="col-lg-4">
+                <div class="row" >&nbsp;</div>
+                <div class="row" >
+                    <h3><a href="index.html">Accueil</a></h3>
+                </div>
+                <div class="row">&nbsp;</div>
+            </div>
+        </div>
+        <div class="row" id="form">
+            <div class="col-lg-4"> 
+            </div>
+            <div class="col-lg-4"> 
+                <form method="#">
+                    <p>
+                        <label for="login">Identifiant / Mail</label><br>
+                        <input type="text" name="id" id="login"/>
+                    </p>
+                    <p>
+                        <label for="mdp">Mot de passe</label><br>
+                        <input type="password" name="mdp" id="mdp"/>
+                    </p>
+                    <p>
+                        <button type="button" class="btn" id="connect">Se connecter</button>
+                    </p>
+                    <p>
+                        <span class="error" id="err"></span>
+                    </p>
+                </form>
+            </div>
+            <div class="col-lg-4"> 
+            </div>
+        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="util.js"></script>
+        <script>
+            document.getElementById("connect").addEventListener("click", function (e) {
+                document.getElementById("err").innerHTML = "";
+                var form = document.getElementById("connect");
+                var url = "/api/connect";
+                var login, mdp;
+                login = encodeURIComponent((document.getElementById("login").value).trim());
+                mdp = encodeURIComponent((document.getElementById("mdp").value).trim());
+    
+                var param = "login=" + login + "&mdp=" + mdp;
+                httpPostAsync(url, param, resultConnect);
+            });
+
+            document.addEventListener("keypress",function(e){
+                var key = e.which || e.keyCode;
+                if(key == 13){
+                    document.getElementById("err").innerHTML = "";
+                    var form = document.getElementById("connect");
+                    var url = "/api/connect";
+                    var login, mdp;
+                    login = encodeURIComponent((document.getElementById("login").value).trim());
+                    mdp = encodeURIComponent((document.getElementById("mdp").value).trim());
+        
+                    var param = "login=" + login + "&mdp=" + mdp;
+                    httpPostAsync(url, param, resultConnect);
+                }
+            });
+
+            function resultConnect(string){
+                var res;
+                console.log(string);
+                res = JSON.parse(string);
+                console.log(res);
+                if(res['Code'] == 0){
+                    setCookie("nom",res['Nom'],30);
+                    setCookie("prenom",res['Prenom'],30);
+                    setCookie("login",res['Login'],30);
+                    setCookie("token",res['Token'],30);
+                    window.location.href = "menu_normal.html";
+                }
+                else{
+                    document.getElementById("err").innerHTML = "Erreur "+res['Code']+" : "+res['Message'];
+                }
+            }
+        </script>
+    </body>
+</html>

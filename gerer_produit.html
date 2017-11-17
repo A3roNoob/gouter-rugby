@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Gouter orsay</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link href="https://fonts.googleapis.com/css?family=Barlow" rel="stylesheet">
+        <link rel="stylesheet" href="CSS/style.css" />
+        <link rel="stylesheet" href="CSS/menu.css" />
+    </head>
+    <body>
+        <script src="util.js"></script>
+        <script>
+            var token = getCookie("token");
+            var login = getCookie("login");
+            var param = "token="+token+"&login="+login;
+            var rang;
+            httpPostAsync("/api/auth",param,function(e){
+                res = JSON.parse(e);
+                if(res['Code'] != "0"){
+                    console.log("Here we go");
+                    window.location.href = "connect.html";
+                }
+            });
+            httpPostAsync("/api/rang",param,function(t){
+                var res = JSON.parse(t);
+                if(res["Code"] == 0){
+                    rang = res["Rang"];
+                }
+                checkRang2(rang);
+            });
+        </script>
+        <div class="row" id="headbar">
+            <div class="col-lg-4">
+                <div class="col-lg-4"></div>
+                <div class="col-lg-4">
+                    <img src="images/logo-Ecole-Rugby.png" alt="logo-rugby" class="img-responsive logo"/>
+                </div>
+                <div class="col-lg-4"></div>
+            </div>
+            <div class="col-lg-4">
+                <div class="row" >
+                    <h2 id="titre">Gestion des go&ucirc;ter de l'&eacute;cole de rugby d'Orsay</h2>
+                </div>
+                <div class="row" >&nbsp;</div>
+            </div>
+            <div class="col-lg-4">
+                <div class="row" >&nbsp;</div>
+                <div class="row" >
+                    <h3><a href="index.html">Se d&eacute;connecter</a></h3>
+                </div>
+                <div class="row nom"><span id="prenom"></span> <span id="nom"></span>, <span id="login"></span></div>
+            </div>
+        </div>
+        <div class="row margin">
+            <div class="col-lg-3 menu">
+                <a href="menu_normal.html" id="menu-link">
+                    <div class="row menu-item" id="menu-item">
+                        <div class="col-lg-8">
+                            Menu
+                        </div>
+                        <div class="col-lg-2"></div>
+                        <div class="col-lg-1">
+                            <img src="images/menu-petit.png" class="align-right">
+                        </div>
+                    </div>
+                </a>
+                <a href="ajout_fond.html">
+                    <div class="row menu-item" id="ajout_fond">
+                        <div class="col-lg-8">
+                            Ajouter des fonds
+                        </div>
+                        <div class="col-lg-2"></div>
+                        <div class="col-lg-1">
+                            <img src="images/currency-petit.png" class="align-right">
+                        </div>
+                    </div>
+                </a>
+                <a href="transfert_fond.html">
+                    <div class="row menu-item" id="transfert_fond">
+                        <div class="col-lg-8">
+                            Transf&eacute;rer des fonds
+                        </div>
+                        <div class="col-lg-2"></div>
+                        <div class="col-lg-1">
+                            <img src="images/delivery-truck-petit.png" class="align-right">
+                        </div>
+                    </div>
+                </a>
+                <a href="allergie_enfant.html">
+                    <div class="row menu-item" id="allergies">
+                        <div class="col-lg-8">
+                            G&eacute;rer les allergies
+                        </div>
+                        <div class="col-lg-2"></div>
+                        <div class="col-lg-1">
+                            <img src="images/medicine-petit.png" class="align-right">
+                        </div>
+                    </div>
+                </a>
+                <a href="liste_produit.html">
+                    <div class="row menu-item" id="liste_produit">
+                        <div class="col-lg-8">
+                            Voir les produits
+                        </div>
+                        <div class="col-lg-2"></div>
+                        <div class="col-lg-1">
+                            <img src="images/trolley-petit.png" class="align-right">
+                        </div>
+                    </div>
+                </a>
+                <a href="enregistrer_course.html"  id="course">
+                </a>
+                <a href="ajout_fond_benevole.html" id="ajout_fond_benevole">
+                </a>
+                <a href="ajout_conso.html"  id="ajout_conso">
+                </a>
+                <a href="gerer_produit.html"id="gerer_produit">
+                </a>
+                <a href="gerer_compte_enfant.html" id="gerer_compte_enfant">
+                </a>
+                <a href="historique.html" id="historique">
+                </a>
+                <a href="gerer_compte.html" id="gerer_compte">
+                </a>
+            </div>
+            <div class="col-lg-9">
+
+            </div>
+        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script>
+            httpPostAsync("/api/rang",param,function(t){
+                var res = JSON.parse(t);
+                if(res["Code"] == 0){
+                    rang = res["Rang"];
+                }   
+                menuRang(rang);
+                hideRang(rang);
+            });
+
+            var nom = getCookie("nom");
+            var prenom = getCookie("prenom");
+            var login = getCookie("login");
+
+            document.getElementById("prenom").innerHTML = prenom;
+            document.getElementById("nom").innerHTML = nom.toUpperCase();;
+            document.getElementById("login").innerHTML = login;
+        </script>
+    </body>
+</html>

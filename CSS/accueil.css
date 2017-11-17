@@ -1,0 +1,25 @@
+#pres{
+    font-size:1.5em;
+    height:50%;
+}
+
+#headbar{
+    margin:0;
+}
+
+.carousel.slide{
+    max-width: 80%;
+    margin: 0 auto;
+}
+
+.carousel{
+    margin:0;
+}
+
+.col-lg-8{
+    padding:0;
+}
+
+div#pres.carousel.slide{
+    padding: 0;
+}

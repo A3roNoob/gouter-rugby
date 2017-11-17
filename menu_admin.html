@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Gouter orsay</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link href="https://fonts.googleapis.com/css?family=Barlow" rel="stylesheet">
+        <link rel="stylesheet" href="CSS/style.css" />
+        <link rel="stylesheet" href="CSS/menu.css" />
+        <link rel="stylesheet" href="CSS/menu-admin.css" />
+    </head>
+    <body>
+        <script src="util.js"></script>
+        <script>
+            var token = getCookie("token");
+            var login = getCookie("login");
+            var param = "token="+token+"&login="+login;
+            httpPostAsync("/api/auth",param,function(e){
+                res = JSON.parse(e);
+                if(res['Code'] != "0"){
+                    console.log("get the f outta here");
+                    window.location.href = "connect.html";
+                }
+            });
+            httpPostAsync("/api/rang",param,function(e){
+                res = JSON.parse(e);
+                if(res['Code'] == "0"){
+                    var rang = res["Rang"];
+                    menuRedirect(rang);
+                }
+            });
+        </script>
+        <div class="row" id="headbar">
+            <div class="col-lg-4">
+                <div class="col-lg-4"></div>
+                <div class="col-lg-4">
+                    <img src="images/logo-Ecole-Rugby.png" alt="logo-rugby" class="img-responsive logo"/>
+                </div>
+                <div class="col-lg-4"></div>
+            </div>
+            <div class="col-lg-4">
+                <div class="row" >
+                    <h2 id="titre">Gestion des go&ucirc;ter de l'&eacute;cole de rugby d'Orsay</h2>
+                </div>
+                <div class="row" >&nbsp;</div>
+            </div>
+            <div class="col-lg-4">
+                <div class="row" >&nbsp;</div>
+                <div class="row" >
+                    <h3><a href="index.html">Se d&eacute;connecter</a></h3>
+                </div>
+                <div class="row nom"><span id="prenom"></span> <span id="nom"></span>, <span id="login"></span></div>
+            </div>
+        </div>
+        <div class="row margin">
+            <div class="col-lg-4 etat" id="etats">
+                <p><h2><strong>&Eacute;tat et historiques des comptes :</strong></h2></p>
+            </div>
+            <div class="col-lg-8 boutons">
+                <div class="row boutons">
+                    <a href="ajout_fond.html">
+                        <div class="col-lg-6">
+                            
+                            <div class="row">
+                                <p><h2><strong>Ajouter des fonds</strong></h2></p>
+                            </div>
+                            <div class="row">
+                                <img src="images/currency.png" />
+                            </div>
+                        </div>
+                    </a>
+                    <a href="transfert_fond.html">
+                        <div class="col-lg-6">
+                            
+                            <div class="row">
+                                <p><h2><strong>Transf&eacute;rer des fonds</strong></h2></p>
+                            </div>
+                            <div class="row">
+                                <img src="images/delivery-truck.png" />    
+                            </div>   
+                        </div>
+                    </a>
+                </div>
+                <div class="row boutons">
+                    <a href="allergie_enfant.html">
+                        <div class="col-lg-6">
+                            
+                            <div class="row">
+                                <p><h2><strong>G&eacute;rer les allergies</strong></h2></p>
+                            </div>
+                            <div class="row">
+                                <img src="images/medicine.png" /> 
+                            </div>
+                        </div>
+                    </a>
+                    <a href="liste_produit.html">
+                        <div class="col-lg-6">
+                            
+                            <div class="row">
+                                <p><h2><strong>Voir les produits</strong></h2></p>
+                            </div>
+                            <div class="row">
+                                <img src="images/trolley.png" />     
+                            </div>   
+                        </div>
+                    </a>
+                </div>
+                <div class="row boutons">
+                    <a href="enregistrer_course.html">
+                        <div class="col-lg-6">
+                            
+                            <div class="row">
+                                <p><h2><strong>Enregistrer une course</strong></h2></p>
+                            </div>
+                            <div class="row">
+                                <img src="images/shopping-cart.png" /> 
+                            </div>
+                        </div>
+                    </a>
+                    <a href="gerer_produit.html">
+                        <div class="col-lg-6">
+                            
+                            <div class="row">
+                                <p><h2><strong>G&eacute;rer les produits</strong></h2></p>
+                            </div>
+                            <div class="row">
+                                <img src="images/can.png" />     
+                            </div>   
+                        </div>
+                    </a>
+                </div>
+                <div class="row boutons">
+                    <a href="gerer_compte_enfant.html">
+                        <div class="col-lg-6">
+                            
+                            <div class="row">
+                                <p><h2><strong>G&eacute;rer compte enfant</strong></h2></p>
+                            </div>
+                            <div class="row">
+                                <img src="images/note.png" /> 
+                            </div>
+                        </div>
+                    </a>
+                    <a href="ajout_conso.html">
+                        <div class="col-lg-6">
+                            
+                            <div class="row">
+                                <p><h2><strong>Ajouter une consommation</strong></h2></p>
+                            </div>
+                            <div class="row">
+                                <img src="images/cash-register.png" />     
+                            </div>   
+                        </div>
+                    </a>
+                </div>
+                <div class="row boutons">
+                        <a href="historique.html">
+                            <div class="col-lg-6">
+                                
+                                <div class="row">
+                                    <p><h2><strong>Historique et journaux</strong></h2></p>
+                                </div>
+                                <div class="row">
+                                    <img src="images/agenda.png" /> 
+                                </div>
+                            </div>
+                        </a>
+                        <a href="gerer_compte.html">
+                            <div class="col-lg-6">
+                                
+                                <div class="row">
+                                    <p><h2><strong>Gerer les comptes</strong></h2></p>
+                                </div>
+                                <div class="row">
+                                    <img src="images/settings.png" />     
+                                </div>   
+                            </div>
+                        </a>
+                    </div>
+            </div>
+        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script>
+            var nom = getCookie("nom");
+            var prenom = getCookie("prenom");
+            var login = getCookie("login");
+
+            document.getElementById("prenom").innerHTML = prenom;
+            document.getElementById("nom").innerHTML = nom.toUpperCase();
+            document.getElementById("login").innerHTML = login;
+
+            httpPostAsync("/api/etatcomptes",param,function(e){
+                
+                var res = JSON.parse(e);
+                
+                var i;
+                var solde = res['Solde'];
+                document.getElementById('etats').innerHTML += "<a href=\"#\">\n<div class=\"row compte\">\n<p><h3><strong>"+prenom+" "+nom+"</strong> :</h3></p>\n<p class=\"tab\">Solde : <span id=\"solde\">"+solde+"</span> &euro;</p>\n</div>\n</a>\n";
+                for(i=0;i<res['Enfants'].length;i++){
+                    var nomE = res['Enfants'][i]['Nom'].toUpperCase();
+                    var prenomE = res['Enfants'][i]['Prenom'];
+                    var soldeE = res['Enfants'][i]['Solde'];
+                    document.getElementById('etats').innerHTML += "<a href=\"#\">\n<div class=\"row compte\">\n<p><h3>"+prenomE+" "+nomE+" :</h3></p>\n<p class=\"tab\">Solde : <span id=\"solde\">"+soldeE+"</span> &euro;</p>\n</div>\n</a>\n";
+                }
+            });
+        </script>
+    </body>
+</html>

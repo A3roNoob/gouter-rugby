@@ -1,0 +1,79 @@
+h3{
+    margin-top:10px;
+}
+
+.row.nom{
+    color:rgb(155, 155, 155);
+    font-size: 0.8em;
+}
+
+.row.margin{
+    margin:10px;
+    height:80%;
+}
+
+.row.menu-item{
+    display:"none";
+    padding:5px;
+    border-radius:4px;
+    margin-bottom:5px;
+    background-color:rgba(240, 240, 240, 0.527); 
+}
+
+.col-lg-4.etat{
+    height:100%;
+}
+
+.col-lg-8.boutons{
+    height:100%;
+    padding:0;
+}
+
+.col-lg-6{
+    height: 100%;
+}
+
+a .col-lg-6, a .row.compte,a .row.menu-item{
+    -webkit-transition-duration: 0.5s;
+    transition-duration: 0.5s;
+    color:#333;
+    text-decoration: none;
+}
+
+a:hover .col-lg-6, a:hover .row.compte,a:hover .row.menu-item{
+    background-color: rgba(185, 184, 184, 0.68);
+    text-decoration: none;
+}
+
+a:hover .row.menu-item .col-lg-6{
+    background-color: rgba(0,0,0,0);
+}
+
+a:hover, a:visited, a:link, a:active
+{
+    text-decoration: none;
+}
+
+.row.compte{
+    padding:10px;
+    margin:5px;
+    text-align: left;
+}
+
+.row.boutons{
+    height:50%;
+    text-align:center;
+}
+
+p.tab{
+    margin-left:2em;
+}
+
+span#solde{
+    font-style: italic;
+    font-size:0.8em;
+}
+
+img.align-right{
+    float:right;
+}

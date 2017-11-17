@@ -1,0 +1,8 @@
+.row.boutons{
+    height:20%;
+    text-align:center;
+}
+
+.row.boutons .row h2{
+    margin:0;
+}
