@@ -241,5 +241,5 @@ CREATE TABLE stockgestion
 (
     idProduit INT(4) PRIMARY KEY,
     alert BOOLEAN DEFAULT FALSE,
-    CONSTRAINT FK_stockgestion FOREIGN KEY (idProduit) REFERENCES produit(idProduit)
+    CONSTRAINT FK_stockgestion FOREIGN KEY (idProduit) REFERENCES stock(idProduit)
 );
