@@ -234,11 +234,12 @@ CREATE TABLE connexion
 (
     idAdulte INT(4) PRIMARY KEY,
     token VARCHAR(72) DEFAULT NULL,
-    CONSTRAINT FK_CONNEXION FOREIGN KEY (idAdulte) REFERENCES adulte(idAdulte)
+    CONSTRAINT FK_connexion FOREIGN KEY (idAdulte) REFERENCES adulte(idAdulte)
 );
 
 CREATE TABLE stockgestion
 (
     idProduit INT(4) PRIMARY KEY,
-    alert BOOLEAN DEFAULT FALSE
+    alert BOOLEAN DEFAULT FALSE,
+    CONSTRAINT FK_stockgestion FOREIGN KEY (idProduit) REFERENCES produit(idProduit)
 );
