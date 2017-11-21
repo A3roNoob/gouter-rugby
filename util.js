@@ -104,4 +104,12 @@ function findGetParameter(parameterName) {
     return result;
 }
 
+function deleteToken(){
+    var token = getCookie("token");
+    var login = getCookie("login");
+    var param = "token="+token+"&login="+login;
+    httpPostAsync("api/deconnexion",param,null);
+    setCookie("token",0,1);
+}
+
 document.head.innerHTML += "\n<link rel=\"icon\" href=\"images/rugby-ball.ico\" />\n";
