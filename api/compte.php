@@ -2,21 +2,21 @@
 if (isGetSet('action') && $_GET['action'] == 'compte') {
     if (isPostSet('token') && isPostSet('login')) {
         if (isGetSet('idadulte')) {
-            $token = test_input($_GET['token']);
-            $login = test_input($_GET['login']);
+            $token = test_input($_POST['token']);
+            $login = test_input($_POST['login']);
             $adulte = Adulte::loadByLogin($login);
             if ($adulte->checkToken($token)) {
                 if ($adulte->getIdAdulte() == $_GET['idadulte'] || $adulte->getIdRang() < 3) {
                     if ($adulte->getIdAdulte() != $_GET['idadulte'])
                         $adulte = Adulte::loadById(test_input($_GET['idadulte']));
-                    if (isGetSet('idadulte') && isGetSet('idenfant')) {
+                    if (isGetSet('idenfant')) {
                         $json = '{"Code" : "' . $GLOBALS['CODE']['CODE_0']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_0']['Message'] . '", "Solde" : "' . $adulte->getSolde() . '", "Enfants" : [';
                         $enfant = $adulte->getEnfantById(test_input($_GET['idenfant']));
                         if (!is_null($enfant))
                             $json .= $enfant->jsonSerialize();
                         $json .= ']}';
                         echo $json;
-                    } else if (isGetSet('idadulte')) {
+                    } else {
                         echo '{"Code" : "' . $GLOBALS['CODE']['CODE_0']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_0']['Message'] . '", "Solde" : "' . $adulte->getSolde() . '", "Enfants" : []}';
                     }
                 } else {
