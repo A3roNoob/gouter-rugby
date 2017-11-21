@@ -47,6 +47,8 @@ $GLOBALS['CODE'] = array(
         "Message" => "Cet e-mail ne correspond &agrave; aucun utilisateur."),
     "CODE_8" => array("Code" => 8,
         "Message" => "Token inconnu."),
+    "CODE_403" => array("Code" => 403,
+        "Message" => "Acc&eacute;s interdit."),
     "Code_501" => array("Code" => 501,
         "Message" => "Not implemented")
 );
