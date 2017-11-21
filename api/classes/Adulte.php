@@ -319,6 +319,18 @@ class Adulte
         return $data['token'] == $token && $token != "0";
     }
 
+    public function deleteToken(){
+        $db = connectToDb();
+        $query = $db->prepare("UPDATE connexion SET token=0 WHERE connexion.idAdulte=:idA;");
+        $query->bindValue(':idA', $this->getIdAdulte(), PDO::PARAM_INT);
+        try {
+            $query->execute();
+        } catch (PDOException $e) {
+            echo '{"Code" : "' . $GLOBALS['CODE']['CODE_5']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
+            exit(1);
+        }
+    }
+
     public function loadEnfants()
     {
         $db = connectToDb();
