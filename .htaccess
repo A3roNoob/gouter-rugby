@@ -18,6 +18,12 @@ RewriteRule ^api/enfants/?$ api/user.php?action=enfants
 Header set Access-Control-Allow-Origin "*"
 RewriteRule ^api/etatcomptes/?$ api/user.php?action=etatcomptes
 
+Header set Access-Control-Allow-Origin "*"
+RewriteRule ^api/compte/([0-9]+)/?$ api/compte.php?action=compte&idadulte=$1
+
+Header set Access-Control-Allow-Origin "*"
+RewriteRule ^api/compte/([0-9]+)/enfants/([0-9]+)/?$ api/compte.php?action=compte&idadulte=$1&idenfant=$2
+
 #get objets d'un utilisateur
 Header set Access-Control-Allow-Origin "*"
 RewriteRule ^api/user/([0-9]+)/objets/?$ api/user.php?user=$1&objets=1

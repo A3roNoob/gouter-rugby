@@ -238,6 +238,29 @@ class Adulte
         return $adulte;
     }
 
+    public static function loadById($id){
+        $db = connectToDb();
+
+        $query = $db->prepare("SELECT * FROM adulte WHERE adulte.idAdulte=:id");
+        $query->bindValue(':id', $id, PDO::PARAM_INT);
+        $data = array();
+        try {
+            $query->execute();
+            $data = $query->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            echo '{"Code" : "' . $GLOBALS['CODE']['CODE_5']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
+            exit();
+        }
+        if(is_bool($data)){
+            echo '{"Code" : "' . $GLOBALS['CODE']['CODE_7']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_7']['Message'] . '"}';
+            exit();
+        }
+        $adulte = new self();
+        $adulte->hydrate($data);
+        $adulte->loadEnfants();
+        return $adulte;
+    }
+
     public function generateToken()
     {
         $token = md5(time() . md5($this->getMail()) . $this->getIdAdulte());
@@ -319,5 +342,13 @@ class Adulte
             array_push($this->_enfants, $enf);
         }
 
+    }
+
+    public function getEnfantById($id){
+        foreach($this->getEnfants() as $enfant)
+            if($enfant->getIdEnfant() == $id){
+                return $enfant;
+            }
+        return null;
     }
 }
