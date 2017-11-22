@@ -108,8 +108,11 @@ function deleteToken(){
     var token = getCookie("token");
     var login = getCookie("login");
     var param = "token="+token+"&login="+login;
-    httpPostAsync("api/deconnexion",param,null);
+    httpPostAsync("api/deconnexion",param,function(e){
+        alert(e);
+    });
     setCookie("token",0,1);
+    window.location.href = "index.html";
 }
 
 document.head.innerHTML += "\n<link rel=\"icon\" href=\"images/rugby-ball.ico\" />\n";
