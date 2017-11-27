@@ -19,6 +19,7 @@ $config = array(
 );
 
 define("CLASS_PATH", realpath(dirname(__FILE__) . '/classes'));
+define("LOG_PATH", realpath(dirname(__FILE__) . '/log'));
 
 //Autoloader si on instancie une classe non déclarée
 function autoloader($class)

@@ -31,4 +31,6 @@ if (isGetSet('action') && $_GET['action'] == 'compte') {
     } else {
         echo '{"Code" : "' . $GLOBALS['CODE']['CODE_1']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_1']['Message'] . '"}';
     }
+}else{
+    header('Location: /api/');
 }

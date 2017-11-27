@@ -27,6 +27,11 @@ RewriteRule ^api/compte/([0-9]+)/enfants/([0-9]+)/?$ api/compte.php?action=compt
 Header set Access-Control-Allow-Origin "*"
 RewriteRule ^api/deconnexion/?$ api/user.php?action=deco
 
+RedirectMatch 403 ^/api/classes/?$
+RedirectMatch 403 ^/api/config.php
+RedirectMatch 403 ^/api/credentials.json$
+RedirectMatch 403 ^/api/functions.php
+RedirectMatch 403 ^/api/index.php
 
 #get objets d'un utilisateur
 Header set Access-Control-Allow-Origin "*"

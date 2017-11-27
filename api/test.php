@@ -8,4 +8,3 @@ $user = Adulte::Connexion("test@test.ca", "test");
 $user->generateToken();
 foreach($user->getEnfants() as $enfant)
     echo var_dump($enfant).'<br />';
-
