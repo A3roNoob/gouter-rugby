@@ -1,5 +1,5 @@
 <?php
-class Produit{
+class Produit implements JsonSerializable{
     private $_idProduit,$_nom,$_descProduit,$_prix;
 
     //region Getter/Setter
@@ -68,16 +68,21 @@ class Produit{
     }
     //endregion
     
-    private function hydrate($data){
+    public function hydrate($data){
         if(is_array($data)){
             if(isset($data['idProduit']))
                 $this->setIdProduit($data['idProduit']);
-            if(isset($data['nom']))
-                $this->setNom($data['nom']);
+            if(isset($data['nomProduit']))
+                $this->setNom($data['nomProduit']);
             if(isset($data['descProduit']))
                 $this->setDescProduit($data['descProduit']);
             if(isset($data['prix']))
                 $this->setPrix($data['prix']);
         }
+    }
+
+    public function jsonSerialize()
+    {
+        return '{"Id": ' . $this->getIdProduit() . ', "Nom": "' . $this->getNom() . '", "Description": "'.$this->getDescProduit().'", "Prix": '.$this->getPrix().'}';
     }
 }

@@ -191,7 +191,7 @@ class Adulte
 
     public static function Connexion($mail, $motdepasse)
     {
-        $db = connectToDb();
+        $db = DatabaseObject::connect();
 
         $query = $db->prepare("SELECT * FROM adulte WHERE mail=:mail;");
         $query->bindValue(':mail', $mail);
@@ -216,7 +216,7 @@ class Adulte
 
     public static function loadByLogin($mail)
     {
-        $db = connectToDb();
+        $db = DatabaseObject::connect();
 
         $query = $db->prepare("SELECT * FROM adulte WHERE adulte.mail=:mail");
         $query->bindValue(':mail', $mail);
@@ -239,7 +239,7 @@ class Adulte
     }
 
     public static function loadById($id){
-        $db = connectToDb();
+        $db = DatabaseObject::connect();
 
         $query = $db->prepare("SELECT * FROM adulte WHERE adulte.idAdulte=:id");
         $query->bindValue(':id', $id, PDO::PARAM_INT);
@@ -265,7 +265,7 @@ class Adulte
     {
         $token = md5(time() . md5($this->getMail()) . $this->getIdAdulte());
 
-        $db = connectToDb();
+        $db = DatabaseObject::connect();
         $query = $db->prepare("SELECT idAdulte FROM connexion WHERE idAdulte=:idA");
         $query->bindValue(':idA', $this->getIdAdulte(), PDO::PARAM_INT);
         $data = array();
@@ -303,7 +303,7 @@ class Adulte
 
     public function checkToken($token)
     {
-        $db = connectToDb();
+        $db = DatabaseObject::connect();
         $query = $db->prepare("SELECT token FROM connexion WHERE connexion.idAdulte=:idA;");
         $query->bindValue(':idA', $this->getIdAdulte(), PDO::PARAM_INT);
         try {
@@ -320,7 +320,7 @@ class Adulte
     }
 
     public function deleteToken(){
-        $db = connectToDb();
+        $db = DatabaseObject::connect();
         $query = $db->prepare("UPDATE connexion SET token=0 WHERE connexion.idAdulte=:idA;");
         $query->bindValue(':idA', $this->getIdAdulte(), PDO::PARAM_INT);
         try {
@@ -333,7 +333,7 @@ class Adulte
 
     public function loadEnfants()
     {
-        $db = connectToDb();
+        $db = DatabaseObject::connect();
         $query = $db->prepare("SELECT * FROM enfant NATURAL JOIN parent WHERE idAdulte=:idA;");
         $query->bindValue(':idA', $this->getIdAdulte(), PDO::PARAM_INT);
         try {

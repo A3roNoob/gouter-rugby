@@ -113,7 +113,7 @@ class Enfant implements JsonSerializable
     }
 
     public function loadSolde(){
-        $db = connectToDb();
+        $db = DatabaseObject::connect();
         $query = $db->prepare("SELECT solde FROM compte WHERE idEnfant=:id;");
         $query->bindValue(':id', $this->getIdEnfant(), PDO::PARAM_INT);
         try{
@@ -132,6 +132,6 @@ class Enfant implements JsonSerializable
 
     function jsonSerialize()
     {
-        return '{"ID" : "' . $this->getIdEnfant() . '", "Nom" : "' . $this->getNom() . '", "Prenom" : "' . $this->getPrenom() . '", "Solde" : "' . $this->getSolde() . '"}';
+        return '{"ID" : ' . $this->getIdEnfant() . ', "Nom" : "' . $this->getNom() . '", "Prenom" : "' . $this->getPrenom() . '", "Solde" : ' . $this->getSolde() . '}';
     }
 }
