@@ -65,3 +65,6 @@ modules.xml
 .idea/copyright/profiles_settings.xml
 .idea/php.xml
 .idea/sqldialects.xml
+
+api/test.php
+api/log/*
