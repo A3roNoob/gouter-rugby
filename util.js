@@ -115,4 +115,19 @@ function deleteToken(){
     window.location.href = "index.html";
 }
 
+function afficherCompte(param){
+    httpPostAsync("/api/etatcomptes",param,function(e){
+        var res = JSON.parse(e);
+        var i;
+        var solde = res['Solde'];
+        document.getElementById('etats').innerHTML += "<a href=\"etat_compte.html?parent=yes&nb=-1\">\n<div class=\"row compte\">\n<p><h3><strong>"+prenom+" "+nom.toUpperCase()+"</strong> :</h3></p>\n<p class=\"tab\">Solde : <span id=\"solde\">"+solde+"</span> &euro;</p>\n</div>\n</a>\n";
+        for(i=0;i<res['Enfants'].length;i++){
+            var nomE = res['Enfants'][i]['Nom'].toUpperCase();
+            var prenomE = res['Enfants'][i]['Prenom'];
+            var soldeE = res['Enfants'][i]['Solde'];
+            document.getElementById('etats').innerHTML += "<a href=\"etat_compte.html?parent=no&nb="+i+"\">\n<div class=\"row compte\">\n<p><h3>"+prenomE+" "+nomE+" :</h3></p>\n<p class=\"tab\">Solde : <span id=\"solde\">"+soldeE+"</span> &euro;</p>\n</div>\n</a>\n";
+        }
+    });
+}
+
 document.head.innerHTML += "\n<link rel=\"icon\" href=\"images/rugby-ball.ico\" />\n";

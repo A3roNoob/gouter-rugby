@@ -124,7 +124,15 @@
                 </a>
             </div>
             <div class="col-lg-9">
-
+                <div class="col-lg-1">&nbsp;</div>
+                <div class="col-lg-11">
+                    <h2>
+                        <div class="row"><strong><span id="prenomEtat"></span> <span id="nomEtat"></span></strong></div>
+                        <div class="row"><span id="solde"></span> &euro;</div>
+                    </h2>
+                    <div class="row"><h2><strong>Historique</strong></h2></div>
+                    <div class="row"></div>
+                </div>
             </div>
         </div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -146,6 +154,31 @@
             document.getElementById("prenom").innerHTML = prenom;
             document.getElementById("nom").innerHTML = nom.toUpperCase();;
             document.getElementById("login").innerHTML = login;
+
+            var parent =  findGetParameter('parent');
+            if(parent == "yes"){
+                httpPostAsync("/api/etatcomptes",param,function(e){
+                    var res = JSON.parse(e);
+                    console.log(res);
+                    var solde = res['Solde'];
+
+                    document.getElementById('nomEtat').innerHTML = nom.toUpperCase();
+                    document.getElementById('prenomEtat').innerHTML = prenom;
+                    document.getElementById('solde').innerHTML = solde;
+                });
+            }
+            else{
+                var numEnfant = findGetParameter('nb');
+                httpPostAsync("/api/etatcomptes",param,function(e){
+                    var res = JSON.parse(e);
+                    var nomE = res['Enfants'][numEnfant]['Nom'].toUpperCase();
+                    var prenomE = res['Enfants'][numEnfant]['Prenom'];
+                    var soldeE = res['Enfants'][numEnfant]['Solde'];
+                    document.getElementById('nomEtat').innerHTML = nomE.toUpperCase();
+                    document.getElementById('prenomEtat').innerHTML = prenomE;
+                    document.getElementById('solde').innerHTML = soldeE;
+                });
+            }
         </script>
     </body>
 </html>
