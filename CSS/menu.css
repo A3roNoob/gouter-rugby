@@ -12,6 +12,13 @@ h3{
     height:80%;
 }
 
+.row.produit{
+    padding:5px;
+    border-radius:4px;
+    margin-bottom:5px;
+    background-color:rgba(240, 240, 240, 0.288);
+}
+
 .row.menu-item{
     display:"none";
     padding:5px;

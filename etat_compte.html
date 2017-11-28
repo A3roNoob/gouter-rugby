@@ -21,13 +21,6 @@
                     window.location.href = "connect.html";
                 }
             });
-            httpPostAsync("/api/rang",param,function(t){
-                var res = JSON.parse(t);
-                if(res["Code"] == 0){
-                    rang = res["Rang"];
-                }
-                checkRang2(rang);
-            });
         </script>
         <div class="row" id="headbar">
             <div class="col-lg-4">

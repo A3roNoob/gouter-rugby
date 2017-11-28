@@ -116,8 +116,7 @@
                 <a href="gerer_compte.html" id="gerer_compte">
                 </a>
             </div>
-            <div class="col-lg-9">
-
+            <div class="col-lg-9" id="liste" style="height:100%;overflow: auto;">
             </div>
         </div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -128,12 +127,35 @@
                 var res = JSON.parse(t);
                 if(res["Code"] == 0){
                     console.log("hide");
-                    console.log(res['Rang']);
-                    console.log(res["Rang"]);
                     rang = res["Rang"];
                 }
                 hideRang(rang);
                 menuRang(rang);
+            });
+
+            httpPostAsync("/api/produits",param,function(t){
+                var res = JSON.parse(t);
+                for(i=0;i<res['Produits'].length;i++){
+                    document.getElementById('liste').innerHTML += 
+                    "<div class=\"panel-group\">"+
+                        "<a data-toggle=\"collapse\" href=\"#collapse"+i+"\">"+
+                            "<div class=\"panel panel-default\">"+
+                                "<div class=\"panel-heading\">"+
+                                    "<h4 class=\"panel-title\"><strong>"+
+                                    res['Produits'][i]['Nom']+
+                                    "</strong></h4>"+
+                                "</div>"+
+                            "</div>"+    
+                            "<div id=\"collapse"+i+"\" class=\"panel-collapse collapse\">"+
+                                "<div class=\"panel-body\">"+
+                                    "<p>Prix : <span style=\"font-style:italic;\">"+res['Produits'][i]['Prix']+"</span> &euro;</p>"+
+                                    "<p>"+res['Produits'][i]['Description']+"</p></div>"+
+                                "</div>"+
+                            "</div>"+
+                        "</a>"+
+                    "</div>";
+                    //"<div class=\"row produit\"><p><strong>"+res['Produits'][i]['Nom']+" : </strong><span style=\"font-style:italic;\">"+res['Produits'][i]['Prix']+"</span> &euro;</p><p>"+res['Produits'][i]['Description']+"</p></div>";
+                }
             });
 
             var nom = getCookie("nom");
