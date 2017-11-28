@@ -67,4 +67,4 @@ modules.xml
 .idea/sqldialects.xml
 
 api/test.php
-api/log/*
+api/log/

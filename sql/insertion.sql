@@ -180,9 +180,15 @@ INSERT INTO produit(nomProduit, descProduit, prix) VALUES
   ('Chocolat Blanc', '1 cons = 1/12', 0.20),
   ('Chocolat au lait', '1 cons = 1/12', 0.18),
   ('Paquet de bonbon', '1 cons = 1', 1.50),
-  ('Canette', '1 cons = 1', 1.20),
-  ('Savanne', '1 cons = 1/20', 0.4),
-  ('Oreo', '1 cons = 2/14', 0.3);
+  ('Cannette', '1 cons = 1', 1.20),
+  ('Savanne', '1 cons = 1/20', 0.40),
+  ('Oreo', '1 cons = 2/14', 0.30),
+  ('Chocolat noir', '1 cons = 1/12', 0.20),
+  ('Choco BN', '1 cons = 2 gateaux', 2.15),
+  ('Pied de porc', '1 cons = 2 pieds', 27.65),
+  ('Panse de brebis farcie', '1 cons = 1 panse', 12.20),
+  ('Goulash', '1 cons = 700g', '14.00'),
+  ('Jambes de grenouilles', '1 cons = 5 jambes', 5.50);
 
 INSERT INTO produitcompose(nomProduit, descProduit) VALUES ('Gouter simple', 'Savanne/Canette');
 
