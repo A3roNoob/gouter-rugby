@@ -180,9 +180,13 @@ INSERT INTO produit(nomProduit, descProduit, prix) VALUES
   ('Chocolat Blanc', '1 cons = 1/12', 0.20),
   ('Chocolat au lait', '1 cons = 1/12', 0.18),
   ('Paquet de bonbon', '1 cons = 1', 1.50),
-  ('Cannette', '1 cons = 1', 1.20),
+  ('Canette', '1 cons = 1', 1.20),
   ('Savanne', '1 cons = 1/20', 0.4),
   ('Oreo', '1 cons = 2/14', 0.3);
+
+INSERT INTO produitcompose(nomProduit, descProduit) VALUES ('Gouter simple', 'Savanne/Canette');
+
+INSERT INTO composproduit VALUES (1, 5),(1, 4); -- un gouter composé d'un savanne et d'une canette
 
 INSERT INTO catproduit VALUES
   (1, 2),
