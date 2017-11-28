@@ -95,7 +95,10 @@
                     setCookie("prenom",res['Prenom'],30);
                     setCookie("login",res['Login'],30);
                     setCookie("token",res['Token'],30);
-                    window.location.href = "menu_normal.html";
+                    var token = getCookie('token');
+                    var login = getCookie('login');
+                    var param = "login=" + login + "&token=" + token;
+                    var rang = getRang(param);
                 }
                 else{
                     document.getElementById("err").innerHTML = "Erreur "+res['Code']+" : "+res['Message'];

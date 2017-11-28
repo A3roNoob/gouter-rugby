@@ -51,6 +51,21 @@ function hideRang(rang){
     }
 }
 
+function getRang(param){
+    console.log("param : "+param);
+    var rang;
+    httpPostAsync("/api/rang",param,function(e){
+        res = JSON.parse(e);
+        if(res['Code'] == "0"){
+            rang = res["Rang"];
+            console.log("rang = "+rang);
+            menuConnect(rang);
+        }
+    });
+    console.log("rang = " + rang);
+    return rang;
+}
+
 function menuRang(rang){
     console.log(rang);
     if(rang == 3){
@@ -76,6 +91,18 @@ function menuRedirect(rang){
     }
     if(rang == 1 && page != "menu_admin.html"){
         window.location.href = "menu_admin.html";
+    }
+}
+
+function menuConnect(rang){
+    if(rang == 1){
+        window.location.href = "menu_admin.html";
+    }
+    if(rang == 2){
+        window.location.href = "menu_benevole.html";
+    }
+    if(rang == 3){
+        window.location.href = "menu_normal.html";
     }
 }
 
