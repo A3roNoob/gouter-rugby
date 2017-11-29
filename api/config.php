@@ -52,6 +52,8 @@ $GLOBALS['CODE'] = array(
         "Message" => "Solde maximal serait d&eacute;pass&eacute;, limite: " . SOLDE_LIMIT . "&euro;."),
     "CODE_10" => array("Code" => 10,
         "Message" => "Ne peut pas ajouter 0 &euro; &agrave; un solde."),
+    "CODE_11" => array("Code" => 11,
+        "Message" => "Cet id ne correspond &agrave; aucun enfant."),
     "CODE_403" => array("Code" => 403,
         "Message" => "Acc&eacute;s interdit."),
     "Code_501" => array("Code" => 501,

@@ -35,7 +35,6 @@ if (isGetSet('action') && $_GET['action'] == 'compte') {
     }
 } else if (isGetSet('action') && $_GET['action'] == 'fonds') {
     if (isPostSet('token') && isPostSet('login')) {
-        if (isPostSet('idadulte')) {
             $token = test_input($_POST['token']);
             $login = test_input($_POST['login']);
             $adulte = Adulte::loadByLogin($login);
@@ -45,9 +44,10 @@ if (isGetSet('action') && $_GET['action'] == 'compte') {
                     if ($enfant->getIdParent() == $adulte->getIdAdulte() || $adulte->getIdRang() < 3){
                         if (isPostSet('somme')) {
                             if ($_POST['somme'] > 0) {
-                                $json = '{"Code" : "' . $GLOBALS['CODE']['CODE_0']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_0']['Message'] . '"}';
+                                $json = '{"Code" : "' . $GLOBALS['CODE']['CODE_0']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_0']['Message'] . '", ';
                                 if (!is_null($enfant))
                                     $enfant->ajouterSolde(test_input($_POST['somme']));
+                                $json .= '"Solde" : '.$enfant->getSolde().'}';
                                 echo $json;
                                 exit(1);
                             } else {
@@ -65,9 +65,6 @@ if (isGetSet('action') && $_GET['action'] == 'compte') {
             } else {
                 echo '{"Code" : "' . $GLOBALS['CODE']['CODE_8']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_8']['Message'] . '"}';
             }
-        } else {
-            echo '{"Code" : "' . $GLOBALS['CODE']['CODE_1']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_1']['Message'] . '"}';
-        }
     } else {
         echo '{"Code" : "' . $GLOBALS['CODE']['CODE_1']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_1']['Message'] . '"}';
     }

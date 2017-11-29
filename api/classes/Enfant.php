@@ -122,7 +122,7 @@ class Enfant implements JsonSerializable
             exit();
         }
         if(is_bool($data)){
-            echo '{"Code" : "' . $GLOBALS['CODE']['CODE_7']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_7']['Message'] . '"}';
+            echo '{"Code" : "' . $GLOBALS['CODE']['CODE_11']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_11']['Message'] . '"}';
             exit();
         }
         $enfant = new self();
@@ -149,6 +149,7 @@ class Enfant implements JsonSerializable
             echo '{"Code" : "' . $GLOBALS['CODE']['CODE_9']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_9']['Message'] . '"}';
             exit(1);
         }
+        $this->loadSolde();
     }
 
     public function loadSolde(){
