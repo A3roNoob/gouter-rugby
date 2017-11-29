@@ -59,15 +59,21 @@ class ProduitHandler  implements JsonSerializable
     public function jsonSerialize()
     {
         $string = '"Produits": [';
+        $cnt = 0;
         foreach($this->getProduits() as $produit){
             $string .= $produit->jsonSerialize() . ', ';
+            $cnt++;
         }
-        $string = substr($string, 0, strlen($string) - 2);
+        if($cnt > 0)
+            $string = substr($string, 0, strlen($string) - 2);
         $string .= '], "ProduitsComposes": [';
+        $cnt = 0;
         foreach($this->getProduitsComposes() as $produit){
             $string .= $produit->jsonSerialize() . ', ';
+            $cnt++;
         }
-        $string = substr($string, 0, strlen($string) - 2);
+        if($cnt > 0)
+            $string = substr($string, 0, strlen($string) - 2);
         $string .= ']';
         return $string;
     }

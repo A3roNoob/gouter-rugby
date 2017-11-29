@@ -190,9 +190,11 @@ INSERT INTO produit(nomProduit, descProduit, prix) VALUES
   ('Goulash', '1 cons = 700g', '14.00'),
   ('Jambes de grenouilles', '1 cons = 5 jambes', 5.50);
 
-INSERT INTO produitcompose(nomProduit, descProduit) VALUES ('Gouter simple', 'Savanne/Canette');
+INSERT INTO produitcompose(nomProduit, descProduit) VALUES ('Gouter simple', 'Savanne/Canette'),
+  ('Gouter FRANCAIS', 'Jambes de grenouilles/Pied de porc/Canette');
 
-INSERT INTO composproduit VALUES (1, 5),(1, 4); -- un gouter composé d'un savanne et d'une canette
+INSERT INTO composproduit VALUES (1, 5),(1, 4), /* un gouter composé d'un savanne et d'une canette*/
+  (2, 9), (2, 12), (2, 4);
 
 INSERT INTO catproduit VALUES
   (1, 2),
