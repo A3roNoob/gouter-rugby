@@ -20,7 +20,7 @@ $config = array(
 
 define("CLASS_PATH", realpath(dirname(__FILE__) . '/classes'));
 define("LOG_PATH", realpath(dirname(__FILE__) . '/log'));
-
+define("SOLDE_LIMIT", 9999.99);
 //Autoloader si on instancie une classe non déclarée
 function autoloader($class)
 {
@@ -48,6 +48,10 @@ $GLOBALS['CODE'] = array(
         "Message" => "Cet e-mail ne correspond &agrave; aucun utilisateur."),
     "CODE_8" => array("Code" => 8,
         "Message" => "Token inconnu."),
+    "CODE_9" => array("Code" => 9,
+        "Message" => "Solde maximal serait d&eacute;pass&eacute;, limite: " . SOLDE_LIMIT . "&euro;."),
+    "CODE_10" => array("Code" => 10,
+        "Message" => "Ne peut pas ajouter 0 &euro; &agrave; un solde."),
     "CODE_403" => array("Code" => 403,
         "Message" => "Acc&eacute;s interdit."),
     "Code_501" => array("Code" => 501,

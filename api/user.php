@@ -6,9 +6,6 @@ if (isGetSet("action") && $_GET['action'] == "connexion") {
         $login = test_input($_POST['login']);
         $mdp = test_input($_POST['mdp']);
         $user = Adulte::Connexion($login, $mdp);
-        if ($user == null) {
-            exit(1);
-        }
         $user->generateToken();
         echo '{"Code" : "' . $GLOBALS['CODE']['CODE_0']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_0']['Message'] . '", "Nom" : "' . $user->getNom() . '", "Prenom" : "' . $user->getPrenom() . '", "Login" : "' . $user->getMail() . '", "Token" : "' . $user->getToken() . '"}';
     } else {

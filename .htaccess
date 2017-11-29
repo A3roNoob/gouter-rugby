@@ -30,6 +30,8 @@ RewriteRule ^api/deconnexion/?$ api/user.php?action=deco
 Header set Access-Control-Allow-Origin "*"
 RewriteRule ^api/produits/?$ api/produit.php?action=produits
 
+Header set Access-Control-Allow-Origin "*"
+RewriteRule ^api/fonds/?$ api/compte.php?action=fonds
 
 RedirectMatch 403 ^/api/classes/?$
 RedirectMatch 403 ^/api/config.php
