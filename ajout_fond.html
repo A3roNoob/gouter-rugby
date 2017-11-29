@@ -166,14 +166,17 @@
             });
 
             var solde = [];
+            var idEnfant;
             var select = document.getElementById('enfants');
             httpPostAsync("/api/etatcomptes",param,function(e){
                 var res = JSON.parse(e);
+                console.log(res);
                 select.addEventListener("change",function(){
                     for(i=1;i<=2;i++){
                         var nom = select.options[select.selectedIndex].value;
                         document.getElementById('nom'+i).innerHTML = nom;
                     }
+                    idEnfant = Number(res['Enfants'][select.selectedIndex]['ID']);
                     document.getElementById('solde1').innerHTML = (Number(solde[select.selectedIndex])).toFixed(2);
                     document.getElementById('solde2').innerHTML = (Number(solde[select.selectedIndex]) + Number(document.getElementById('somme').value)).toFixed(2);
                 });
@@ -186,13 +189,39 @@
                     document.getElementById('nom'+i).innerHTML = nom;
                     
                 }
+                idEnfant = Number(res['Enfants'][select.selectedIndex]['ID']);
                 document.getElementById('solde1').innerHTML = (Number(solde[select.selectedIndex])).toFixed(2);
                 document.getElementById('solde2').innerHTML = (Number(solde[select.selectedIndex]) + Number(document.getElementById('somme').value)).toFixed(2);
             });
 
+            var somme;
             document.getElementById('somme').addEventListener('input',function(){
                 document.getElementById('solde2').innerHTML = (Number(solde[select.selectedIndex]) + Number(document.getElementById('somme').value)).toFixed(2);
+                somme = Number(document.getElementById('somme').value).toFixed(2);
             });
+
+            document.getElementById('confirm').addEventListener("click",function(){
+                var paramFonds = param +"&idenfant=" + idEnfant + "&somme=" + somme;
+                console.log('idEnfant : '+idEnfant);
+                httpPostAsync("/api/fonds",paramFonds,function(e){
+                    var res = JSON.parse(e);
+                    console.log(res);
+                    if(res['Code'] != 0){
+                        console.log('oh shit');
+                    }
+                    else{
+                        document.getElementById('somme').value = "";
+                        httpPostAsync("/api/etatcomptes",param,function(e){
+                            var res = JSON.parse(e);
+                            solde[select.selectedIndex] = res['Enfants'][select.selectedIndex]['Solde'];
+                            document.getElementById('solde1').innerHTML = (Number(solde[select.selectedIndex])).toFixed(2);
+                            document.getElementById('solde2').innerHTML = (Number(solde[select.selectedIndex]) + Number(document.getElementById('somme').value)).toFixed(2);
+                        });
+                    }
+                });
+            });
+
+            
 
             
 
