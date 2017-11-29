@@ -91,8 +91,8 @@ class Enfant implements JsonSerializable
         if(is_array($data)){
             if(isset($data['idEnfant']))
                 $this->setIdEnfant($data['idEnfant']);
-            if(isset($data['idParent']))
-                $this->setIdParent($data['idParent']);
+            if(isset($data['idAdulte']))
+                $this->setIdParent($data['idAdulte']);
             if(isset($data['nom']))
                 $this->setNom($data['nom']);
             if(isset($data['prenom']))
@@ -108,8 +108,48 @@ class Enfant implements JsonSerializable
         return $enf;
     }
 
-    public static function chargerParId($id){
-        //TODO charger enfant par id
+    public static function loadById($id){
+        $db = DatabaseObject::connect();
+
+        $query = $db->prepare("SELECT * FROM enfant NATURAL JOIN parent WHERE enfant.idEnfant=:id");
+        $query->bindValue(':id', $id, PDO::PARAM_INT);
+        $data = array();
+        try {
+            $query->execute();
+            $data = $query->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            echo '{"Code" : "' . $GLOBALS['CODE']['CODE_5']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
+            exit();
+        }
+        if(is_bool($data)){
+            echo '{"Code" : "' . $GLOBALS['CODE']['CODE_11']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_11']['Message'] . '"}';
+            exit();
+        }
+        $enfant = new self();
+        $enfant->hydrate($data);
+        $enfant->loadSolde();
+        return $enfant;
+    }
+
+    public function ajouterSolde($somme){
+        if($somme+$this->getSolde() <= SOLDE_LIMIT) {
+            $db = DatabaseObject::connect();
+
+            $query = $db->prepare("REPLACE INTO compte(idEnfant, solde) VALUES(:id, :solde);");
+            $query->bindValue(':id', $this->getIdEnfant(), PDO::PARAM_INT);
+            $query->bindValue(':solde', ($this->getSolde() + $somme));
+            try {
+                $query->execute();
+            } catch (PDOException $e) {
+                echo '{"Code" : "' . $GLOBALS['CODE']['CODE_5']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
+                exit(1);
+            }
+        }
+        else{
+            echo '{"Code" : "' . $GLOBALS['CODE']['CODE_9']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_9']['Message'] . '"}';
+            exit(1);
+        }
+        $this->loadSolde();
     }
 
     public function loadSolde(){
@@ -121,6 +161,7 @@ class Enfant implements JsonSerializable
             $data = $query->fetch(PDO::FETCH_ASSOC);
         }catch(PDOException $e){
             echo '{"Code" : "' . $GLOBALS['CODE']['CODE_5']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "'.$e->getMessage() .'"}';
+            exit(1);
         }
 
         if(is_bool($data)){
