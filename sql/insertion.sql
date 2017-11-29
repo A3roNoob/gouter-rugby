@@ -181,8 +181,20 @@ INSERT INTO produit(nomProduit, descProduit, prix) VALUES
   ('Chocolat au lait', '1 cons = 1/12', 0.18),
   ('Paquet de bonbon', '1 cons = 1', 1.50),
   ('Cannette', '1 cons = 1', 1.20),
-  ('Savanne', '1 cons = 1/20', 0.4),
-  ('Oreo', '1 cons = 2/14', 0.3);
+  ('Savanne', '1 cons = 1/20', 0.40),
+  ('Oreo', '1 cons = 2/14', 0.30),
+  ('Chocolat noir', '1 cons = 1/12', 0.20),
+  ('Choco BN', '1 cons = 2 gateaux', 2.15),
+  ('Pied de porc', '1 cons = 2 pieds', 27.65),
+  ('Panse de brebis farcie', '1 cons = 1 panse', 12.20),
+  ('Goulash', '1 cons = 700g', '14.00'),
+  ('Jambes de grenouilles', '1 cons = 5 jambes', 5.50);
+
+INSERT INTO produitcompose(nomProduit, descProduit) VALUES ('Gouter simple', 'Savanne/Canette'),
+  ('Gouter FRANCAIS', 'Jambes de grenouilles/Pied de porc/Canette');
+
+INSERT INTO composproduit VALUES (1, 5),(1, 4), /* un gouter composé d'un savanne et d'une canette*/
+  (2, 9), (2, 12), (2, 4);
 
 INSERT INTO catproduit VALUES
   (1, 2),

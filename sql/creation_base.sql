@@ -50,6 +50,25 @@ CREATE TABLE produit
     CONSTRAINT PK_Produit PRIMARY KEY (idProduit)
 );
 
+CREATE TABLE produitcompose
+(
+    idProduitCompos INT(4) AUTO_INCREMENT,
+    nomProduit VARCHAR(30),
+    descProduit VARCHAR(50),
+
+    CONSTRAINT PK_ProduitComp PRIMARY KEY (idProduitCompos)
+);
+
+CREATE TABLE composproduit
+(
+    idProduitCompos INT(4),
+    idProduit INT(4),
+
+    CONSTRAINT PK_composProduit PRIMARY KEY (idProduit, idProduitCompos),
+    CONSTRAINT FK_ProduitCompos FOREIGN KEY (idProduitCompos) REFERENCES produitcompose(idProduitCompos),
+    CONSTRAINT FK_Produit FOREIGN KEY (idProduit) REFERENCES produit(idProduit)
+);
+
 /*CREATION DE LA TABLE ALLERGENE*/
 
 CREATE TABLE allergene
@@ -240,6 +259,6 @@ CREATE TABLE connexion
 CREATE TABLE stockgestion
 (
     idProduit INT(4) PRIMARY KEY,
-    alert BOOLEAN DEFAULT FALSE,
+    alert BOOL DEFAULT FALSE,
     CONSTRAINT FK_stockgestion FOREIGN KEY (idProduit) REFERENCES stock(idProduit)
 );

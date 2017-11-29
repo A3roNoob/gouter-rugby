@@ -1,4 +1,6 @@
 <?php
+require_once("config.php");
+require_once("functions.php");
 if(isGetSet('action') && $_GET['action'] == "produits"){
     if (isPostSet('token') && isPostSet('login')) {
         $token = test_input($_POST['token']);
