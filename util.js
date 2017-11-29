@@ -52,22 +52,18 @@ function hideRang(rang){
 }
 
 function getRang(param){
-    console.log("param : "+param);
     var rang;
     httpPostAsync("/api/rang",param,function(e){
         res = JSON.parse(e);
         if(res['Code'] == "0"){
             rang = res["Rang"];
-            console.log("rang = "+rang);
             menuConnect(rang);
         }
     });
-    console.log("rang = " + rang);
     return rang;
 }
 
 function menuRang(rang){
-    console.log(rang);
     if(rang == 3){
         document.getElementById('menu-link').href = "menu_normal";
     }
@@ -155,6 +151,77 @@ function afficherCompte(param){
             document.getElementById('etats').innerHTML += "<a href=\"etat_compte.html?parent=no&nb="+i+"\">\n<div class=\"row compte\">\n<p><h3>"+prenomE+" "+nomE+" :</h3></p>\n<p class=\"tab\">Solde : <span id=\"solde\">"+soldeE+"</span> &euro;</p>\n</div>\n</a>\n";
         }
     });
+}
+
+function stringProduit(res,i){
+    return "<div class=\"panel-group\">"+
+                "<a data-toggle=\"collapse\" href=\"#collapse"+i+"\">"+
+                    "<div class=\"panel panel-default\">"+
+                        "<div class=\"panel-heading\">"+
+                            "<h4 class=\"panel-title\"><strong>"+
+                            res['Produits'][i]['Nom']+
+                            "</strong></h4>"+
+                        "</div>"+
+                    "</div>"+    
+                    "<div id=\"collapse"+i+"\" class=\"panel-collapse collapse\">"+
+                        "<div class=\"panel-body\">"+
+                            "<p>Prix : <span style=\"font-style:italic;\">"+res['Produits'][i]['Prix']+"</span> &euro;</p>"+
+                            "<p>"+res['Produits'][i]['Description']+"</p>"+
+                        "</div>"+
+                    "</div>"+
+                "</a>"+
+            "</div>";
+}
+
+function stringProduitC(res,i,j){
+    return "<div class=\"panel-group\">"+
+                "<a data-toggle=\"collapse\" href=\"#collapse"+j+"C"+i+"\">"+
+                    "<div class=\"panel panel-default\">"+
+                        "<div class=\"panel-heading\">"+
+                            "<h4 class=\"panel-title\"><strong>"+
+                            res['Produits'][i]['Nom']+
+                            "</strong></h4>"+
+                        "</div>"+
+                    "</div>"+    
+                    "<div id=\"collapse"+j+"C"+i+"\" class=\"panel-collapse collapse\">"+
+                        "<div class=\"panel-body\">"+
+                            "<p>Prix : <span style=\"font-style:italic;\">"+res['Produits'][i]['Prix']+"</span> &euro;</p>"+
+                            "<p>"+res['Produits'][i]['Description']+"</p>"+
+                        "</div>"+
+                    "</div>"+
+                "</a>"+
+            "</div>";
+}
+
+function stringProduitCompo(res,i){
+    var compo = "";
+    console.log("in stringProduitCompo, i :"+ i);
+    for(j=0;j<res['ProduitsComposes'][i]['Produits'].length;j++){
+        compo += "<li class=\"list-group-item\">\n";
+        compo += stringProduitC(res['ProduitsComposes'][i],j,i);
+        compo += "</li>\n";
+    }
+
+    console.log(compo);
+
+    var ret = "<div class=\"panel-group\">"+
+                "<a data-toggle=\"collapse\" href=\"#collapse0"+i+"\">"+
+                    "<div class=\"panel panel-default\">"+
+                        "<div class=\"panel-heading\">"+
+                            "<h4 class=\"panel-title\">"+
+                                "<strong>"+res['ProduitsComposes'][i]['Nom']+"</strong>"+
+                            "</h4>"+
+                        "</div>"+
+                        "<div id=\"collapse0"+i+"\" class=\"panel-collapse collapse\">"+
+                        "<ul class=\"list-group\">"+
+                            "<li class=\"list-group-item\">"+res['ProduitsComposes'][i]['Prix']+" &euro;</li>"+
+                            compo+
+                        "</ul>"+
+                    "</div>"+
+                "</a>"+
+            "</div>";
+
+    return ret;
 }
 
 document.head.innerHTML += "\n<link rel=\"icon\" href=\"images/rugby-ball.ico\" />\n";

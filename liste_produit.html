@@ -135,26 +135,13 @@
 
             httpPostAsync("/api/produits",param,function(t){
                 var res = JSON.parse(t);
+                console.log(res);
                 for(i=0;i<res['Produits'].length;i++){
-                    document.getElementById('liste').innerHTML += 
-                    "<div class=\"panel-group\">"+
-                        "<a data-toggle=\"collapse\" href=\"#collapse"+i+"\">"+
-                            "<div class=\"panel panel-default\">"+
-                                "<div class=\"panel-heading\">"+
-                                    "<h4 class=\"panel-title\"><strong>"+
-                                    res['Produits'][i]['Nom']+
-                                    "</strong></h4>"+
-                                "</div>"+
-                            "</div>"+    
-                            "<div id=\"collapse"+i+"\" class=\"panel-collapse collapse\">"+
-                                "<div class=\"panel-body\">"+
-                                    "<p>Prix : <span style=\"font-style:italic;\">"+res['Produits'][i]['Prix']+"</span> &euro;</p>"+
-                                    "<p>"+res['Produits'][i]['Description']+"</p></div>"+
-                                "</div>"+
-                            "</div>"+
-                        "</a>"+
-                    "</div>";
-                    //"<div class=\"row produit\"><p><strong>"+res['Produits'][i]['Nom']+" : </strong><span style=\"font-style:italic;\">"+res['Produits'][i]['Prix']+"</span> &euro;</p><p>"+res['Produits'][i]['Description']+"</p></div>";
+                    document.getElementById('liste').innerHTML += stringProduit(res,i); 
+                }
+
+                for(i=0;i<res['ProduitsComposes'].length;i++){
+                    document.getElementById('liste').innerHTML += stringProduitCompo(res,i);
                 }
             });
 

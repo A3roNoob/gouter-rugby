@@ -1,0 +1,18 @@
+.col-lg-9{
+    text-align: center;
+    font-size: 1.5em;
+    margin-top:25vh;
+}
+
+.col-lg-6{
+    font-size:2em;
+}
+
+span#solde1,span#solde2{
+    font-style: italic;
+    font-size:0.8em;
+}
+
+.btn{
+    font-size:0.7em;
+}

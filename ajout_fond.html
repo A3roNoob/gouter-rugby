@@ -6,6 +6,7 @@
         <link href="https://fonts.googleapis.com/css?family=Barlow" rel="stylesheet">
         <link rel="stylesheet" href="CSS/style.css" />
         <link rel="stylesheet" href="CSS/menu.css" />
+        <link rel="stylesheet" href="/CSS/ajout_fond.css" />
     </head>
     <body>
         <script src="util.js"></script>
@@ -117,7 +118,35 @@
                 </a>
             </div>
             <div class="col-lg-9">
-
+                <div class="col-lg-3">
+                    <div class="row">&nbsp;</div>
+                    <div class="row">
+                        <p><strong><span id="nom1"></span></strong></p>
+                        <p><span id="solde1"></span> &euro;</p>
+                    </div>
+                    <div class="row">&nbsp;</div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="row">
+                        <select name="enfants" id="enfants">
+                        </select>
+                    </div>
+                    <div class="row">
+                        <p><input type="number" id="somme" min="0" placeholder="0.00"></input>&euro;</p>
+                    </div>
+                    <div class="row">
+                        <button type="button" class="btn" id="confirm">Confirmer</button>
+                    </div>
+                    <div class="row">&nbsp;</div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="row">&nbsp;</div>
+                    <div class="row">
+                        <p><strong><span id="nom2"></span></strong></p>
+                        <p><span id="solde2"></span> &euro;</p>
+                    </div>
+                    <div class="row">&nbsp;</div>  
+                </div>
             </div>
         </div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -135,6 +164,37 @@
                 hideRang(rang);
                 menuRang(rang);
             });
+
+            var solde = [];
+            var select = document.getElementById('enfants');
+            httpPostAsync("/api/etatcomptes",param,function(e){
+                var res = JSON.parse(e);
+                select.addEventListener("change",function(){
+                    for(i=1;i<=2;i++){
+                        var nom = select.options[select.selectedIndex].value;
+                        document.getElementById('nom'+i).innerHTML = nom;
+                    }
+                    document.getElementById('solde1').innerHTML = (Number(solde[select.selectedIndex])).toFixed(2);
+                    document.getElementById('solde2').innerHTML = (Number(solde[select.selectedIndex]) + Number(document.getElementById('somme').value)).toFixed(2);
+                });
+                for(i=0;i<res['Enfants'].length;i++){
+                    document.getElementById('enfants').innerHTML += "<option value=\""+res['Enfants'][i]['Prenom']+" "+res['Enfants'][i]['Nom'].toUpperCase()+"\">"+res['Enfants'][i]['Prenom']+" "+res['Enfants'][i]['Nom'].toUpperCase()+"</option>";
+                    solde[i] = res['Enfants'][i]['Solde'];
+                }
+                for(i=1;i<=2;i++){
+                    var nom = select.options[select.selectedIndex].value;
+                    document.getElementById('nom'+i).innerHTML = nom;
+                    
+                }
+                document.getElementById('solde1').innerHTML = (Number(solde[select.selectedIndex])).toFixed(2);
+                document.getElementById('solde2').innerHTML = (Number(solde[select.selectedIndex]) + Number(document.getElementById('somme').value)).toFixed(2);
+            });
+
+            document.getElementById('somme').addEventListener('input',function(){
+                document.getElementById('solde2').innerHTML = (Number(solde[select.selectedIndex]) + Number(document.getElementById('somme').value)).toFixed(2);
+            });
+
+            
 
             var nom = getCookie("nom");
             var prenom = getCookie("prenom");
