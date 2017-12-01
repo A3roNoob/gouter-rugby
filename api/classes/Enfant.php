@@ -1,9 +1,11 @@
 <?php
+
 class Enfant implements JsonSerializable
 {
     private $_idEnfant, $_idParent, $_nom, $_prenom, $_solde;
 
     //region Getter - Setters
+
     /**
      * @return int
      */
@@ -87,28 +89,31 @@ class Enfant implements JsonSerializable
 
     //endregion
 
-    private function hydrate($data){
-        if(is_array($data)){
-            if(isset($data['idEnfant']))
+    public function hydrate($data)
+    {
+        if (is_array($data)) {
+            if (isset($data['idEnfant']))
                 $this->setIdEnfant($data['idEnfant']);
-            if(isset($data['idAdulte']))
+            if (isset($data['idAdulte']))
                 $this->setIdParent($data['idAdulte']);
-            if(isset($data['nom']))
+            if (isset($data['nom']))
                 $this->setNom($data['nom']);
-            if(isset($data['prenom']))
+            if (isset($data['prenom']))
                 $this->setPrenom($data['prenom']);
-            if(isset($data['solde']))
+            if (isset($data['solde']))
                 $this->setSolde($data['solde']);
         }
     }
 
-    public static function createEnfant(array $data){
+    public static function createEnfant(array $data)
+    {
         $enf = new self();
         $enf->hydrate($data);
         return $enf;
     }
 
-    public static function loadById($id){
+    public static function loadById($id)
+    {
         $db = DatabaseObject::connect();
 
         $query = $db->prepare("SELECT * FROM enfant NATURAL JOIN parent WHERE enfant.idEnfant=:id");
@@ -121,7 +126,7 @@ class Enfant implements JsonSerializable
             echo '{"Code" : "' . $GLOBALS['CODE']['CODE_5']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
             exit();
         }
-        if(is_bool($data)){
+        if (is_bool($data)) {
             echo '{"Code" : "' . $GLOBALS['CODE']['CODE_11']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_11']['Message'] . '"}';
             exit();
         }
@@ -131,8 +136,9 @@ class Enfant implements JsonSerializable
         return $enfant;
     }
 
-    public function ajouterSolde($somme){
-        if($somme+$this->getSolde() <= SOLDE_LIMIT) {
+    public function ajouterSolde($somme)
+    {
+        if ($somme + $this->getSolde() <= SOLDE_LIMIT) {
             $db = DatabaseObject::connect();
 
             $query = $db->prepare("REPLACE INTO compte(idEnfant, solde) VALUES(:id, :solde);");
@@ -144,27 +150,27 @@ class Enfant implements JsonSerializable
                 echo '{"Code" : "' . $GLOBALS['CODE']['CODE_5']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
                 exit(1);
             }
-        }
-        else{
+        } else {
             echo '{"Code" : "' . $GLOBALS['CODE']['CODE_9']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_9']['Message'] . '"}';
             exit(1);
         }
         $this->loadSolde();
     }
 
-    public function loadSolde(){
+    public function loadSolde()
+    {
         $db = DatabaseObject::connect();
         $query = $db->prepare("SELECT solde FROM compte WHERE idEnfant=:id;");
         $query->bindValue(':id', $this->getIdEnfant(), PDO::PARAM_INT);
-        try{
+        try {
             $query->execute();
             $data = $query->fetch(PDO::FETCH_ASSOC);
-        }catch(PDOException $e){
-            echo '{"Code" : "' . $GLOBALS['CODE']['CODE_5']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "'.$e->getMessage() .'"}';
+        } catch (PDOException $e) {
+            echo '{"Code" : "' . $GLOBALS['CODE']['CODE_5']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
             exit(1);
         }
 
-        if(is_bool($data)){
+        if (is_bool($data)) {
             $this->setSolde("0");
             return;
         }
@@ -174,5 +180,58 @@ class Enfant implements JsonSerializable
     function jsonSerialize()
     {
         return '{"ID" : ' . $this->getIdEnfant() . ', "Nom" : "' . $this->getNom() . '", "Prenom" : "' . $this->getPrenom() . '", "Solde" : ' . $this->getSolde() . '}';
+    }
+
+    /**
+     * @param Enfant $enfant
+     * @param float $montant
+     */
+    public function transferer(Enfant $enfant, $montant)
+    {
+        if (!is_null($enfant)) {
+            $this->loadSolde();
+            $enfant->loadSolde();
+            if ($this->getSolde() - $montant >= 0) {
+                if ($enfant->getSolde() + $montant <= SOLDE_LIMIT) {
+                    $db = DatabaseObject::connect();
+                    //TRANSACTION
+                    if ($db->beginTransaction()) {
+
+                        $query = $db->prepare("REPLACE INTO compte(idEnfant, solde) VALUES(:enfant, :montant);");
+                        $query->bindValue(':enfant', $this->getIdEnfant(), PDO::PARAM_INT);
+                        $query->bindValue(':montant', $this->getSolde() - $montant);
+                        try {
+                            $query->execute();
+                        } catch (PDOException $e) {
+                            $db->rollBack();
+                            echo '{"Code" : "' . $GLOBALS['CODE']['CODE_5']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
+                            exit(1);
+                        }
+                        $query->bindValue(':enfant', $enfant->getIdEnfant(), PDO::PARAM_INT);
+                        $query->bindValue(':montant', $enfant->getSolde() + $montant);
+                        try {
+                            $query->execute();
+                        } catch (PDOException $e) {
+                            $db->rollBack();
+                            echo '{"Code" : "' . $GLOBALS['CODE']['CODE_5']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
+                            exit(1);
+                        }
+                    }
+                    $db->commit();
+
+                    $enfant->loadSolde();
+                    $this->loadSolde();
+                } else {
+                    echo '{"Code" : "' . $GLOBALS['CODE']['CODE_9']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_9']['Message'] . '"}';
+                    exit(1);
+                }
+            } else {
+                echo '{"Code" : "' . $GLOBALS['CODE']['CODE_13']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_13']['Message'] . '"}';
+                exit(1);
+            }
+        } else {
+            echo '{"Code" : "' . $GLOBALS['CODE']['CODE_11']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_11']['Message'] . '"}';
+            exit(1);
+        }
     }
 }
