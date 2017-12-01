@@ -34,14 +34,12 @@ function getCookie(cname) {
 
 function hideRang(rang){
     if(rang == 2){
-        document.getElementById('ajout_fond_benevole').innerHTML = "<div class =\"row menu-item\">\n<div class=\"col-lg-8\">\nAjouter des fonds &agrave; un enfant\n</div>\n<div class=\"col-lg-2\"></div>\n<div class=\"col-lg-1\">\n<img src=\"images/piggy-bank-petit.png\" class=\"align-right\">\n</div>\n</div>";
         document.getElementById('course').innerHTML = "<div class=\"row menu-item\">\n<div class=\"col-lg-8\">\nEnregistrer une course\n</div>\n<div class=\"col-lg-2\"></div>\n<div class=\"col-lg-1\">\n<img src=\"images/shopping-cart-petit.png\" class=\"align-right\">\n</div>\n</div>";
         document.getElementById('ajout_conso').innerHTML = "<div class=\"row menu-item\">\n<div class=\"col-lg-8\">\nEnregistrer une consommation\n</div>\n<div class=\"col-lg-2\"></div>\n<div class=\"col-lg-1\">\n<img src=\"images/cash-register-petit.png\" class=\"align-right\">\n</div>\n</div>";
         document.getElementById('gerer_produit').innerHTML = "<div class=\"row menu-item\">\n<div class=\"col-lg-8\">\nG&eacute;rer un produit\n</div>\n<div class=\"col-lg-2\"></div>\n<div class=\"col-lg-1\">\n<img src=\"images/can-petit.png\" class=\"align-right\">\n</div>\n</div>";
         document.getElementById('gerer_compte_enfant').innerHTML = "<div class=\"row menu-item\">\n<div class=\"col-lg-8\">\nG&eacute;rer un compte enfant\n</div>\n<div class=\"col-lg-2\"></div>\n<div class=\"col-lg-1\">\n<img src=\"images/note-petit.png\" class=\"align-right\">\n</div>\n</div>";
     }
     if(rang == 1){
-        document.getElementById('ajout_fond_benevole').innerHTML = "<div class =\"row menu-item\">\n<div class=\"col-lg-8\">\nAjouter des fonds &agrave; un enfant\n</div>\n<div class=\"col-lg-2\"></div>\n<div class=\"col-lg-1\">\n<img src=\"images/piggy-bank-petit.png\" class=\"align-right\">\n</div>\n</div>";
         document.getElementById('course').innerHTML = "<div class=\"row menu-item\">\n<div class=\"col-lg-8\">\nEnregistrer une course\n</div>\n<div class=\"col-lg-2\"></div>\n<div class=\"col-lg-1\">\n<img src=\"images/shopping-cart-petit.png\" class=\"align-right\">\n</div>\n</div>";
         document.getElementById('ajout_conso').innerHTML = "<div class=\"row menu-item\">\n<div class=\"col-lg-8\">\nEnregistrer une consommation\n</div>\n<div class=\"col-lg-2\"></div>\n<div class=\"col-lg-1\">\n<img src=\"images/cash-register-petit.png\" class=\"align-right\">\n</div>\n</div>";
         document.getElementById('gerer_produit').innerHTML = "<div class=\"row menu-item\">\n<div class=\"col-lg-8\">\nG&eacute;rer un produit\n</div>\n<div class=\"col-lg-2\"></div>\n<div class=\"col-lg-1\">\n<img src=\"images/can-petit.png\" class=\"align-right\">\n</div>\n</div>";

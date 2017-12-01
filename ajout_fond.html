@@ -4,12 +4,15 @@
         <title>Gouter orsay</title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <link href="https://fonts.googleapis.com/css?family=Barlow" rel="stylesheet">
-        <link rel="stylesheet" href="CSS/style.css" />
-        <link rel="stylesheet" href="CSS/menu.css" />
+        <link rel="stylesheet" href="/CSS/style.css" />
+        <link rel="stylesheet" href="/chosen/chosen.css" />
+        <link rel="stylesheet" href="/CSS/menu.css" />
         <link rel="stylesheet" href="/CSS/ajout_fond.css" />
     </head>
     <body>
         <script src="util.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="/chosen/chosen.jquery.min.js"></script>
         <script>
             var token = getCookie("token");
             var login = getCookie("login");
@@ -128,7 +131,7 @@
                 </div>
                 <div class="col-lg-6">
                     <div class="row">
-                        <select name="enfants" id="enfants">
+                        <select name="enfants" id="enfants" class="chosen-select">
                         </select>
                     </div>
                     <div class="row">
@@ -149,79 +152,131 @@
                 </div>
             </div>
         </div>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <script>
             httpPostAsync("/api/rang",param,function(t){
                 var rang;
                 var res = JSON.parse(t);
                 if(res["Code"] == 0){
-                    console.log("hide");
-                    console.log(res['Rang']);
-                    console.log(res["Rang"]);
                     rang = res["Rang"];
                 }
                 hideRang(rang);
                 menuRang(rang);
-            });
-
-            var solde = [];
-            var idEnfant;
-            var select = document.getElementById('enfants');
-            httpPostAsync("/api/etatcomptes",param,function(e){
-                var res = JSON.parse(e);
-                console.log(res);
-                select.addEventListener("change",function(){
-                    for(i=1;i<=2;i++){
-                        var nom = select.options[select.selectedIndex].value;
-                        document.getElementById('nom'+i).innerHTML = nom;
-                    }
-                    idEnfant = Number(res['Enfants'][select.selectedIndex]['ID']);
-                    document.getElementById('solde1').innerHTML = (Number(solde[select.selectedIndex])).toFixed(2);
-                    document.getElementById('solde2').innerHTML = (Number(solde[select.selectedIndex]) + Number(document.getElementById('somme').value)).toFixed(2);
-                });
-                for(i=0;i<res['Enfants'].length;i++){
-                    document.getElementById('enfants').innerHTML += "<option value=\""+res['Enfants'][i]['Prenom']+" "+res['Enfants'][i]['Nom'].toUpperCase()+"\">"+res['Enfants'][i]['Prenom']+" "+res['Enfants'][i]['Nom'].toUpperCase()+"</option>";
-                    solde[i] = res['Enfants'][i]['Solde'];
-                }
-                for(i=1;i<=2;i++){
-                    var nom = select.options[select.selectedIndex].value;
-                    document.getElementById('nom'+i).innerHTML = nom;
-                    
-                }
-                idEnfant = Number(res['Enfants'][select.selectedIndex]['ID']);
-                document.getElementById('solde1').innerHTML = (Number(solde[select.selectedIndex])).toFixed(2);
-                document.getElementById('solde2').innerHTML = (Number(solde[select.selectedIndex]) + Number(document.getElementById('somme').value)).toFixed(2);
-            });
-
-            var somme;
-            document.getElementById('somme').addEventListener('input',function(){
-                document.getElementById('solde2').innerHTML = (Number(solde[select.selectedIndex]) + Number(document.getElementById('somme').value)).toFixed(2);
-                somme = Number(document.getElementById('somme').value).toFixed(2);
-            });
-
-            document.getElementById('confirm').addEventListener("click",function(){
-                var paramFonds = param +"&idenfant=" + idEnfant + "&somme=" + somme;
-                console.log('idEnfant : '+idEnfant);
-                httpPostAsync("/api/fonds",paramFonds,function(e){
-                    var res = JSON.parse(e);
-                    console.log(res);
-                    if(res['Code'] != 0){
-                        console.log('oh shit');
-                    }
-                    else{
-                        document.getElementById('somme').value = "";
-                        httpPostAsync("/api/etatcomptes",param,function(e){
-                            var res = JSON.parse(e);
-                            solde[select.selectedIndex] = res['Enfants'][select.selectedIndex]['Solde'];
+                if(rang == 3){
+                    var solde = [];
+                    var idEnfant;
+                    var select = document.getElementById('enfants');
+                    httpPostAsync("/api/etatcomptes",param,function(e){
+                        var res = JSON.parse(e);
+                        console.log(res);
+                        select.addEventListener("change",function(){
+                            for(i=1;i<=2;i++){
+                                var nom = select.options[select.selectedIndex].value;
+                                document.getElementById('nom'+i).innerHTML = nom;
+                            }
+                            idEnfant = Number(res['Enfants'][select.selectedIndex]['ID']);
                             document.getElementById('solde1').innerHTML = (Number(solde[select.selectedIndex])).toFixed(2);
                             document.getElementById('solde2').innerHTML = (Number(solde[select.selectedIndex]) + Number(document.getElementById('somme').value)).toFixed(2);
                         });
-                    }
-                });
-            });
+                        for(i=0;i<res['Enfants'].length;i++){
+                            document.getElementById('enfants').innerHTML += "<option value=\""+res['Enfants'][i]['Prenom']+" "+res['Enfants'][i]['Nom'].toUpperCase()+"\">"+res['Enfants'][i]['Prenom']+" "+res['Enfants'][i]['Nom'].toUpperCase()+"</option>";
+                            solde[i] = res['Enfants'][i]['Solde'];
+                        }
+                        for(i=1;i<=2;i++){
+                            var nom = select.options[select.selectedIndex].value;
+                            document.getElementById('nom'+i).innerHTML = nom;
+                        }
+                        idEnfant = Number(res['Enfants'][select.selectedIndex]['ID']);
+                        document.getElementById('solde1').innerHTML = (Number(solde[select.selectedIndex])).toFixed(2);
+                        document.getElementById('solde2').innerHTML = (Number(solde[select.selectedIndex]) + Number(document.getElementById('somme').value)).toFixed(2);
+                    });
 
-            
+                    var somme;
+                    document.getElementById('somme').addEventListener('input',function(){
+                        document.getElementById('solde2').innerHTML = (Number(solde[select.selectedIndex]) + Number(document.getElementById('somme').value)).toFixed(2);
+                        somme = Number(document.getElementById('somme').value).toFixed(2);
+                    });
+
+                    document.getElementById('confirm').addEventListener("click",function(){
+                        var paramFonds = param +"&idenfant=" + idEnfant + "&somme=" + somme;
+                        console.log('idEnfant : '+idEnfant);
+                        httpPostAsync("/api/fonds",paramFonds,function(e){
+                            var res = JSON.parse(e);
+                            console.log(res);
+                            if(res['Code'] != 0){
+                                console.log('oh shit');
+                            }
+                            else{
+                                document.getElementById('somme').value = "";
+                                httpPostAsync("/api/etatcomptes",param,function(e){
+                                    var res = JSON.parse(e);
+                                    solde[select.selectedIndex] = res['Enfants'][select.selectedIndex]['Solde'];
+                                    document.getElementById('solde1').innerHTML = (Number(solde[select.selectedIndex])).toFixed(2);
+                                    document.getElementById('solde2').innerHTML = (Number(solde[select.selectedIndex]) + Number(document.getElementById('somme').value)).toFixed(2);
+                                });
+                            }
+                        });
+                    });
+                }
+                else{
+                    var solde = [];
+                    var idEnfant;
+                    var select = document.getElementById('enfants');
+                    httpPostAsync("/api/enfants",param,function(e){
+                        var res = JSON.parse(e);
+                        console.log(res);
+                        for(i=0;i<res['Enfants'].length;i++){
+                            select.innerHTML += "<option value=\""+res['Enfants'][i]['Prenom']+" "+res['Enfants'][i]['Nom'].toUpperCase()+"\">"+res['Enfants'][i]['Prenom']+" "+res['Enfants'][i]['Nom'].toUpperCase()+"</option>";
+                            solde[i] = res['Enfants'][i]['Solde'];
+                        }
+                        $(".chosen-select").chosen();
+                        $('.chosen-select').on('change', function(evt, params) {
+                            for(i=1;i<=2;i++){
+                                var nom = select.options[select.selectedIndex].value;
+                                document.getElementById('nom'+i).innerHTML = nom;
+                            }
+                            idEnfant = Number(res['Enfants'][select.selectedIndex]['ID']);
+                            document.getElementById('solde1').innerHTML = (Number(solde[select.selectedIndex])).toFixed(2);
+                            document.getElementById('solde2').innerHTML = (Number(solde[select.selectedIndex]) + Number(document.getElementById('somme').value)).toFixed(2);
+                        });
+                        for(i=1;i<=2;i++){
+                            var nom = select.options[select.selectedIndex].value;
+                            document.getElementById('nom'+i).innerHTML = nom;
+                        }
+                        idEnfant = Number(res['Enfants'][select.selectedIndex]['ID']);
+                        document.getElementById('solde1').innerHTML = (Number(solde[select.selectedIndex])).toFixed(2);
+                        document.getElementById('solde2').innerHTML = (Number(solde[select.selectedIndex]) + Number(document.getElementById('somme').value)).toFixed(2);
+                    });
+
+                    var somme;
+                    document.getElementById('somme').addEventListener('input',function(){
+                        document.getElementById('solde2').innerHTML = (Number(solde[select.selectedIndex]) + Number(document.getElementById('somme').value)).toFixed(2);
+                        somme = Number(document.getElementById('somme').value).toFixed(2);
+                    });
+
+                    document.getElementById('confirm').addEventListener("click",function(){
+                        var paramFonds = param +"&idenfant=" + idEnfant + "&somme=" + somme;
+                        console.log('idEnfant : '+idEnfant);
+                        httpPostAsync("/api/fonds",paramFonds,function(e){
+                            var res = JSON.parse(e);
+                            console.log(res);
+                            if(res['Code'] != 0){
+                                console.log('oh shit');
+                            }
+                            else{
+                                document.getElementById('somme').value = "";
+                                httpPostAsync("/api/enfants",param,function(e){
+                                    var res = JSON.parse(e);
+                                    solde[select.selectedIndex] = res['Enfants'][select.selectedIndex]['Solde'];
+                                    document.getElementById('solde1').innerHTML = (Number(solde[select.selectedIndex])).toFixed(2);
+                                    document.getElementById('solde2').innerHTML = (Number(solde[select.selectedIndex]) + Number(document.getElementById('somme').value)).toFixed(2);
+                                });
+                            }
+                        });
+                    });
+                }
+            });
 
             
 
