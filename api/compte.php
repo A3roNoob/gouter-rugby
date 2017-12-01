@@ -45,8 +45,12 @@ if (isGetSet('action') && $_GET['action'] == 'compte') {
                         if (isPostSet('somme')) {
                             if ($_POST['somme'] > 0) {
                                 $json = '{"Code" : "' . $GLOBALS['CODE']['CODE_0']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_0']['Message'] . '", ';
-                                if (!is_null($enfant))
-                                    $enfant->ajouterSolde(test_input($_POST['somme']));
+                                $somme = test_input($_POST['somme']);
+                                if (!is_null($enfant)) {
+                                    $enfant->ajouterSolde($somme);
+                                    $logTransac = new TransactionLogger();
+                                    $logTransac->logOperationFonds($adulte->getIdAdulte(), $enfant->getIdEnfant(), $somme);
+                                }
                                 $json .= '"Solde" : '.$enfant->getSolde().'}';
                                 echo $json;
                                 exit(1);
