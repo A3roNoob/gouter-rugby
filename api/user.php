@@ -67,12 +67,31 @@ if (isGetSet("action") && $_GET['action'] == "connexion") {
     if (isPostSet('login')) {
         $login = test_input($_POST['login']);
         $adulte = Adulte::loadByLogin($login);
-        if(!is_null($adulte))
+        if (!is_null($adulte))
             $adulte->deleteToken();
         echo '{"Code" : "' . $GLOBALS['CODE']['CODE_0']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_0']['Message'] . '"}';
     } else {
         echo '{"Code" : "' . $GLOBALS['CODE']['CODE_1']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_1']['Message'] . '"}';
     }
-}else{
+} else if (isGetSet('action') && $_GET['action'] == 'enfants') {
+    if (isPostSet('token') && isPostSet('login')) {
+        $token = test_input($_POST['token']);
+        $login = test_input($_POST['login']);
+        $adulte = Adulte::loadByLogin($login);
+        if ($adulte->checkToken($token)) {
+            if ($adulte->getIdRang() < 3) {
+                $enfants = new EnfantHandler();
+                echo '{"Code" : "' . $GLOBALS['CODE']['CODE_0']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_0']['Message'] . '", ' . $enfants->jsonSerialize() . '}';
+            } else {
+                echo '{"Code" : "' . $GLOBALS['CODE']['CODE_403']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_403']['Message'] . '"}';
+            }
+
+        } else {
+            echo '{"Code" : "' . $GLOBALS['CODE']['CODE_8']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_8']['Message'] . '"}';
+        }
+    } else {
+        echo '{"Code" : "' . $GLOBALS['CODE']['CODE_1']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_1']['Message'] . '"}';
+    }
+} else {
     header('Location: /api/');
 }

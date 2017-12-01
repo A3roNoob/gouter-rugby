@@ -1,6 +1,6 @@
 <?php
 
-class ProduitHandler  implements JsonSerializable
+class ProduitHandler implements JsonSerializable
 {
     private $_produits, $_produitscomposes;
 

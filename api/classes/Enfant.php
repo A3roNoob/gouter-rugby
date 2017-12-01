@@ -87,7 +87,7 @@ class Enfant implements JsonSerializable
 
     //endregion
 
-    private function hydrate($data){
+    public function hydrate($data){
         if(is_array($data)){
             if(isset($data['idEnfant']))
                 $this->setIdEnfant($data['idEnfant']);
