@@ -33,6 +33,10 @@ RewriteRule ^api/produits/?$ api/produit.php?action=produits
 Header set Access-Control-Allow-Origin "*"
 RewriteRule ^api/fonds/?$ api/compte.php?action=fonds
 
+Header set Access-Control-Allow-Origin "*"
+RewriteRule ^api/transfert/?$ api/compte.php?action=transfert
+
+
 RedirectMatch 403 ^/api/classes/?$
 RedirectMatch 403 ^/api/config.php
 RedirectMatch 403 ^/api/credentials.json$

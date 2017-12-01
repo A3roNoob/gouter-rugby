@@ -175,4 +175,79 @@ class Enfant implements JsonSerializable
     {
         return '{"ID" : ' . $this->getIdEnfant() . ', "Nom" : "' . $this->getNom() . '", "Prenom" : "' . $this->getPrenom() . '", "Solde" : ' . $this->getSolde() . '}';
     }
+
+    /**
+     * @param Enfant $enfant
+     * @param float $montant
+     */
+    public function transferer(Enfant $enfant, $montant){
+        if(!is_null($enfant)){
+            $this->loadSolde();
+            $enfant->loadSolde();
+            if($this->getSolde() - $montant >= 0){
+                if($enfant->getSolde() + $montant <= SOLDE_LIMIT) {
+                    $db = DatabaseObject::connect();
+                    //TRANSACTION
+                    $query = $db->prepare("SET autocommit=0;");
+                    try{
+                        $query->execute();
+                    }catch(PDOException $e){
+                        echo '{"Code" : "' . $GLOBALS['CODE']['CODE_5']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "'.$e->getMessage() .'"}';
+                        exit(1);
+                    }
+
+                    $query = $db->prepare("REPLACE INTO compte(idEnfant, solde) VALUES(:enfant, :montant);");
+                    $query->bindValue(':enfant', $this->getIdEnfant(), PDO::PARAM_INT);
+                    $query->bindValue(':montant', $this->getSolde()-$montant);
+                    try{
+                        $query->execute();
+                    }catch(PDOException $e){
+                        $query = $db->prepare("ROLLBACK;");
+                        try{
+                            $query->execute();
+                        }catch(PDOException $e){
+                            echo '{"Code" : "' . $GLOBALS['CODE']['CODE_5']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "'.$e->getMessage() .'"}';
+                            exit(1);
+                        }
+                        echo '{"Code" : "' . $GLOBALS['CODE']['CODE_5']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "'.$e->getMessage() .'"}';
+                        exit(1);
+                    }
+                    $query->bindValue(':enfant', $enfant->getIdEnfant(), PDO::PARAM_INT);
+                    $query->bindValue(':montant', $enfant->getSolde() + $montant);
+                    try{
+                        $query->execute();
+                    }catch(PDOException $e){
+                        $query = $db->prepare("ROLLBACK;");
+                        try{
+                            $query->execute();
+                        }catch(PDOException $e){
+                            echo '{"Code" : "' . $GLOBALS['CODE']['CODE_5']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "'.$e->getMessage() .'"}';
+                            exit(1);
+                        }
+                        echo '{"Code" : "' . $GLOBALS['CODE']['CODE_5']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "'.$e->getMessage() .'"}';
+                        exit(1);
+                    }
+
+                    $query = $db->prepare("SET autocommit=1");
+                    try{
+                        $query->execute();
+                    }catch(PDOException $e){
+                        echo '{"Code" : "' . $GLOBALS['CODE']['CODE_5']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "'.$e->getMessage() .'"}';
+                        exit(1);
+                    }
+                    $enfant->loadSolde();
+                    $this->loadSolde();
+                }else{
+                    echo '{"Code" : "' . $GLOBALS['CODE']['CODE_9']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_9']['Message'] . '"}';
+                    exit(1);
+                }
+            }else{
+                echo '{"Code" : "' . $GLOBALS['CODE']['CODE_13']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_13']['Message'] . '"}';
+                exit(1);
+            }
+        }else{
+            echo '{"Code" : "' . $GLOBALS['CODE']['CODE_11']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_11']['Message'] . '"}';
+            exit(1);
+        }
+    }
 }
