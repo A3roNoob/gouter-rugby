@@ -58,6 +58,8 @@ $GLOBALS['CODE'] = array(
         "Message" => "Ne peut pas transf&eacute;rer d'argent &agrave; un enfant n'existant pas."),
     "CODE_13" => array("Code" => 13,
         "Message" => "N'a pas assez d'argent pour pouvoir transf&eacute;rer"),
+    "CODE_14" => array("Code" => 14,
+        "Message" => "On ne peut transf&eacute;rer au m&ecirc;me enfant."),
     "CODE_403" => array("Code" => 403,
         "Message" => "Acc&eacute;s interdit."),
     "Code_501" => array("Code" => 501,

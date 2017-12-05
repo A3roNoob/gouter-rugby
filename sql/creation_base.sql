@@ -144,7 +144,7 @@ CREATE TABLE consommation
     idConso INT(5) AUTO_INCREMENT,
     idEnfant INT(4),
     total DECIMAL(6,2),
-    dateConso DATE,
+    dateConso DATETIME,
 
     CONSTRAINT PK_Consommation PRIMARY KEY (idConso,idEnfant),
     CONSTRAINT FK_EnfantConso FOREIGN KEY (idEnfant) REFERENCES enfant(idEnfant)
@@ -243,7 +243,7 @@ CREATE TABLE operationsolde
     idAdulte INT(4),
     idEnfant INT(4),
     montant DECIMAL(6,2),
-    dateOpe DATE,
+    dateOpe DATETIME,
 
     CONSTRAINT FK_AdulteOperation FOREIGN KEY (idAdulte) REFERENCES adulte(idAdulte),
     CONSTRAINT FK_EnfantOperation FOREIGN KEY (idEnfant) REFERENCES enfant(idEnfant)
