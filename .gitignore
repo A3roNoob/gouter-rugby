@@ -68,3 +68,4 @@ modules.xml
 
 api/test.php
 api/log/
+api/credentials.json
