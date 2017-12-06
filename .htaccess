@@ -36,6 +36,14 @@ RewriteRule ^api/fonds/?$ api/compte.php?action=fonds
 Header set Access-Control-Allow-Origin "*"
 RewriteRule ^api/transfert/?$ api/compte.php?action=transfert
 
+Header set Access-Control-Allow-Origin "*"
+RewriteRule ^api/allergies/?$ api/produit.php?action=allergies
+
+Header set Access-Control-Allow-Origin "*"
+RewriteRule ^api/allergie/ajouter/?$ api/user.php?action=ajouterallergie
+
+Header set Access-Control-Allow-Origin "*"
+RewriteRule ^api/allergie/retirer/?$ api/user.php?action=retirerallergie
 
 RedirectMatch 403 ^/api/classes/?$
 RedirectMatch 403 ^/api/config.php

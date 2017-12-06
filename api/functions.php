@@ -126,7 +126,7 @@ register_shutdown_function('shutDownFunction');
 
 function errorHandler($code, $message, $file, $line)
 {
-    echo '{"Code" : ' . $code . ', "Message" : "' . $message . '", "File" : "' . $file . '", "Line" : ' . $line . '}';
+    echo '{"Code" : ' . $code . ', "Message" : "' . $message . '", "File" : "' . addslashes($file) . '", "Line" : ' . $line . '}';
     exit(1);
 }
 

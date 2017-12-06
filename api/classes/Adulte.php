@@ -266,32 +266,10 @@ class Adulte
         $token = md5(time() . md5($this->getMail()) . $this->getIdAdulte());
 
         $db = DatabaseObject::connect();
-        $query = $db->prepare("SELECT idAdulte FROM connexion WHERE idAdulte=:idA");
+        $query = $db->prepare("REPLACE INTO connexion VALUES(:idA, :token)");
         $query->bindValue(':idA', $this->getIdAdulte(), PDO::PARAM_INT);
-        $data = array();
-        try {
-            $query->execute();
-            $data = $query->fetch(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            echo '{"Code" : "' . $GLOBALS['CODE']['CODE_5']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
-        }
+        $query->bindValue(':token', $token);
 
-        if (is_bool($data)) {
-            $query = $db->prepare("INSERT INTO connexion VALUES(:idA, :token);");
-            $query->bindValue(':idA', $this->getIdAdulte(), PDO::PARAM_INT);
-            $query->bindValue(':token', $token);
-            try {
-                $query->execute();
-            } catch (PDOException $e) {
-                echo '{"Code" : "' . $GLOBALS['CODE']['CODE_5']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
-                exit(1);
-            }
-            return;
-        }
-
-        $query = $db->prepare("UPDATE connexion SET token=:token WHERE idAdulte=:idAd;");
-        $query->bindValue(':idAd', $this->getIdAdulte(), PDO::PARAM_INT);
-        $query->bindValue(":token", $token);
         try {
             $query->execute();
         } catch (PDOException $e) {

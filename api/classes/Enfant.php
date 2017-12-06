@@ -2,7 +2,7 @@
 
 class Enfant implements JsonSerializable
 {
-    private $_idEnfant, $_idParent, $_nom, $_prenom, $_solde;
+    private $_idEnfant, $_idParent, $_nom, $_prenom, $_solde, $_allergies;
 
     //region Getter - Setters
 
@@ -86,7 +86,21 @@ class Enfant implements JsonSerializable
         $this->_solde = $solde;
     }
 
+    /**
+     * @return AllergieHandler
+     */
+    public function getAllergies()
+    {
+        return $this->_allergies;
+    }
 
+    /**
+     * @param AllergieHandler $allergies
+     */
+    public function setAllergies(AllergieHandler $allergies)
+    {
+        $this->_allergies = $allergies;
+    }
     //endregion
 
     public function hydrate($data)
@@ -133,6 +147,9 @@ class Enfant implements JsonSerializable
         $enfant = new self();
         $enfant->hydrate($data);
         $enfant->loadSolde();
+        $allergie = new AllergieHandler();
+        $allergie->loadAllergieFromEnfant($enfant);
+        $enfant->setAllergies($allergie);
         return $enfant;
     }
 
@@ -179,7 +196,7 @@ class Enfant implements JsonSerializable
 
     function jsonSerialize()
     {
-        return '{"ID" : ' . $this->getIdEnfant() . ', "Nom" : "' . $this->getNom() . '", "Prenom" : "' . $this->getPrenom() . '", "Solde" : ' . $this->getSolde() . '}';
+        return '{"ID" : ' . $this->getIdEnfant() . ', "Nom" : "' . $this->getNom() . '", "Prenom" : "' . $this->getPrenom() . '", "Solde" : ' . $this->getSolde() . ', '.$this->getAllergies()->jsonSerialize().'}';
     }
 
     /**
@@ -233,5 +250,41 @@ class Enfant implements JsonSerializable
             echo '{"Code" : "' . $GLOBALS['CODE']['CODE_11']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_11']['Message'] . '"}';
             exit(1);
         }
+    }
+
+    public function ajouterAllergie(Allergie $all){
+        $db = DatabaseObject::connect();
+
+        $query = $db->prepare("REPLACE INTO allergieenfant VALUES (:idEnfant, :idAllergene);");
+        $query->bindValue(':idEnfant', $this->getIdEnfant(), PDO::PARAM_INT);
+        $query->bindValue(':idAllergene', $all->getIdAllergene(), PDO::PARAM_INT);
+        try{
+            $query->execute();
+        }catch(PDOException $e){
+            echo '{"Code" : "' . $GLOBALS['CODE']['CODE_5']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
+            exit(1);
+        }
+    }
+
+    public function retirerAllergie(Allergie $all){
+        $db = DatabaseObject::connect();
+
+        $query = $db->prepare("DELETE FROM allergieenfant WHERE idEnfant=:idEnfant AND idAllergene=:idAllergene;");
+        $query->bindValue(':idEnfant', $this->getIdEnfant(), PDO::PARAM_INT);
+        $query->bindValue(':idAllergene', $all->getIdAllergene(), PDO::PARAM_INT);
+        try{
+            $query->execute();
+        }catch(PDOException $e){
+            echo '{"Code" : "' . $GLOBALS['CODE']['CODE_5']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
+            exit(1);
+        }
+    }
+
+    public function checkAllergie(Allergie $all){
+        foreach($this->getAllergies()->getAllergies() as $allergie){
+            if($all->getIdAllergene() == $allergie->getIdAllergene())
+                return true;
+        }
+        return false;
     }
 }
