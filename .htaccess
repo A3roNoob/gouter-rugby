@@ -45,6 +45,9 @@ RewriteRule ^api/allergie/ajouter/?$ api/user.php?action=ajouterallergie
 Header set Access-Control-Allow-Origin "*"
 RewriteRule ^api/allergie/retirer/?$ api/user.php?action=retirerallergie
 
+Header set Access-Control-Allow-Origin "*"
+RewriteRule ^api/enfant/check/allergie/?$ api/user.php?action=checkallergie
+
 RedirectMatch 403 ^/api/classes/?$
 RedirectMatch 403 ^/api/config.php
 RedirectMatch 403 ^/api/credentials.json$
