@@ -329,6 +329,9 @@ class Adulte
             $enfant["idParent"] = $this->getIdAdulte();
             $enf = Enfant::createEnfant($enfant);
             $enf->loadSolde();
+            $allergie = new AllergieHandler();
+            $allergie->loadAllergieFromEnfant($enf);
+            $enf->setAllergies($allergie);
             array_push($this->_enfants, $enf);
         }
 

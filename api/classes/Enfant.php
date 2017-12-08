@@ -196,6 +196,12 @@ class Enfant implements JsonSerializable
 
     function jsonSerialize()
     {
+        if(is_null($this->getAllergies()))
+        {
+            $allergie = new AllergieHandler();
+            $allergie->loadAllergieFromEnfant($this);
+            $this->setAllergies($allergie);
+        }
         return '{"ID" : ' . $this->getIdEnfant() . ', "Nom" : "' . $this->getNom() . '", "Prenom" : "' . $this->getPrenom() . '", "Solde" : ' . $this->getSolde() . ', '.$this->getAllergies()->jsonSerialize().'}';
     }
 
