@@ -152,7 +152,7 @@ if (isGetSet("action") && $_GET['action'] == "connexion") {
     } else {
         echo '{"Code" : "' . $GLOBALS['CODE']['CODE_1']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_1']['Message'] . '"}';
     }
-}   else if (isGetSet('action') && $_GET['action'] == 'checkallergie') {
+} else if (isGetSet('action') && $_GET['action'] == 'checkallergie') {
     if (isPostSet('token') && isPostSet('login')) {
         $token = test_input($_POST['token']);
         $login = test_input($_POST['login']);
@@ -180,6 +180,29 @@ if (isGetSet("action") && $_GET['action'] == "connexion") {
     } else {
         echo '{"Code" : "' . $GLOBALS['CODE']['CODE_1']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_1']['Message'] . '"}';
     }
-} else {
+} else if (isGetSet('action') && $_GET['action'] == 'enfantallergie') {
+    if (isPostSet('token') && isPostSet('login')) {
+        $token = test_input($_POST['token']);
+        $login = test_input($_POST['login']);
+        $adulte = Adulte::loadByLogin($login);
+        if ($adulte->checkToken($token)) {
+            if (isPostSet('idenfant')) {
+                $enfant = Enfant::loadById(test_input($_POST['idenfant']));
+                if ($enfant->getIdParent() == $adulte->getIdAdulte() || $adulte->getIdRang() < 3) {
+                        echo '{"Code" : "' . $GLOBALS['CODE']['CODE_0']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_0']['Message'] . '", '. $enfant->getAllergies()->jsonSerialize() .'}';
+
+                } else {
+                    echo '{"Code" : "' . $GLOBALS['CODE']['CODE_403']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_403']['Message'] . '"}';
+                }
+            } else {
+                echo '{"Code" : "' . $GLOBALS['CODE']['CODE_1']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_1']['Message'] . '"}';
+            }
+        } else {
+            echo '{"Code" : "' . $GLOBALS['CODE']['CODE_8']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_8']['Message'] . '"}';
+        }
+    } else {
+        echo '{"Code" : "' . $GLOBALS['CODE']['CODE_1']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_1']['Message'] . '"}';
+    }
+}else {
     header('Location: /api/');
 }
