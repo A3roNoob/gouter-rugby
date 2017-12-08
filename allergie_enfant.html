@@ -4,8 +4,9 @@
         <title>Gouter orsay</title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <link href="https://fonts.googleapis.com/css?family=Barlow" rel="stylesheet">
-        <link rel="stylesheet" href="CSS/style.css" />
-        <link rel="stylesheet" href="CSS/menu.css" />
+        <link rel="stylesheet" href="/CSS/style.css" />
+        <link rel="stylesheet" href="/CSS/menu.css" />
+        <link rel="stylesheet" href="/CSS/ajout_fond.css" />
     </head>
     <body>
         <script src="util.js"></script>
@@ -15,9 +16,9 @@
             var param = "token="+token+"&login="+login;
             httpPostAsync("/api/auth",param,function(e){
                 res = JSON.parse(e);
-                console.log(res);
+                
                 if(res['Code'] != "0"){
-                    console.log("Here we go");
+                    
                     window.location.href = "connect.html";
                 }
             });
@@ -117,7 +118,34 @@
                 </a>
             </div>
             <div class="col-lg-9">
+                <div class="col-lg-4">
+                    <div class="row">&nbsp;</div>
+                    <div class="row">
+                        <select name="enfants" id="enfants" class="chosen-select">
+                        </select>
+                    </div>
+                    <div class="row">&nbsp;</div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="row">&nbsp;</div>
+                    <div class="row">
+                        <select id="allergiesSelect">
+                        </select>
+                    </div>
+                    <div class="row" id="desc">
 
+                    </div>
+                    <div class="row">&nbsp;</div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="row">
+                        <button type="button" class="btn" id="ajout" onclick="ajouterAllergie()">Ajouter</button>
+                    </div>
+                    <div class="row">&nbsp;</div>
+                    <div class="row">
+                        <button type="button" class="btn" id="retirer" onclick="retirerAllergie()" disabled>Retirer</button>
+                    </div>
+                </div>
             </div>
         </div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -127,15 +155,46 @@
                 var rang;
                 var res = JSON.parse(t);
                 if(res["Code"] == 0){
-                    console.log("hide");
-                    console.log(res['Rang']);
-                    console.log(res["Rang"]);
                     rang = res["Rang"];
                 }
                 hideRang(rang);
                 menuRang(rang);
             });
+            
+            var idEnfants = [];
+            var selectA = document.getElementById('allergiesSelect');
+            var selectE = document.getElementById('enfants');
+            var allergiesEnfants = [];
+            var desc = [];
+            var idAllergies = [];
+            httpPostAsync("/api/etatcomptes",param,function(e){
+                var res = JSON.parse(e);
+                for(i=0;i<res['Enfants'].length;i++){
+                    document.getElementById('enfants').innerHTML += "<option value=\""+res['Enfants'][i]['Prenom']+" "+res['Enfants'][i]['Nom'].toUpperCase()+"\">"+res['Enfants'][i]['Prenom']+" "+res['Enfants'][i]['Nom'].toUpperCase()+"</option>";
+                    idEnfants[i] = res['Enfants'][i]['ID'];
+                }
+                httpPostAsync("/api/allergies",param,function(e){
+                    var res = JSON.parse(e);
+                    for(i=0;i<res['Allergies'].length;i++){
+                        selectA.innerHTML += "<option value=\""+res['Allergies'][i]['Nom']+"\">"+res['Allergies'][i]['Nom'].toUpperCase()+"</option>";
+                        desc[i] = res['Allergies'][i]['Description'];
+                        idAllergies[i] = res['Allergies'][i]['ID'];
+                    }
+                    document.getElementById('desc').innerHTML = desc[selectA.selectedIndex];
 
+
+                    verifAllergie();
+                });
+            });
+
+            selectA.addEventListener("change",function(){
+                document.getElementById('desc').innerHTML = desc[selectA.selectedIndex];
+                verifAllergie();
+            });
+
+            selectE.addEventListener("change",function(){
+                verifAllergie();
+            });
             var nom = getCookie("nom");
             var prenom = getCookie("prenom");
             var login = getCookie("login");
@@ -143,6 +202,43 @@
             document.getElementById("prenom").innerHTML = prenom;
             document.getElementById("nom").innerHTML = nom.toUpperCase();;
             document.getElementById("login").innerHTML = login;
+
+            function ajouterAllergie(){
+                httpPostAsync("/api/allergie/ajouter",param+"&idenfant="+idEnfants[selectE.selectedIndex]+"&idallergie="+idAllergies[selectA.selectedIndex],function(e){
+                    var res = JSON.parse(e);
+                    console.log(res);
+                });
+                verifAllergie();
+            }
+
+            function retirerAllergie(){
+                httpPostAsync("/api/allergie/retirer",param+"&idenfant="+idEnfants[selectE.selectedIndex]+"&idallergie="+idAllergies[selectA.selectedIndex],function(e){
+                    var res = JSON.parse(e);
+                    console.log("Retirer : ");
+                    console.log(res);
+                });
+                verifAllergie();
+            }
+            function verifAllergie(){
+                httpPostAsync("/api/enfant/allergies",param+"&idenfant="+idEnfants[selectE.selectedIndex],function(e){
+                    var res = JSON.parse(e);
+                    console.log(res);
+                    for(i=0;i<res['Allergies'].length;i++){
+                        console.log("idAllergies["+selectA.selectedIndex+"] == res['Allergies']["+i+"]['ID'] : "+idAllergies[selectA.selectedIndex] == res['Allergies'][i]['ID']);
+                        if(idAllergies[selectA.selectedIndex] == res['Allergies'][i]['ID']){
+                            document.getElementById('ajout').disabled = true;
+                            document.getElementById('retirer').disabled = false;
+                            break;
+                        }
+                        document.getElementById('ajout').disabled = false;
+                        document.getElementById('retirer').disabled = true;
+                    }
+                    if(res['Allergies'].length == 0){
+                        document.getElementById('ajout').disabled = false;
+                        document.getElementById('retirer').disabled = true;
+                    }
+                });
+            }
         </script>
     </body>
 </html>

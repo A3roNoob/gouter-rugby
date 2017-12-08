@@ -130,7 +130,6 @@ function deleteToken(){
     var login = getCookie("login");
     var param = "token="+token+"&login="+login;
     httpPostAsync("api/deconnexion",param,function(e){
-        alert(e);
     });
     setCookie("token",0,1);
     window.location.href = "index.html";
