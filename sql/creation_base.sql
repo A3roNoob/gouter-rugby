@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS parent, composproduit, catenfant, stock, detailconso,  consommation, allergieenfant, allergieproduit, compte, catproduit, course, detailcourse, operationsolde, connexion, stockgestion, enfant, produitcompose, allergene, categorieenfant, categorieproduit, adulte, produit, rang;
+DROP VIEW IF EXISTS compteenfants;
 /*CREATION DES TABLES SANS CLES ETRANGERES
 
 CREATION DE LA TABLE RANG*/

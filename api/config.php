@@ -5,7 +5,7 @@ if (file_exists($file)) {
     $credentials = file_get_contents($file, FILE_USE_INCLUDE_PATH);
     $data = json_decode($credentials, true);
 } else {
-    echo '{"Code" : 4, "Message" : "Param&egrave;tres de connexion a la base de donn&eacute;e inexistants."}';
+    echo '{"Code" : 1000, "Message" : "Param&egrave;tres de connexion a la base de donn&eacute;e inexistants."}';
     exit(1);
 }
 
