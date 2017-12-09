@@ -206,74 +206,80 @@
 
 </style>
 <!-- All the files that are required -->
-<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-<link href='http://fonts.googleapis.com/css?family=Varela+Round' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+<link href='https://fonts.googleapis.com/css?family=Varela+Round' rel='stylesheet' type='text/css'>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
 <?php
 $host = $db = $user = $pwd = "";
 $hostErr = $dbErr = $userErr = $pwdErr = false;
 
-function executeCreationDb($filesql, PDO $db) {
+function executeCreationDb($filesql, PDO $db)
+{
     $query = file_get_contents($filesql);
     $array = explode(";", $query);
     $fail = "";
-    for ($i=0; $i < count($array) ; $i++) {
+    for ($i = 0; $i < count($array); $i++) {
         $str = $array[$i];
         if ($str != '') {
             $str .= ';';
             $envoi = $db->prepare($str);
-            try{
+            try {
                 $envoi->execute();
-            }catch(PDOException $e){
+            } catch (PDOException $e) {
                 $failErr = $e->getCode() != 42000;
-                if($failErr){
+                if ($failErr) {
                     $arr = explode("'", $e->getMessage());
-                    if(isset($arr[1]))
-                        $fail .= $arr[1].", ";
+                    if (isset($arr[1]))
+                        $fail .= $arr[1] . ", ";
                 }
+                $fail = $e->getMessage();
             }
         }
     }
     return $fail;
 }
 
-function executeQueryFile($filesql, PDO $db) {
+function executeQueryFile($filesql, PDO $db)
+{
     $query = file_get_contents($filesql);
     $array = explode(";", $query);
     $fail = "";
-    for ($i=0; $i < count($array) ; $i++) {
+    for ($i = 0; $i < count($array); $i++) {
         $str = $array[$i];
         if ($str != '') {
             $str .= ';';
             $envoi = $db->prepare($str);
-            try{
+            try {
                 $envoi->execute();
-            }catch(PDOException $e){
+            } catch (PDOException $e) {
                 return $e->getMessage();
             }
         }
     }
     return $fail;
 }
-function executeTriggerVueFile($filesql, PDO $db) {
+
+function executeTriggerVueFile($filesql, PDO $db)
+{
     $query = file_get_contents($filesql);
     $array = explode("DELIMITER ;", $query);
     $fail = "";
-    for ($i=0; $i < count($array) ; $i++) {
+    for ($i = 0; $i < count($array); $i++) {
         $str = $array[$i];
         if ($str != '') {
             $str .= ';';
             $envoi = $db->prepare($str);
-            try{
+            try {
                 $envoi->execute();
-            }catch(PDOException $e){
+            } catch (PDOException $e) {
                 return $e->getMessage();
             }
         }
     }
     return $fail;
 }
+
 $showErr = $showInfoErr = "";
 
 $form = " <div class=\"text-center\" style=\"padding:50px 0; margin-left: 40%;\">
@@ -323,7 +329,8 @@ function test_input($data)
     $data = htmlspecialchars($data);
     return $data;
 }
-$file = dirname(__FILE__)."/credentials.json";
+
+$file = dirname(__FILE__) . "/credentials.json";
 if (file_exists($file)) {
     $credentials = file_get_contents($file, FILE_USE_INCLUDE_PATH);
     $data = json_decode($credentials, true);
@@ -369,28 +376,32 @@ if (file_exists($file)) {
             if (!$fail) {
                 echo "Ex&eacute;cution du script sql pour g&eacute;n&eacute;rer la base de donnée.<br />";
                 $fail_creat = executeCreationDb("..\\sql\\creation_base.sql", $db);
-                if(strlen($fail_creat) > 0){
-                    echo  "Une erreur s'est produite, v&eacute;rifiez qu'aucune de vos tables d&eacute;j&agrave; pr&eacute;sentes ne comportent les noms: $fail !<br />";
+                if (strlen($fail_creat) > 0) {
+                    echo "Une erreur s'est produite, v&eacute;rifiez qu'aucune de vos tables d&eacute;j&agrave; pr&eacute;sentes ne comportent les noms: $fail !<br />";
                 }
 
                 $fail_inser = executeQueryFile("..\\sql\\insertion.sql", $db);
-                if(strlen($fail_inser) > 0){
-                    echo  "Une erreur s'est produite (insertion): $fail<br />";
+                if (strlen($fail_inser) > 0) {
+                    echo "Une erreur s'est produite (insertion): $fail<br />";
                 }
 
                 $fail_trigger = executeTriggerVueFile("..\\sql\\trigger.sql", $db);
-                if(strlen($fail_trigger) > 0){
-                    echo  "Une erreur s'est produite(trigger): $fail<br />";
+                if (strlen($fail_trigger) > 0) {
+                    echo "Une erreur s'est produite(trigger): $fail<br />";
                 }
 
                 $fail_vues = executeTriggerVueFile("..\\sql\\Vue.sql", $db);
-                if(strlen($fail_vues) > 0){
-                    echo  "Une erreur s'est produite(vue): $fail<br />";
+                if (strlen($fail_vues) > 0) {
+                    echo "Une erreur s'est produite(vue): $fail<br />";
                 }
 
-                if(strlen($fail_creat) <= 0 && strlen($fail_inser) <= 0 && strlen($fail_trigger) <= 0 && strlen($fail_vues) <= 0){
+                if (strlen($fail_creat) <= 0 && strlen($fail_inser) <= 0 && strlen($fail_trigger) <= 0 && strlen($fail_vues) <= 0) {
                     file_put_contents($file, $json);
-                    echo "Tout s'est d&eacute;roul&eacute; avec succ&eacute;s.<br />L'installation est termin&eacute;e. Veuillez supprimer ce fichier et acc&eacute;der à <a href='/'> l'acceuil</a>";
+                    if (file_exists($file)) {
+                        echo "Tout s'est d&eacute;roul&eacute; avec succ&eacute;s.<br />L'installation est termin&eacute;e. Veuillez supprimer ce fichier et acc&eacute;der à <a href='/'> l'acceuil</a>";
+                    } else {
+                        echo "Le fichier credentials.json n'a pas pu &ecirc;tre cr&eacute;&eacute;.<br >V&eacute;rifiez les permissions.";
+                    }
                 }
             }
 

@@ -137,11 +137,11 @@ class Enfant implements JsonSerializable
             $query->execute();
             $data = $query->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            echo '{"Code" : "' . $GLOBALS['CODE']['CODE_5']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
+            echo '{"Code" : ' . $GLOBALS['CODE']['CODE_5']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
             exit();
         }
         if (is_bool($data)) {
-            echo '{"Code" : "' . $GLOBALS['CODE']['CODE_11']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_11']['Message'] . '"}';
+            echo '{"Code" : ' . $GLOBALS['CODE']['CODE_11']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_11']['Message'] . '"}';
             exit();
         }
         $enfant = new self();
@@ -164,11 +164,11 @@ class Enfant implements JsonSerializable
             try {
                 $query->execute();
             } catch (PDOException $e) {
-                echo '{"Code" : "' . $GLOBALS['CODE']['CODE_5']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
+                echo '{"Code" : ' . $GLOBALS['CODE']['CODE_5']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
                 exit(1);
             }
         } else {
-            echo '{"Code" : "' . $GLOBALS['CODE']['CODE_9']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_9']['Message'] . '"}';
+            echo '{"Code" : ' . $GLOBALS['CODE']['CODE_9']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_9']['Message'] . '"}';
             exit(1);
         }
         $this->loadSolde();
@@ -183,7 +183,7 @@ class Enfant implements JsonSerializable
             $query->execute();
             $data = $query->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            echo '{"Code" : "' . $GLOBALS['CODE']['CODE_5']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
+            echo '{"Code" : ' . $GLOBALS['CODE']['CODE_5']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
             exit(1);
         }
 
@@ -227,7 +227,7 @@ class Enfant implements JsonSerializable
                             $query->execute();
                         } catch (PDOException $e) {
                             $db->rollBack();
-                            echo '{"Code" : "' . $GLOBALS['CODE']['CODE_5']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
+                            echo '{"Code" : ' . $GLOBALS['CODE']['CODE_5']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
                             exit(1);
                         }
                         $query->bindValue(':enfant', $enfant->getIdEnfant(), PDO::PARAM_INT);
@@ -236,7 +236,7 @@ class Enfant implements JsonSerializable
                             $query->execute();
                         } catch (PDOException $e) {
                             $db->rollBack();
-                            echo '{"Code" : "' . $GLOBALS['CODE']['CODE_5']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
+                            echo '{"Code" : ' . $GLOBALS['CODE']['CODE_5']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
                             exit(1);
                         }
                     }
@@ -245,15 +245,15 @@ class Enfant implements JsonSerializable
                     $enfant->loadSolde();
                     $this->loadSolde();
                 } else {
-                    echo '{"Code" : "' . $GLOBALS['CODE']['CODE_9']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_9']['Message'] . '"}';
+                    echo '{"Code" : ' . $GLOBALS['CODE']['CODE_9']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_9']['Message'] . '"}';
                     exit(1);
                 }
             } else {
-                echo '{"Code" : "' . $GLOBALS['CODE']['CODE_13']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_13']['Message'] . '"}';
+                echo '{"Code" : ' . $GLOBALS['CODE']['CODE_13']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_13']['Message'] . '"}';
                 exit(1);
             }
         } else {
-            echo '{"Code" : "' . $GLOBALS['CODE']['CODE_11']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_11']['Message'] . '"}';
+            echo '{"Code" : ' . $GLOBALS['CODE']['CODE_11']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_11']['Message'] . '"}';
             exit(1);
         }
     }
@@ -267,7 +267,7 @@ class Enfant implements JsonSerializable
         try{
             $query->execute();
         }catch(PDOException $e){
-            echo '{"Code" : "' . $GLOBALS['CODE']['CODE_5']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
+            echo '{"Code" : ' . $GLOBALS['CODE']['CODE_5']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
             exit(1);
         }
     }
@@ -281,7 +281,7 @@ class Enfant implements JsonSerializable
         try{
             $query->execute();
         }catch(PDOException $e){
-            echo '{"Code" : "' . $GLOBALS['CODE']['CODE_5']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
+            echo '{"Code" : ' . $GLOBALS['CODE']['CODE_5']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
             exit(1);
         }
     }
