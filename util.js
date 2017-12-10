@@ -63,13 +63,13 @@ function getRang(param){
 
 function menuRang(rang){
     if(rang == 3){
-        document.getElementById('menu-link').href = "menu_normal";
+        document.getElementById('menu-link').href = "menu_normal.html";
     }
     else if(rang == 2){
-        document.getElementById('menu-link').href = "menu_benevole";
+        document.getElementById('menu-link').href = "menu_benevole.html";
     }
     else if(rang == 1){
-        document.getElementById('menu-link').href = "menu_admin";
+        document.getElementById('menu-link').href = "menu_admin.html";
     }
 }
 
