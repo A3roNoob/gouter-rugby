@@ -75,11 +75,11 @@ class Allergie implements JsonSerializable
             $query->execute();
             $data = $query->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            echo '{"Code" : "' . $GLOBALS['CODE']['CODE_5']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
+            echo '{"Code" : ' . $GLOBALS['CODE']['CODE_5']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
             exit();
         }
         if (is_bool($data)) {
-            echo '{"Code" : "' . $GLOBALS['CODE']['CODE_11']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_11']['Message'] . '"}';
+            echo '{"Code" : ' . $GLOBALS['CODE']['CODE_11']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_11']['Message'] . '"}';
             exit();
         }
         $allergie = new self();

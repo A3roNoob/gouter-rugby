@@ -200,7 +200,7 @@ class Adulte
             $query->execute();
             $data = $query->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            echo '{"Code" : "' . $GLOBALS['CODE']['CODE_5']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
+            echo '{"Code" : ' . $GLOBALS['CODE']['CODE_5']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
             exit();
         }
 
@@ -210,7 +210,7 @@ class Adulte
             $adulte->loadEnfants();
             return $adulte;
         }
-        echo '{"Code" : "' . $GLOBALS['CODE']['CODE_2']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_2']['Message'] . '"}';
+        echo '{"Code" : ' . $GLOBALS['CODE']['CODE_2']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_2']['Message'] . '"}';
         exit();
     }
 
@@ -225,11 +225,11 @@ class Adulte
             $query->execute();
             $data = $query->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            echo '{"Code" : "' . $GLOBALS['CODE']['CODE_5']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
+            echo '{"Code" : ' . $GLOBALS['CODE']['CODE_5']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
             exit();
         }
         if(is_bool($data)){
-            echo '{"Code" : "' . $GLOBALS['CODE']['CODE_7']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_7']['Message'] . '"}';
+            echo '{"Code" : ' . $GLOBALS['CODE']['CODE_7']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_7']['Message'] . '"}';
             exit();
         }
         $adulte = new self();
@@ -248,11 +248,11 @@ class Adulte
             $query->execute();
             $data = $query->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            echo '{"Code" : "' . $GLOBALS['CODE']['CODE_5']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
+            echo '{"Code" : ' . $GLOBALS['CODE']['CODE_5']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
             exit();
         }
         if(is_bool($data)){
-            echo '{"Code" : "' . $GLOBALS['CODE']['CODE_7']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_7']['Message'] . '"}';
+            echo '{"Code" : ' . $GLOBALS['CODE']['CODE_7']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_7']['Message'] . '"}';
             exit();
         }
         $adulte = new self();
@@ -273,7 +273,7 @@ class Adulte
         try {
             $query->execute();
         } catch (PDOException $e) {
-            echo '{"Code" : "' . $GLOBALS['CODE']['CODE_5']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
+            echo '{"Code" : ' . $GLOBALS['CODE']['CODE_5']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
             exit(1);
         }
         $this->setToken($token);
@@ -288,7 +288,7 @@ class Adulte
             $query->execute();
             $data = $query->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            echo '{"Code" : "' . $GLOBALS['CODE']['CODE_5']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
+            echo '{"Code" : ' . $GLOBALS['CODE']['CODE_5']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
             exit(1);
         }
         if (is_bool($data))
@@ -304,7 +304,7 @@ class Adulte
         try {
             $query->execute();
         } catch (PDOException $e) {
-            echo '{"Code" : "' . $GLOBALS['CODE']['CODE_5']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
+            echo '{"Code" : ' . $GLOBALS['CODE']['CODE_5']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
             exit(1);
         }
     }
@@ -318,7 +318,7 @@ class Adulte
             $query->execute();
             $data = $query->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            echo '{"Code" : "' . $GLOBALS['CODE']['CODE_5']['Code'] . '", "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
+            echo '{"Code" : ' . $GLOBALS['CODE']['CODE_5']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
         }
 
         if (is_bool($data)) {
