@@ -135,7 +135,7 @@ CREATE TABLE stock
     idProduit INT(4),
     quantite INT(4) DEFAULT 0,
 
-    CONSTRAINT PK_Stock PRIMARY KEY (idProduit,quantite),
+    CONSTRAINT PK_Stock PRIMARY KEY (idProduit),
     CONSTRAINT FK_ProduitStock FOREIGN KEY (idProduit) REFERENCES produit(idProduit)
 );
 
@@ -234,7 +234,9 @@ CREATE TABLE detailcourse
     quantite INT(3),
 
     CONSTRAINT PK_DetailCourse PRIMARY KEY (idCourse,idProduit),
-    CONSTRAINT FK_ProduitDetailCourse FOREIGN KEY (idProduit) REFERENCES course(idCourse)
+    CONSTRAINT FK_ProduitDetailCourse FOREIGN KEY (idCourse) REFERENCES course(idCourse),
+    CONSTRAINT FK_ProduitDetailProduit FOREIGN KEY (idProduit) REFERENCES produit(idProduit)
+
 );
 
 /*CREATION De LA TABLE OPERATIONSOLDE*/

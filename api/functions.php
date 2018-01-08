@@ -131,3 +131,7 @@ function errorHandler($code, $message, $file, $line)
 }
 
 set_error_handler('errorHandler');
+
+function htmltojson($json){
+    return str_replace('&quot;', '"', $json);
+}

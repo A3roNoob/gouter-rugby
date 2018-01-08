@@ -1,6 +1,6 @@
 <?php
 class Produit implements JsonSerializable{
-    private $_idProduit,$_nom,$_descProduit,$_prix;
+    private $_idProduit,$_nom,$_descProduit,$_prix, $_quantite;
 
     //region Getter/Setter
     /**
@@ -66,10 +66,33 @@ class Produit implements JsonSerializable{
     {
         $this->_prix = $prix;
     }
+
+    /**
+     * @return int
+     */
+    public function getQuantite()
+    {
+        return $this->_quantite;
+    }
+
+    /**
+     * @param int $quantite
+     */
+    public function setQuantite($quantite)
+    {
+        $this->_quantite = $quantite;
+    }
+
     //endregion
-    
-    public function hydrate($data){
-        if(is_array($data)){
+
+    public static function createCourseProduit($id, $quantite){
+        $prod = new self();
+        $prod->setIdProduit($id);
+        $prod->setQuantite($quantite);
+        return $prod;
+    }
+
+    public function hydrate(array $data){
             if(isset($data['idProduit']))
                 $this->setIdProduit($data['idProduit']);
             if(isset($data['nomProduit']))
@@ -78,11 +101,29 @@ class Produit implements JsonSerializable{
                 $this->setDescProduit($data['descProduit']);
             if(isset($data['prix']))
                 $this->setPrix($data['prix']);
+            if(isset($data['quantite']))
+                $this->setQuantite($data['quantite']);
+    }
+
+    public function verifierProduit(){
+        $db = DatabaseObject::connect();
+        $query = $db->prepare("SELECT * FROM produit WHERE idProduit=:id");
+        $query->bindValue(':id', $this->_idProduit, PDO::PARAM_INT);
+        try{
+            $query->execute();
+            $data = $query->fetch(PDO::FETCH_ASSOC);
+        }catch(PDOException $e){
+            echo '{"Code" : ' . $GLOBALS['CODE']['CODE_5']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
+            exit(1);
         }
+
+        if(!$data)
+            return false;
+        return true;
     }
 
     public function jsonSerialize()
     {
-        return '{"Id": ' . $this->getIdProduit() . ', "Nom": "' . $this->getNom() . '", "Description": "'.$this->getDescProduit().'", "Prix": '.$this->getPrix().'}';
+        return '{"Id": ' . $this->getIdProduit() . ', "Nom": "' . $this->getNom() . '", "Description": "'.$this->getDescProduit().'", "Prix": '.$this->getPrix().', "Quantite": '.is_null($this->getQuantite()) ? 0 : $this->getQuantite() .'}';
     }
 }

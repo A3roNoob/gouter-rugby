@@ -55,14 +55,12 @@ class Allergie implements JsonSerializable
     //endregion
 
     public function hydrate(array $data){
-        if(isset($data)){
             if(isset($data['idAllergene']))
                 $this->setIdAllergene($data['idAllergene']);
             if(isset($data['nomAllergene']))
                 $this->setNomAllergene($data['nomAllergene']);
             if(isset($data['descAllergene']))
                 $this->setDesc($data['descAllergene']);
-        }
     }
 
     public static function loadById($id){

@@ -168,9 +168,8 @@ class Adulte
 
     //endregion
 
-    private function hydrate($data)
+    private function hydrate(array $data)
     {
-        if (is_array($data)) {
             if (isset($data['idAdulte']))
                 $this->setIdAdulte($data['idAdulte']);
             if (isset($data['idRang']))
@@ -186,7 +185,6 @@ class Adulte
             if (isset($data['solde']))
                 $this->setSolde($data['solde']);
             $this->setEnfants(array());
-        }
     }
 
     public static function Connexion($mail, $motdepasse)

@@ -86,8 +86,7 @@ class ProduitCompose
     }
     //endregion
 
-    public function hydrate($data){
-        if(is_array($data)){
+    public function hydrate(array $data){
             if(isset($data['idProduitCompos']))
                 $this->setIdProduit($data['idProduitCompos']);
             if(isset($data['nomProduit']))
@@ -95,7 +94,6 @@ class ProduitCompose
             if(isset($data['descProduit']))
                 $this->setDescProduit($data['descProduit']);
             $this->_produits = array();
-        }
     }
 
     function calculerPrix(){
