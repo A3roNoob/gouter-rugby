@@ -6,6 +6,7 @@
         <link href="https://fonts.googleapis.com/css?family=Barlow" rel="stylesheet">
         <link rel="stylesheet" href="CSS/style.css" />
         <link rel="stylesheet" href="CSS/menu.css" />
+        <link rel="stylesheet" href="/CSS/ajout_fond.css" />
     </head>
     <body>
         <script src="util.js"></script>
@@ -123,13 +124,34 @@
                 <a href="gerer_compte.html" id="gerer_compte">
                 </a>
             </div>
-            <div class="col-lg-9">
-
+            <div class="col-lg-9" style="margin-top: 0px;">
+                <div class="row">
+                    <div class="col-lg-9" style="margin: 0px;">
+                        <div class="row">
+                            <table style="width:100%" id="tab">
+                                <tr><th>Produit</th><th>Quantit&eacute;</th></tr>
+                                <tr id='1'><td><select id="produit1" style="width:90%;"></select></td><td><input id="n1" type="number" value=0 min=0 max=100 style="width:90%;"></td><td><button id="btn1" disabled class="btn" onclick="supprimerProduit('1')">Supprimer la ligne</button></td></tr>
+                            </table>
+                        </div>
+                        <div class="row">
+                            <button class="btn" id="ajout" onclick="ajouterProduit()">Ajouter un produit</button>
+                        </div>
+                    </div>
+                    <div class="col-lg-3" style="margin-top:25vh">
+                        <div class="row">
+                            Montant : <input type="number" value=0 placeholder=0 min=0 max=9999 id="montant" step=0.01 /> &euro;
+                        </div>
+                        <div class="row">
+                            <button class="btn" onclick="ajouterCourse()">Confirmer</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <script>
+            var nbProduits = 1;
             httpPostAsync("/api/rang",param,function(t){
                 var res = JSON.parse(t);
                 if(res["Code"] == 0){
@@ -138,6 +160,74 @@
                 menuRang(rang);
                 hideRang(rang);
             });
+
+            httpPostAsync("/api/produits",param,function(e){
+                var res = JSON.parse(e);
+                console.log(res);
+                for(j = 1;j<=nbProduits;j++){
+                    for(i = 0;i<res['Produits'].length;i++){
+                        document.getElementById('produit'+j).innerHTML += "<option value=\""+res['Produits'][i]['Id']+"\" >"+res['Produits'][i]['Nom']+"</option>";
+                    }
+                }
+            });
+
+            function ajouterProduit(){
+                nbProduits++;
+                if(nbProduits>=9){
+                    document.getElementById("ajout").disabled = true;
+                }
+                document.getElementById("tab").innerHTML += "<tr id=\""+nbProduits+"\"><td><select id=\"produit"+nbProduits+"\" style=\"width:90%;\"></select></td><td><input id=\"n"+nbProduits+"\"type=\"number\" value=0 min=0 max=100 style=\"width:90%;\"></td><td><button class=\"btn\" id=\"btn"+nbProduits+"\" onclick=\"supprimerProduit('"+nbProduits+"')\">Supprimer la ligne</button></td></tr>";
+                httpPostAsync("/api/produits",param,function(e){
+                    var res = JSON.parse(e);
+                    for(i = 0;i<res['Produits'].length;i++){
+                        document.getElementById('produit'+nbProduits).innerHTML += "<option value=\""+res['Produits'][i]['Id']+"\" >"+res['Produits'][i]['Nom']+"</option>";
+                    }
+                });
+                for(i=1;i<nbProduits;i++){
+                    console.log("btn"+i);
+                    document.getElementById("btn"+i).disabled = true;
+                }
+            }
+
+            function supprimerProduit(id){
+                document.getElementById(id).remove();
+                nbProduits--;
+                if(nbProduits<9){
+                    document.getElementById("ajout").disabled = false;
+                }
+                if(nbProduits==1){return;}
+                document.getElementById("btn"+nbProduits).disabled = false;
+            }
+
+            function ajouterCourse(){
+                var produitsString = "{\"Produits\": [";
+                var produits = [nbProduits];
+                var quantite = [nbProduits];
+                var today = new Date();
+                var date = Number(today.getDate()) + "/" + (Number(today.getMonth())+1) + "/" + Number(today.getFullYear());
+                console.log(date);
+                httpPostAsync("/api/produits",param,function(e){
+                    var res = JSON.parse(e);
+                    for(i=0;i<nbProduits;i++){
+                        produits[i] = document.getElementById("produit"+(i+1)).value;
+                        quantite[i] = document.getElementById("n"+(i+1)).value;
+                    }
+                    for(i=0;i<nbProduits;i++){
+                        produitsString += "{\"idproduit\" : "+Number(produits[i])+",\"quantite\" : "+Number(quantite[i])+"}";
+                        if(i<nbProduits-1){
+                            produitsString += ",";
+                        }
+                    }
+                    produitsString += "]}";
+                    console.log(produitsString);
+                    var montant = Number(document.getElementById('montant').value);
+                    console.log(montant);
+                    httpPostAsync("/api/course/enregistrer",(param+"&produits="+produitsString+"&montant="+montant+"&date="+date),function(e){
+                        var res = JSON.parse(e);
+                        console.log(res);
+                    });
+                });             
+            }
 
             var nom = getCookie("nom");
             var prenom = getCookie("prenom");
