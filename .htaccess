@@ -64,6 +64,10 @@ RewriteRule ^api/enfant/allergies/?$ api/user.php?action=enfantallergie
 Header set Access-Control-Allow-Origin "*"
 RewriteRule ^api/course/enregistrer/?$ api/course.php?action=enregistrercourse
 
+Header set Access-Control-Allow-Origin "*"
+RewriteRule ^api/consommation/enregistrer/?$ api/consommation.php?action=enregistrerconsommation
+
+
 RedirectMatch 403 ^/api/classes/?$
 RedirectMatch 403 ^/api/config.php
 RedirectMatch 403 ^/api/credentials.json$

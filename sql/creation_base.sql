@@ -68,7 +68,7 @@ CREATE TABLE composproduit
 
     CONSTRAINT PK_composProduit PRIMARY KEY (idProduit, idProduitCompos),
     CONSTRAINT FK_ProduitCompos FOREIGN KEY (idProduitCompos) REFERENCES produitcompose(idProduitCompos),
-    CONSTRAINT FK_Produit FOREIGN KEY (idProduit) REFERENCES produit(idProduit)
+    CONSTRAINT FK_Produit FOREIGN KEY (idProduit) REFERENCES produit(idProduit) ON DELETE CASCADE
 );
 
 /*CREATION DE LA TABLE ALLERGENE*/

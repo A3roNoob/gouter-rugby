@@ -6,7 +6,7 @@ class ProduitCompose
 
     //region Getter/Setter
     /**
-     * @return mixed
+     * @return Produit[]
      */
     public function getProduits()
     {
@@ -14,7 +14,7 @@ class ProduitCompose
     }
 
     /**
-     * @param mixed $produits
+     * @param Produit $produits
      */
     public function ajouterProduits($produits)
     {
@@ -114,16 +114,16 @@ class ProduitCompose
             exit(1);
         }
 
-        if(!is_bool($data)){
+        if(!is_bool($data) && is_array($data) && count($data) > 0){
             $this->_produits = array();
             foreach($data as $produit){
                 $prod = new Produit();
                 $prod->hydrate($produit);
                 $this->ajouterProduits($prod);
             }
+            return true;
         }
-
-
+        return false;
     }
 
     public function jsonSerialize()

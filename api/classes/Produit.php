@@ -199,6 +199,6 @@ class Produit implements JsonSerializable{
 
     public function jsonSerialize()
     {
-        return '{"Id": ' . $this->getIdProduit() . ', "Nom": "' . $this->getNom() . '", "Description": "'.$this->getDescProduit().'", "Prix": '.$this->getPrix().', "Quantite": '.is_null($this->getQuantite()) ? 0 : $this->getQuantite() .'}';
+        return '{"Id": ' . $this->getIdProduit() . ', "Nom": "' . $this->getNom() . '", "Description": "'.$this->getDescProduit().'", "Prix": '.$this->getPrix().', "Quantite": '.(is_null($this->getQuantite()) ? 0 : $this->getQuantite() ).'}';
     }
 }

@@ -70,6 +70,8 @@ $GLOBALS['CODE'] = array(
         "Message" => "Ce/ces id ne correspond &agrave; aucun produit."),
     "CODE_19" => array("Code" => 19,
         "Message" => "La date n'est pas correcte (format: dd/mm/YYYY ou en fran&ccirc;ais jj/mm/AAAA)."),
+    "CODE_20" => array("Code" => 20,
+        "Message" => "Enfant allergique &agrave; certains produits."),
     "CODE_403" => array("Code" => 403,
         "Message" => "Acc&eacute;s interdit."),
     "Code_501" => array("Code" => 501,
