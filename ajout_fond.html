@@ -19,9 +19,8 @@
             var param = "token="+token+"&login="+login;
             httpPostAsync("/api/auth",param,function(e){
                 res = JSON.parse(e);
-                console.log(res);
                 if(res['Code'] != "0"){
-                    console.log("Here we go");
+                    console.log("You're leaving already ?");
                     window.location.href = "connect.html";
                 }
             });
@@ -140,7 +139,9 @@
                     <div class="row">
                         <button type="button" class="btn" id="confirm">Confirmer</button>
                     </div>
-                    <div class="row">&nbsp;</div>
+                    <div class="row">
+                        <span class="error" id="err"></span>
+                    </div>
                 </div>
                 <div class="col-lg-3">
                     <div class="row">&nbsp;</div>
@@ -169,7 +170,6 @@
                     var select = document.getElementById('enfants');
                     httpPostAsync("/api/etatcomptes",param,function(e){
                         var res = JSON.parse(e);
-                        console.log(res);
                         select.addEventListener("change",function(){
                             for(i=1;i<=2;i++){
                                 var nom = select.options[select.selectedIndex].value;
@@ -200,14 +200,14 @@
 
                     document.getElementById('confirm').addEventListener("click",function(){
                         var paramFonds = param +"&idenfant=" + idEnfant + "&somme=" + somme;
-                        console.log('idEnfant : '+idEnfant);
                         httpPostAsync("/api/fonds",paramFonds,function(e){
                             var res = JSON.parse(e);
-                            console.log(res);
                             if(res['Code'] != 0){
+                                document.getElementById("err").innerHTML = "Erreur "+res['Code']+" : "+res['Message'];
                                 console.log('oh shit');
                             }
                             else{
+                                document.getElementById("err").innerHTML = "";
                                 document.getElementById('somme').value = "";
                                 httpPostAsync("/api/etatcomptes",param,function(e){
                                     var res = JSON.parse(e);
@@ -225,7 +225,6 @@
                     var select = document.getElementById('enfants');
                     httpPostAsync("/api/enfants",param,function(e){
                         var res = JSON.parse(e);
-                        console.log(res);
                         for(i=0;i<res['Enfants'].length;i++){
                             select.innerHTML += "<option value=\""+res['Enfants'][i]['Prenom']+" "+res['Enfants'][i]['Nom'].toUpperCase()+"\">"+res['Enfants'][i]['Prenom']+" "+res['Enfants'][i]['Nom'].toUpperCase()+"</option>";
                             solde[i] = res['Enfants'][i]['Solde'];
@@ -257,14 +256,14 @@
 
                     document.getElementById('confirm').addEventListener("click",function(){
                         var paramFonds = param +"&idenfant=" + idEnfant + "&somme=" + somme;
-                        console.log('idEnfant : '+idEnfant);
                         httpPostAsync("/api/fonds",paramFonds,function(e){
                             var res = JSON.parse(e);
-                            console.log(res);
                             if(res['Code'] != 0){
+                                document.getElementById("err").innerHTML = "Erreur "+res['Code']+" : "+res['Message'];
                                 console.log('oh shit');
                             }
                             else{
+                                document.getElementById("err").innerHTML = "";
                                 document.getElementById('somme').value = "";
                                 httpPostAsync("/api/enfants",param,function(e){
                                     var res = JSON.parse(e);

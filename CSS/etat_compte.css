@@ -1,0 +1,21 @@
+span.date{
+    font-size:0.8em;
+    font-style: italic;
+}
+
+span.nom{
+    font-size: 1.1em;
+}
+
+.row.histo{
+    -webkit-transition-duration: 0.5s;
+    transition-duration: 0.5s;
+    padding:3px;
+    border-bottom: solid 0.5px grey;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.row.histo:hover{
+    background: lightgrey;
+}

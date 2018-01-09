@@ -21,7 +21,7 @@
                 res = JSON.parse(e);
                 console.log(res);
                 if(res['Code'] != "0"){
-                    console.log("Here we go");
+                    console.log("See ya later");
                     window.location.href = "connect.html";
                 }
             });
@@ -125,7 +125,7 @@
                     <div class="row">&nbsp;</div>
                     <div class="row">
                         <p>
-                            <select name="enfants" id="enfants0" class="chosen-select">
+                            <select name="enfants" id="enfants0" class="selectpicker">
                             </select>
                         </p>
                         <p><span id="solde1"></span> &euro;</p>
@@ -148,7 +148,7 @@
                     <div class="row">&nbsp;</div>
                     <div class="row">
                         <p>
-                            <select name="enfants" id="enfants1" class="chosen-select">
+                            <select name="enfants" id="enfants1" class="selectpicker">
                             </select>
                         </p>
                         <p><span id="solde2"></span> &euro;</p>
@@ -224,14 +224,34 @@
                     httpPostAsync("/api/enfants",param,function(e){
                         var res = JSON.parse(e);
                         console.log(res);
-                        for(j=0;j<2;j++){
-                            for(i=0;i<res['Enfants'].length;i++){
-                                select[j].innerHTML += "<option value=\""+res['Enfants'][i]['Prenom']+" "+res['Enfants'][i]['Nom'].toUpperCase()+"\">"+res['Enfants'][i]['Prenom']+" "+res['Enfants'][i]['Nom'].toUpperCase()+"</option>";
-                                solde[i] = res['Enfants'][i]['Solde'];
+                        select[0].addEventListener("change",function(){
+                            var nom = select[0].options[select[0].selectedIndex].value;
+                            document.getElementById('solde1').innerHTML = (Number(solde[select[0].selectedIndex]) - Number(document.getElementById('somme').value)).toFixed(2);
+                            select[1].options[select[0].selectedIndex].disabled=true;
+                            var hasChanged = 0;
+                            for(i = 0;i<select[1].options.length;i++){
+                                if(i==select[0].selectedIndex) continue;
+                                select[1].options[i].disabled=false;
+                                if(!hasChanged){
+                                    select[1].selectedIndex = i;
+                                    hasChanged = 1;
+                                }
                             }
+                            document.getElementById('solde2').innerHTML = (Number(solde[select[1].selectedIndex]) + Number(document.getElementById('somme').value)).toFixed(2);
+                        });
+
+                        select[1].addEventListener("change",function(){
+                            var nom = select[1].options[select[1].selectedIndex].value;
+                            document.getElementById('solde2').innerHTML = (Number(solde[select[1].selectedIndex]) + Number(document.getElementById('somme').value)).toFixed(2);
+                        });
+                        
+                        for(i=0;i<res['Enfants'].length;i++){
+                            for(j=0;j<select.length;j++){
+                                select[j].innerHTML += "<option value=\""+res['Enfants'][i]['Prenom']+" "+res['Enfants'][i]['Nom'].toUpperCase()+"\">"+res['Enfants'][i]['Prenom']+" "+res['Enfants'][i]['Nom'].toUpperCase()+"</option>";
+                            }
+                            solde[i] = res['Enfants'][i]['Solde'];
+                            id[i] = res['Enfants'][i]['ID'];
                         }
-                        $(".chosen-select").chosen();
-                        console.log("select[1].options.length : "+select[1].options.length);
                         if(select[1].options.length>1){
                             select[1].selectedIndex=select[0].selectedIndex+1;
                         }
@@ -254,8 +274,10 @@
                             var res = JSON.parse(e);
                             console.log(res);
                             console.log(id);
-                            solde[0]=res['SoldeDonneur'];
-                            solde[1]=res['SoldeReceveur'];
+                            if(res['Code'] ==0){
+                                solde[select[0].selectedIndex]=res['SoldeDonneur'];
+                                solde[select[1].selectedIndex]=res['SoldeReceveur'];
+                            }
                             console.log(solde);
                             document.getElementById('somme').value = 0;
                             document.getElementById('solde1').innerHTML = (Number(solde[select[0].selectedIndex]) - Number(document.getElementById('somme').value)).toFixed(2);
@@ -269,9 +291,10 @@
                     httpPostAsync("/api/transfert",paramTransfert,function(e){
                         var res = JSON.parse(e);
                         console.log(res);
-                        console.log(id);
-                        solde[select[0].selectedIndex]=res['SoldeDonneur'];
-                        solde[select[1].selectedIndex]=res['SoldeReceveur'];
+                        if(res['Code'] == 0){
+                            solde[select[0].selectedIndex]=res['SoldeDonneur'];
+                            solde[select[1].selectedIndex]=res['SoldeReceveur'];
+                        }
                         console.log(solde);
                         document.getElementById('somme').value = 0;
                         document.getElementById('solde1').innerHTML = (Number(solde[select[0].selectedIndex]) - Number(document.getElementById('somme').value)).toFixed(2);

@@ -4,8 +4,9 @@
         <title>Gouter orsay</title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <link href="https://fonts.googleapis.com/css?family=Barlow" rel="stylesheet">
-        <link rel="stylesheet" href="CSS/style.css" />
-        <link rel="stylesheet" href="CSS/menu.css" />
+        <link rel="stylesheet" href="/CSS/style.css" />
+        <link rel="stylesheet" href="/CSS/menu.css" />
+        <link rel="stylesheet" href="/CSS/etat_compte.css" />
     </head>
     <body>
         <script src="util.js"></script>
@@ -124,7 +125,44 @@
                         <div class="row"><span id="solde"></span> &euro;</div>
                     </h2>
                     <div class="row"><h2><strong>Historique</strong></h2></div>
-                    <div class="row"></div>
+                    <div class="row overflow">
+                        <div class="col-lg-1">&nbsp;</div>
+                        <div class="col-lg-11" style="height:60vh;overflow: auto;">
+                            <div class="row histo">
+                                <div class="row">
+                                    <div class="col-lg-3">
+                                        <span class="nom">Kamal Larson</span>
+                                    </div>
+                                    <div class="col-lg-3">&nbsp;</div><div class="col-lg-3"></div>
+                                </div>
+                                <div class="row">
+                                    Ajout de <span class="solde">100</span> &euro; par <span class="nom">Gannon LARSON</span>, le <span class="date">27/11/2017 &agrave; 14h38</span>
+                                </div>
+                            </div>
+                            <div class="row histo">
+                                <div class="row">
+                                    <div class="col-lg-3">
+                                        <span class="nom">Kamal LARSON</span>
+                                    </div>
+                                    <div class="col-lg-3">&nbsp;</div><div class="col-lg-3"></div>
+                                </div>
+                                <div class="row">
+                                    Transfert de <span class="solde">27.50</span> &euro; vers <span class="nom">Flynn LARSON</span> par <span class="nom">Gannon LARSON</span>, le <span class="date">27/11/2017 &agrave; 14h57</span>
+                                </div>
+                            </div>
+                            <div class="row histo">
+                                <div class="row">
+                                    <div class="col-lg-3">
+                                        <span class="nom">Kamal LARSON</span>
+                                    </div>
+                                    <div class="col-lg-3">&nbsp;</div><div class="col-lg-3"></div>
+                                </div>
+                                <div class="row">
+                                    A achet&eacute; <strong>Gouter Fran&ccedil;ais</strong> pour <span class="solde">34.35</span> &euro; &agrave; <span class="nom">Ethan PRINCE</span>, le <span class="date">13/12/2017 &agrave; 9h32</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -172,6 +210,12 @@
                     document.getElementById('solde').innerHTML = soldeE;
                 });
             }
+            var cpt = 1;
+            function verifHisto(){
+                console.log("verification numero "+cpt);
+                cpt++;
+            }
+            setInterval(verifHisto,15000);
         </script>
     </body>
 </html>

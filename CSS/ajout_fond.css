@@ -8,11 +8,35 @@
     font-size:2em;
 }
 
-span#solde1,span#solde2{
+span#solde1, span#solde2, span.solde{
     font-style: italic;
     font-size:0.8em;
 }
 
 .btn{
     font-size:0.7em;
+    margin:5px;
+}
+
+table{
+    width:100%;
+    text-align: center;
+}
+
+th, td{
+    margin: 3px;    
+}
+
+div.row.margin{
+    margin:0px;
+    margin-top:5px;
+}
+
+textarea{
+    width:27vw;
+    max-width: 27vw;
+    min-width:15vw;
+    max-height: 20vh;
+    min-height: 10vh;
+    height:15vh;
 }

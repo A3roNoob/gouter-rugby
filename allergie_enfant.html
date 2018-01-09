@@ -18,7 +18,7 @@
                 res = JSON.parse(e);
                 
                 if(res['Code'] != "0"){
-                    
+                    console.log("Here we go!")
                     window.location.href = "connect.html";
                 }
             });
@@ -181,8 +181,6 @@
                         idAllergies[i] = res['Allergies'][i]['ID'];
                     }
                     document.getElementById('desc').innerHTML = desc[selectA.selectedIndex];
-
-
                     verifAllergie();
                 });
             });
@@ -206,7 +204,6 @@
             function ajouterAllergie(){
                 httpPostAsync("/api/allergie/ajouter",param+"&idenfant="+idEnfants[selectE.selectedIndex]+"&idallergie="+idAllergies[selectA.selectedIndex],function(e){
                     var res = JSON.parse(e);
-                    console.log(res);
                 });
                 verifAllergie();
             }
@@ -214,15 +211,13 @@
             function retirerAllergie(){
                 httpPostAsync("/api/allergie/retirer",param+"&idenfant="+idEnfants[selectE.selectedIndex]+"&idallergie="+idAllergies[selectA.selectedIndex],function(e){
                     var res = JSON.parse(e);
-                    console.log("Retirer : ");
-                    console.log(res);
                 });
                 verifAllergie();
             }
+
             function verifAllergie(){
                 httpPostAsync("/api/enfant/allergies",param+"&idenfant="+idEnfants[selectE.selectedIndex],function(e){
                     var res = JSON.parse(e);
-                    console.log(res);
                     for(i=0;i<res['Allergies'].length;i++){
                         console.log("idAllergies["+selectA.selectedIndex+"] == res['Allergies']["+i+"]['ID'] : "+idAllergies[selectA.selectedIndex] == res['Allergies'][i]['ID']);
                         if(idAllergies[selectA.selectedIndex] == res['Allergies'][i]['ID']){
