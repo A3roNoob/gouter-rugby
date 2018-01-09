@@ -233,7 +233,6 @@ function executeCreationDb($filesql, PDO $db)
                     if (isset($arr[1]))
                         $fail .= $arr[1] . ", ";
                 }
-                $fail = $e->getMessage();
             }
         }
     }
@@ -257,7 +256,6 @@ function executeQueryFile($filesql, PDO $db)
             }
         }
     }
-    return $fail;
 }
 
 function executeTriggerVueFile($filesql, PDO $db)
@@ -377,22 +375,22 @@ if (file_exists($file)) {
                 echo "Ex&eacute;cution du script sql pour g&eacute;n&eacute;rer la base de donnée.<br />";
                 $fail_creat = executeCreationDb("..\\sql\\creation_base.sql", $db);
                 if (strlen($fail_creat) > 0) {
-                    echo "Une erreur s'est produite, v&eacute;rifiez qu'aucune de vos tables d&eacute;j&agrave; pr&eacute;sentes ne comportent les noms: $fail !<br />";
+                    echo "Une erreur s'est produite, v&eacute;rifiez qu'aucune de vos tables d&eacute;j&agrave; pr&eacute;sentes ne comportent les noms: $fail_creat !<br />";
                 }
 
                 $fail_inser = executeQueryFile("..\\sql\\insertion.sql", $db);
                 if (strlen($fail_inser) > 0) {
-                    echo "Une erreur s'est produite (insertion): $fail<br />";
+                    echo "Une erreur s'est produite (insertion): $fail_inser<br />";
                 }
 
                 $fail_trigger = executeTriggerVueFile("..\\sql\\trigger.sql", $db);
                 if (strlen($fail_trigger) > 0) {
-                    echo "Une erreur s'est produite(trigger): $fail<br />";
+                    echo "Une erreur s'est produite(trigger): $fail_trigger<br />";
                 }
 
                 $fail_vues = executeTriggerVueFile("..\\sql\\Vue.sql", $db);
                 if (strlen($fail_vues) > 0) {
-                    echo "Une erreur s'est produite(vue): $fail<br />";
+                    echo "Une erreur s'est produite(vue): $fail_vues<br />";
                 }
 
                 if (strlen($fail_creat) <= 0 && strlen($fail_inser) <= 0 && strlen($fail_trigger) <= 0 && strlen($fail_vues) <= 0) {
