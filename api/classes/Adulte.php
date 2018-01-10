@@ -168,7 +168,7 @@ class Adulte
 
     //endregion
 
-    private function hydrate(array $data)
+    public function hydrate(array $data)
     {
             if (isset($data['idAdulte']))
                 $this->setIdAdulte($data['idAdulte']);
@@ -341,5 +341,10 @@ class Adulte
                 return $enfant;
             }
         return null;
+    }
+
+    public function jsonSerialize(){
+        return '{"ID" : ' . $this->getIdAdulte() . ', "Nom" : "' . $this->getNom() . '", "Prenom" : "' . $this->getPrenom() . '", "Mail" : "'.$this->getMail().'", "Phone" : "'.$this->getTel().'", "Solde": '.$this->getSolde().'}';
+
     }
 }
