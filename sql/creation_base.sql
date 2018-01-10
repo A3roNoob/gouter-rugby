@@ -36,6 +36,7 @@ CREATE TABLE enfant
     idEnfant INT(4) AUTO_INCREMENT,
     nom VARCHAR(30),
     prenom VARCHAR(30),
+    naissance DATE,
 
     CONSTRAINT PK_Enfant PRIMARY KEY (idEnfant)
 );

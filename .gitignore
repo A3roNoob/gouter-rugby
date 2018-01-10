@@ -67,5 +67,5 @@ modules.xml
 .idea/sqldialects.xml
 
 api/test.php
-api/log/
+api/credentials.json
 api/credentials.json

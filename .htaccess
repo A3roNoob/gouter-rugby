@@ -62,6 +62,9 @@ Header set Access-Control-Allow-Origin "*"
 RewriteRule ^api/enfant/allergies/?$ api/user.php?action=enfantallergie
 
 Header set Access-Control-Allow-Origin "*"
+RewriteRule ^api/enfant/modifier/?$ api/user.php?action=modifierenfant
+
+Header set Access-Control-Allow-Origin "*"
 RewriteRule ^api/course/enregistrer/?$ api/course.php?action=enregistrercourse
 
 Header set Access-Control-Allow-Origin "*"

@@ -113,6 +113,8 @@ class Produit implements JsonSerializable{
             echo '{"Code" : ' . $GLOBALS['CODE']['CODE_5']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
             exit(1);
         }
+
+        $this->setIdProduit($db->lastInsertId());
     }
 
     public function hydrate(array $data){
