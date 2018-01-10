@@ -4,8 +4,10 @@
         <title>Gouter orsay</title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <link href="https://fonts.googleapis.com/css?family=Barlow" rel="stylesheet">
-        <link rel="stylesheet" href="CSS/style.css" />
-        <link rel="stylesheet" href="CSS/menu.css" />
+        <link rel="stylesheet" href="/multiple-select/multiple-select.css" />
+        <link rel="stylesheet" href="/CSS/style.css" />
+        <link rel="stylesheet" href="/CSS/menu.css" />
+        <link rel="stylesheet" href="/CSS/ajout_fond.css" />
     </head>
     <body>
         <script src="util.js"></script>
@@ -124,11 +126,44 @@
                 </a>
             </div>
             <div class="col-lg-9">
-
+                <div class="col-lg-4">
+                    <div class="row">
+                        &nbsp;
+                    </div>
+                    <div class="row">
+                        <select id="produit" style="width:90%;"></select>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="row margin">
+                        Nom : <input type="text" id="name" placeholder="Nom..." />
+                    </div>
+                    <div class="row margin">
+                        Prix : <input id="prix" type="number" min=0 max=9999 placeholder=0 step=0.01 placeholder="0" /> &euro;
+                    </div>
+                    <div class="row margin">
+                        Description : <br><textarea id="desc" placeholder="Description..."></textarea>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="row">
+                        <button class="btn" onclick="confirmer()" id="conf" >Confirmer les changements</button>
+                    </div>
+                    <div class="row">
+                        <button class="btn" onclick="reset()" id="modif" >Annuler les changements</button>
+                    </div>
+                    <div class="row">
+                        <button class="btn" onclick="ajouter()" id="add" >Ajouter le produit</button>
+                    </div>
+                    <div class="row">
+                        <button class="btn" onclick="supprimer()" id="sup" >Supprimer le produit</button>
+                    </div>
+                </div>
             </div>
         </div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="/multiple-select/multiple-select.js"></script>
         <script>
             httpPostAsync("/api/rang",param,function(t){
                 var res = JSON.parse(t);
@@ -138,6 +173,152 @@
                 menuRang(rang);
                 hideRang(rang);
             });
+
+            var id;
+
+            reload();
+
+            document.getElementById('produit').addEventListener('change',function(){
+                httpPostAsync("/api/produits",param,function(e){
+                    var res = JSON.parse(e);
+                    var type = document.getElementById('produit').value.charAt(0);
+                    id = (document.getElementById('produit').value.substr(1));
+                    var idP;
+                    if(type == 'P'){
+                        document.getElementById('add').disabled = true;
+                        document.getElementById('sup').disabled = false;
+                        document.getElementById('conf').disabled = false;
+                        document.getElementById('modif').disabled = false;
+                        for(i=0;i<res['Produits'].length;i++){
+                            if(res['Produits'][i]['Id'] == id){
+                                idP = i;
+                                console.log("idP : "+idP);
+                                break;
+                            }
+                        }
+                        document.getElementById('name').value = res['Produits'][idP]['Nom'];
+                        document.getElementById('prix').value = res['Produits'][idP]['Prix'];
+                        document.getElementById('desc').value = res['Produits'][idP]['Description'];
+                    }
+                    else if(type == 'N'){
+                        document.getElementById('add').disabled = false;
+                        document.getElementById('sup').disabled = true;
+                        document.getElementById('conf').disabled = true;
+                        document.getElementById('modif').disabled = true;
+                        document.getElementById('name').value = '';
+                        document.getElementById('prix').value = '';
+                        document.getElementById('desc').value = '';
+                    }
+                });
+            });
+
+            function reset(){
+                httpPostAsync("/api/produits",param,function(e){
+                    var res = JSON.parse(e);
+                    var type = document.getElementById('produit').value.charAt(0);
+                    var id = (document.getElementById('produit').value.substr(1));
+                    var idP;
+                    if(type == 'P'){
+                        for(i=0;i<res['Produits'].length;i++){
+                            if(res['Produits'][i]['Id'] == id){
+                                idP = i;
+                                break;
+                            }
+                        }
+                        document.getElementById('add').disabled = true;
+                        document.getElementById('sup').disabled = false;
+                        document.getElementById('name').value = res['Produits'][idP]['Nom'];
+                        document.getElementById('prix').value = res['Produits'][idP]['Prix'];
+                        document.getElementById('desc').value = res['Produits'][idP]['Description'];
+                    }
+                });
+            }
+
+            function confirmer(){
+                var nom = document.getElementById('name').value;
+                var prix = document.getElementById('prix').value;
+                var desc = document.getElementById('desc').value;
+                httpPostAsync("/api/produit/modifier",param+"&idproduit="+(id+1)+'&nom='+nom+'&prix='+prix+'&desc='+desc,function(e){
+                    var res = JSON.parse(e);
+                });
+            }
+
+            function ajouter(){
+                var nom = document.getElementById('name').value;
+                var prix = document.getElementById('prix').value;
+                var desc = document.getElementById('desc').value;
+                httpPostAsync("/api/produit/ajouter",param+'&nom='+nom+'&prix='+prix+'&desc='+desc,function(e){
+                    var res = JSON.parse(e);
+                    var idProduit = res['id'];
+                    console.log('nouveau idProduit : '+idProduit);
+                    reload();
+                    httpPostAsync("/api/produits",param,function(e){
+                        var res = JSON.parse(e);
+                        var idTemp;
+                        for(i=0;i<res['Produits'].length;i++){
+                            if(res['Produits'][i]['Id'] == idProduit){
+                                idTemp = i;
+                                break;
+                            }
+                        }
+                        console.log('idTemp : '+idTemp);
+                        document.getElementById('produit').selectedIndex = idTemp;
+                        document.getElementById('name').value = res['Produits'][idTemp]['Nom'];
+                        document.getElementById('prix').value = res['Produits'][idTemp]['Prix'];
+                        document.getElementById('desc').value = res['Produits'][idTemp]['Description'];
+                    });
+                });
+            }
+
+            function supprimer(){
+                var idP;
+                httpPostAsync("/api/produits",param,function(e){
+                    var res = JSON.parse(e);
+                    var type = document.getElementById('produit').value.charAt(0);
+                    var id = document.getElementById('produit').value.substr(1);
+                    var idTemp;
+                    if(type == 'P'){
+                        for(i=0;i<res['Produits'].length;i++){
+                            if(res['Produits'][i]['Id'] == id){
+                                idTemp = i;
+                                break;
+                            }
+                        }
+                    }
+                    idP = res['Produits'][idTemp]['Id'];
+                    httpPostAsync("/api/produit/supprimer",param+"&idproduit="+idP,function(e){
+                        var res = JSON.parse(e);
+                        reload();
+                    });
+                });
+            }
+
+            function reload(){
+                httpPostAsync("/api/produits",param,function(e){
+                    var res = JSON.parse(e);
+                    document.getElementById('produit').innerHTML = "";
+                    for(i = 0;i<res['Produits'].length;i++){
+                        document.getElementById('produit').innerHTML += "<option value=\"P"+res['Produits'][i]['Id']+"\" >"+res['Produits'][i]['Nom']+"</option>";
+                    }
+                    document.getElementById('produit').innerHTML += "<option value=\"N\" >Nouveau produit...</option>";
+                    var type = document.getElementById('produit').value.charAt(0);
+                    id = (document.getElementById('produit').value.substr(1));
+                    var idP;
+                    if(type == 'P'){
+                        document.getElementById('add').disabled = true;
+                        document.getElementById('sup').disabled = false;
+                        for(i=0;i<res['Produits'].length;i++){
+                            if(res['Produits'][i]['Id'] == id){
+                                idP = i;
+                                break;
+                            }
+                        }
+                        document.getElementById('name').value = res['Produits'][idP]['Nom'];
+                        document.getElementById('prix').value = res['Produits'][idP]['Prix'];
+                        document.getElementById('desc').value = res['Produits'][idP]['Description'];
+                    }
+                });
+            }
 
             var nom = getCookie("nom");
             var prenom = getCookie("prenom");

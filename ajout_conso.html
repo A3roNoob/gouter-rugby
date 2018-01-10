@@ -4,8 +4,10 @@
         <title>Gouter orsay</title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <link href="https://fonts.googleapis.com/css?family=Barlow" rel="stylesheet">
+        <link rel="stylesheet" href="/multiple-select/multiple-select.css" />
         <link rel="stylesheet" href="CSS/style.css" />
         <link rel="stylesheet" href="CSS/menu.css" />
+        <link rel="stylesheet" href="/CSS/ajout_fond.css" />
     </head>
     <body>
         <script src="util.js"></script>
@@ -124,17 +126,48 @@
                 </a>
             </div>
             <div class="col-lg-9">
-
+                <div class="col-lg-4">
+                    <div class="row">&nbsp;</div>
+                    <div class="row">
+                        <select id="enfant"></select>
+                    </div>
+                    <div class="row">&nbsp;</div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="row">
+                        <select multiple="multiple" id="produit" style="width:300px; text-align:left;" ></select>
+                    </div>
+                    <div class="row">&nbsp;</div>
+                    <div class="row">
+                        <button type="button" class="btn" onclick="decocher()">D&eacute;selectionner tout</button>
+                    </div>
+                    <div class="row">
+                        <span class="error" id="err"></span>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="row">Total : <span class="solde" id="somme">0</span> &euro;</div>
+                    <div class="row">&nbsp;</div>
+                    <div class="row">
+                        <button type="button" class="btn" id="confirm">Ajouter</button>
+                    </div>
+                    <div class="row">&nbsp;</div>
+                    <div class="row">
+                        <span id="retour">
+                        </span>
+                    </div>
+                </div>
             </div>
         </div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="/multiple-select/multiple-select.js"></script>
         <script>
             httpPostAsync("/api/rang",param,function(t){
                 var res = JSON.parse(t);
                 if(res["Code"] == 0){
                     rang = res["Rang"];
-                }   
+                }
                 menuRang(rang);
                 hideRang(rang);
             });
@@ -146,6 +179,168 @@
             document.getElementById("prenom").innerHTML = prenom;
             document.getElementById("nom").innerHTML = nom.toUpperCase();;
             document.getElementById("login").innerHTML = login;
+                
+            httpPostAsync("/api/enfants",param,function(e){
+                var res = JSON.parse(e);
+                for(i = 0;i<res['Enfants'].length;i++){
+                    document.getElementById('enfant').innerHTML += "<option value="+res['Enfants'][i]['ID']+" >"+res['Enfants'][i]['Prenom']+" "+res['Enfants'][i]['Nom'].toUpperCase()+"</option>";
+                }
+            });
+
+            httpPostAsync("/api/produits",param,function(e){
+                var res = JSON.parse(e);
+                var results;
+                for(i = 0;i<res['Produits'].length;i++){
+                    document.getElementById('produit').innerHTML += "<option value=\"P"+res['Produits'][i]['Id']+"\" >"+res['Produits'][i]['Nom']+"</option>";
+                }
+                for(i = 0;i<res['ProduitsComposes'].length;i++){
+                    document.getElementById('produit').innerHTML += "<option value=\"C"+res['ProduitsComposes'][i]['Id']+"\" >"+res['ProduitsComposes'][i]['Nom']+"</option>";
+                }
+                $(function () {
+                    $('#produit').multipleSelect({
+                        placeholder: "Ajoutez une consommation",
+                        position: 'top',
+                        filter: true,
+                        onClick: function(){
+                            document.getElementById('err').innerHTML = "";
+                            results = $("#produit").multipleSelect("getSelects");
+                            var somme = 0;
+                            var idP;
+                            for(i=0;i<results.length;i++){
+                                var type = results[i].charAt(0);
+                                var id = (results[i].substr(1));
+                                if(type == 'P'){
+                                    for(i=0;i<res['Produits'].length;i++){
+                                        if(res['Produits'][i]['Id'] == id){
+                                            idP = i;
+                                            break;
+                                        }
+                                    }
+                                    somme += res['Produits'][idP]['Prix'];
+                                }
+                                else{
+                                    for(i=0;i<res['ProduitsComposes'].length;i++){
+                                        if(res['ProduitsComposes'][i]['Id'] == id){
+                                            idP = i;
+                                            break;
+                                        }
+                                    }
+                                    somme += res['ProduitsComposes'][idP]['Prix'];
+                                }
+                            }
+                            somme = Math.round(somme*100) / 100;
+                            document.getElementById('somme').innerHTML = somme;
+                        }
+                    });
+                });
+            });
+
+            document.addEventListener('keypress',function(e){
+                document.getElementById('err').innerHTML = "";
+                var results = $("#produit").multipleSelect("getSelects");
+                if(results.length != 0){
+                    var id = [];
+                    var type = [];
+                    var produits = [];
+                    var produitsComposes = [];
+                    var compteP = 0, compteC = 0;
+                    for(i=0;i<results.length;i++){
+                        type[i] = results[i].charAt(0);
+                        id[i] = results[i].substr(1);
+                    }
+                    for(i=0;i<type.length;i++){
+                        if(type[i] == 'P'){
+                            produits[compteP] = id[i];
+                            compteP++;
+                        }
+                        else{
+                            produitsComposes[compteC] = id[i];
+                            compteC++;
+                        }
+                    }
+                    var produitsString = "{\"Produits\" : [";
+                    for(i=0;i<produits.length;i++){
+                        produitsString += produits[i];
+                        if(i<produits.length-1) produitsString += ',';
+                    }
+                    produitsString += "], \"ProduitsComposes\" : [";
+                    for(i=0;i<produitsComposes.length;i++){
+                        produitsString += produitsComposes[i];
+                        if(i<produitsComposes.length-1) produitsString += ',';
+                    }
+                    produitsString += "]}"
+                    var paramTemp = param+"&produits="+produitsString+"&idenfant="+document.getElementById('enfant').value;
+                    httpPostAsync("/api/consommation/enregistrer",paramTemp,function(e){
+                        var res = JSON.parse(e);
+                        if(res['Code'] == 0){
+                            document.getElementById('retour').innerHTML = "Consommation enregistr&eacute;e !";
+                            decocher(); 
+                        }
+                        else{
+                            document.getElementById('retour').innerHTML = res['Message'];
+                        }
+                    });
+                }
+                else{
+                    document.getElementById('err').innerHTML = "Pas de produit selectionn&eacute;."
+                }
+            });
+
+            document.getElementById('confirm').addEventListener('click',function(){
+                document.getElementById('err').innerHTML = "";
+                var results = $("#produit").multipleSelect("getSelects");
+                if(results.length != 0){
+                    var id = [];
+                    var type = [];
+                    var produits = [];
+                    var produitsComposes = [];
+                    var compteP = 0, compteC = 0;
+                    for(i=0;i<results.length;i++){
+                        type[i] = results[i].charAt(0);
+                        id[i] = results[i].substr(1);
+                    }
+                    for(i=0;i<type.length;i++){
+                        if(type[i] == 'P'){
+                            produits[compteP] = id[i];
+                            compteP++;
+                        }
+                        else{
+                            produitsComposes[compteC] = id[i];
+                            compteC++;
+                        }
+                    }
+                    var produitsString = "{\"Produits\" : [";
+                    for(i=0;i<produits.length;i++){
+                        produitsString += produits[i];
+                        if(i<produits.length-1) produitsString += ',';
+                    }
+                    produitsString += "], \"ProduitsComposes\" : [";
+                    for(i=0;i<produitsComposes.length;i++){
+                        produitsString += produitsComposes[i];
+                        if(i<produitsComposes.length-1) produitsString += ',';
+                    }
+                    produitsString += "]}"
+                    var paramTemp = param+"&produits="+produitsString+"&idenfant="+document.getElementById('enfant').value;
+                    httpPostAsync("/api/consommation/enregistrer",paramTemp,function(e){
+                        var res = JSON.parse(e);
+                        if(res['Code'] == 0){
+                            document.getElementById('retour').innerHTML = "Consommation enregistr&eacute;e !";
+                            decocher(); 
+                        }
+                        else{
+                            document.getElementById('retour').innerHTML = res['Message'];
+                        }
+                    });
+                }
+                else{
+                    document.getElementById('err').innerHTML = "Pas de produit selectionn&eacute;."
+                }
+            });
+
+            function decocher(){
+                $("#produit").multipleSelect("setSelects", [1, 3]);
+                document.getElementById('somme').innerHTML = 0;
+            }
         </script>
     </body>
 </html>
