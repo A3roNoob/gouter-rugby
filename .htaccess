@@ -20,6 +20,18 @@ Header set Access-Control-Allow-Origin "*"
 RewriteRule ^api/adultes/?$ api/user.php?action=adultes
 
 Header set Access-Control-Allow-Origin "*"
+RewriteRule ^api/adulte/ajouter?$ api/user.php?action=ajouteradulte
+
+Header set Access-Control-Allow-Origin "*"
+RewriteRule ^api/adulte/supprimer?$ api/user.php?action=supprimeradulte
+
+Header set Access-Control-Allow-Origin "*"
+RewriteRule ^api/adulte/modifier?$ api/user.php?action=modifieradulte
+
+Header set Access-Control-Allow-Origin "*"
+RewriteRule ^api/rangs?$ api/user.php?action=rangs
+
+Header set Access-Control-Allow-Origin "*"
 RewriteRule ^api/enfant/supprimer/?$ api/user.php?action=supprimerenfant
 
 Header set Access-Control-Allow-Origin "*"

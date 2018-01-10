@@ -120,7 +120,7 @@ if (isGetSet("action") && $_GET['action'] == "connexion") {
     } else {
         echo '{"Code": ' . $GLOBALS['CODE']['CODE_1']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_1']['Message'] . '"}';
     }
-}else if (isGetSet('action') && $_GET['action'] == 'retirerallergie') {
+} else if (isGetSet('action') && $_GET['action'] == 'retirerallergie') {
     if (isPostSet('token') && isPostSet('login')) {
         $token = test_input($_POST['token']);
         $login = test_input($_POST['login']);
@@ -131,10 +131,10 @@ if (isGetSet("action") && $_GET['action'] == "connexion") {
                 if ($enfant->getIdParent() == $adulte->getIdAdulte() || $adulte->getIdRang() < 3) {
                     $allergie = Allergie::loadById(test_input($_POST['idallergie']));
                     if ($allergie->getIdAllergene() > 0) {
-                        if($enfant->checkAllergie($allergie)){
+                        if ($enfant->checkAllergie($allergie)) {
                             $enfant->retirerAllergie($allergie);
                             echo '{"Code" : ' . $GLOBALS['CODE']['CODE_0']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_0']['Message'] . '"}';
-                        }else {
+                        } else {
                             echo '{"Code" : ' . $GLOBALS['CODE']['CODE_16']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_16']['Message'] . '"}';
                         }
                     } else {
@@ -164,7 +164,7 @@ if (isGetSet("action") && $_GET['action'] == "connexion") {
                     $allergie = Allergie::loadById(test_input($_POST['idallergie']));
                     if ($allergie->getIdAllergene() > 0) {
                         $all = $enfant->checkAllergie($allergie);
-                        echo '{"Code" : ' . $GLOBALS['CODE']['CODE_0']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_0']['Message'] . '", "Allergique": '. (($all) ? '1' : '0') .'}';
+                        echo '{"Code" : ' . $GLOBALS['CODE']['CODE_0']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_0']['Message'] . '", "Allergique": ' . (($all) ? '1' : '0') . '}';
                     } else {
                         echo '{"Code" : ' . $GLOBALS['CODE']['CODE_15']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_15']['Message'] . '"}';
                     }
@@ -189,7 +189,7 @@ if (isGetSet("action") && $_GET['action'] == "connexion") {
             if (isPostSet('idenfant')) {
                 $enfant = Enfant::loadById(test_input($_POST['idenfant']));
                 if ($enfant->getIdParent() == $adulte->getIdAdulte() || $adulte->getIdRang() < 3) {
-                        echo '{"Code" : ' . $GLOBALS['CODE']['CODE_0']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_0']['Message'] . '", '. $enfant->getAllergies()->jsonSerialize() .'}';
+                    echo '{"Code" : ' . $GLOBALS['CODE']['CODE_0']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_0']['Message'] . '", ' . $enfant->getAllergies()->jsonSerialize() . '}';
 
                 } else {
                     echo '{"Code" : ' . $GLOBALS['CODE']['CODE_403']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_403']['Message'] . '"}';
@@ -209,14 +209,14 @@ if (isGetSet("action") && $_GET['action'] == "connexion") {
         $login = test_input($_POST['login']);
         $adulte = Adulte::loadByLogin($login);
         if ($adulte->checkToken($token)) {
-            if (isPostSet('idenfant') && (isPostSet('nom') || isPostSet('prenom') ||isPostSet('naissance'))) {
+            if (isPostSet('idenfant') && (isPostSet('nom') || isPostSet('prenom') || isPostSet('naissance'))) {
                 $enfant = Enfant::loadById(test_input($_POST['idenfant']));
                 if ($adulte->getIdRang() < 3) {
-                    if(isPostSet('nom'))
+                    if (isPostSet('nom'))
                         $enfant->setNom(test_input($_POST['nom']));
-                    if(isPostSet('prenom'))
+                    if (isPostSet('prenom'))
                         $enfant->setPrenom(test_input($_POST['prenom']));
-                    if(isPostSet('naissance'))
+                    if (isPostSet('naissance'))
                         $enfant->setNaissance(test_input($_POST['naissance']));
                     $enfant->update();
                     echo '{"Code" : ' . $GLOBALS['CODE']['CODE_0']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_0']['Message'] . '"}';
@@ -233,7 +233,7 @@ if (isGetSet("action") && $_GET['action'] == "connexion") {
     } else {
         echo '{"Code" : ' . $GLOBALS['CODE']['CODE_1']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_1']['Message'] . '"}';
     }
-}else if (isGetSet('action') && $_GET['action'] == 'ajouterenfant') {
+} else if (isGetSet('action') && $_GET['action'] == 'ajouterenfant') {
     if (isPostSet('token') && isPostSet('login')) {
         $token = test_input($_POST['token']);
         $login = test_input($_POST['login']);
@@ -258,7 +258,7 @@ if (isGetSet("action") && $_GET['action'] == "connexion") {
     } else {
         echo '{"Code" : ' . $GLOBALS['CODE']['CODE_1']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_1']['Message'] . '"}';
     }
-}else if (isGetSet('action') && $_GET['action'] == 'supprimerenfant') {
+} else if (isGetSet('action') && $_GET['action'] == 'supprimerenfant') {
     if (isPostSet('token') && isPostSet('login')) {
         $token = test_input($_POST['token']);
         $login = test_input($_POST['login']);
@@ -282,7 +282,7 @@ if (isGetSet("action") && $_GET['action'] == "connexion") {
     } else {
         echo '{"Code" : ' . $GLOBALS['CODE']['CODE_1']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_1']['Message'] . '"}';
     }
-}else if (isGetSet('action') && $_GET['action'] == 'adultes') {
+} else if (isGetSet('action') && $_GET['action'] == 'adultes') {
     if (isPostSet('token') && isPostSet('login')) {
         $token = test_input($_POST['token']);
         $login = test_input($_POST['login']);
@@ -301,6 +301,108 @@ if (isGetSet("action") && $_GET['action'] == "connexion") {
     } else {
         echo '{"Code": ' . $GLOBALS['CODE']['CODE_1']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_1']['Message'] . '"}';
     }
-}else {
+} else if (isGetSet('action') && $_GET['action'] == 'ajouteradulte') {
+    if (isPostSet('token') && isPostSet('login')) {
+        $token = test_input($_POST['token']);
+        $login = test_input($_POST['login']);
+        $adulte = Adulte::loadByLogin($login);
+        if ($adulte->checkToken($token)) {
+            if (isPostSet('idrang') && isPostSet('nom') && isPostSet('prenom') && isPostSet('mail') && isPostSet('tel') && isPostSet('mdp')) {
+                if ($adulte->getIdRang() < 2) {
+                    $adulte = Adulte::creerAdulte(test_input($_POST['nom']), test_input($_POST['prenom']), Rang::loadById(test_input($_POST['idrang']))->getIdRang(), test_input($_POST['mail']), test_input($_POST['tel']), test_input($_POST['mdp']));
+                    $adulte->enregistrer();
+                    echo '{"Code" : ' . $GLOBALS['CODE']['CODE_0']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_0']['Message'] . '"}';
+                } else {
+                    echo '{"Code" : ' . $GLOBALS['CODE']['CODE_403']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_403']['Message'] . '"}';
+                }
+            } else {
+                echo '{"Code" : ' . $GLOBALS['CODE']['CODE_1']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_1']['Message'] . '"}';
+            }
+        } else {
+            echo '{"Code" : ' . $GLOBALS['CODE']['CODE_8']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_8']['Message'] . '"}';
+        }
+    } else {
+        echo '{"Code" : ' . $GLOBALS['CODE']['CODE_1']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_1']['Message'] . '"}';
+    }
+} else if (isGetSet('action') && $_GET['action'] == 'modifieradulte') {
+    if (isPostSet('token') && isPostSet('login')) {
+        $token = test_input($_POST['token']);
+        $login = test_input($_POST['login']);
+        $adulteDem = Adulte::loadByLogin($login);
+        if ($adulteDem->checkToken($token)) {
+            if (isPostSet('idadulte') && (isPostSet('nom') || isPostSet('prenom') || isPostSet("idrang") || isPostSet('mail') || isPostSet('tel') || isPostSet('mdp'))) {
+                $adulte = Adulte::loadById(test_input($_POST['idadulte']));
+                if ($adulteDem->getIdRang() < 2) {
+                    if (isPostSet('nom'))
+                        $adulte->setNom(test_input($_POST['nom']));
+                    if (isPostSet('prenom'))
+                        $adulte->setPrenom(test_input($_POST['prenom']));
+                    if (isPostSet('mail'))
+                        $adulte->setMail(test_input($_POST['mail']));
+                    if (isPostSet('tel'))
+                        $adulte->setTel(test_input($_POST['tel']));
+                    if (isPostSet('mdp'))
+                        $adulte->setMdp(md5(test_input($_POST['mdp'])));
+                    if (isPostSet('idrang'))
+                        $adulte->setIdRang(Rang::loadById(test_input($_POST['idrang']))->getIdRang());
+                    $adulte->update();
+                    echo '{"Code" : ' . $GLOBALS['CODE']['CODE_0']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_0']['Message'] . '"}';
+
+                } else {
+                    echo '{"Code" : ' . $GLOBALS['CODE']['CODE_403']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_403']['Message'] . '"}';
+                }
+            } else {
+                echo '{"Code" : ' . $GLOBALS['CODE']['CODE_1']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_1']['Message'] . '"}';
+            }
+        } else {
+            echo '{"Code" : ' . $GLOBALS['CODE']['CODE_8']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_8']['Message'] . '"}';
+        }
+    } else {
+        echo '{"Code" : ' . $GLOBALS['CODE']['CODE_1']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_1']['Message'] . '"}';
+    }
+}else if (isGetSet('action') && $_GET['action'] == 'supprimeradulte') {
+    if (isPostSet('token') && isPostSet('login')) {
+        $token = test_input($_POST['token']);
+        $login = test_input($_POST['login']);
+        $adulte = Adulte::loadByLogin($login);
+        if ($adulte->checkToken($token)) {
+            if (isPostSet('idadulte')) {
+                if ($adulte->getIdRang() < 2) {
+                    $adulte = adulte::loadById(test_input($_POST['idadulte']));
+                    $adulte->supprimer();
+                    echo '{"Code" : ' . $GLOBALS['CODE']['CODE_0']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_0']['Message'] . '"}';
+
+                } else {
+                    echo '{"Code" : ' . $GLOBALS['CODE']['CODE_403']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_403']['Message'] . '"}';
+                }
+            } else {
+                echo '{"Code" : ' . $GLOBALS['CODE']['CODE_1']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_1']['Message'] . '"}';
+            }
+        } else {
+            echo '{"Code" : ' . $GLOBALS['CODE']['CODE_8']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_8']['Message'] . '"}';
+        }
+    } else {
+        echo '{"Code" : ' . $GLOBALS['CODE']['CODE_1']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_1']['Message'] . '"}';
+    }
+} else if (isGetSet('action') && $_GET['action'] == 'rangs') {
+    if (isPostSet('token') && isPostSet('login')) {
+        $token = test_input($_POST['token']);
+        $login = test_input($_POST['login']);
+        $adulte = Adulte::loadByLogin($login);
+        if ($adulte->checkToken($token)) {
+            if ($adulte->getIdRang() < 3) {
+                $rang = new RangHandler();
+                echo '{"Code": ' . $GLOBALS['CODE']['CODE_0']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_0']['Message'] . '", ' . $rang->jsonSerialize() . '}';
+            } else {
+                echo '{"Code": ' . $GLOBALS['CODE']['CODE_403']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_403']['Message'] . '"}';
+            }
+
+        } else {
+            echo '{"Code": ' . $GLOBALS['CODE']['CODE_8']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_8']['Message'] . '"}';
+        }
+    } else {
+        echo '{"Code": ' . $GLOBALS['CODE']['CODE_1']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_1']['Message'] . '"}';
+    }
+} else {
     header('Location: /api/');
 }

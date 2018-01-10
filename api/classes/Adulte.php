@@ -343,6 +343,75 @@ class Adulte
         return null;
     }
 
+    public static function creerAdulte($nom, $prenom, $idrang, $mail, $tel, $mdp){
+        $adulte = new self();
+        $adulte->setNom($nom);
+        $adulte->setPrenom($prenom);
+        $adulte->setIdRang($idrang);
+        $adulte->setMail($mail);
+        $adulte->setTel($tel);
+        $adulte->setMdp(md5($mdp));
+        return $adulte;
+    }
+
+    public function enregistrer(){
+        if(!is_null($this->getIdAdulte())){
+            echo '{"Code" : ' . $GLOBALS['CODE']['CODE_22']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_22']['Message'] . '"}';
+            exit(1);
+        }
+        $db = DatabaseObject::connect();
+        $db->beginTransaction();
+
+        $query = $db->prepare("INSERT INTO adulte(nom, prenom, mail, tel, mdp) VALUES (:nom, :prenom, :mail, :tel, :mdp)");
+        $query->bindValue(':nom', $this->getNom());
+        $query->bindValue(':prenom', $this->getPrenom());
+        $query->bindValue(':mail', $this->getMail());
+        $query->bindValue(':tel', $this->getTel());
+        $query->bindValue(':mdp', $this->getMdp());
+        $query->bindValue(':rang', $this->getIdRang(), PDO::PARAM_INT);
+        try{
+            $query->execute();
+        }catch(PDOException $e){
+            $db->rollBack();
+            echo '{"Code" : ' . $GLOBALS['CODE']['CODE_5']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
+            exit(1);
+        }
+
+        $this->setIdAdulte($db->lastInsertId());
+
+        $db->commit();
+    }
+
+    public function update()
+    {
+        $db = DatabaseObject::connect();
+        $query = $db->prepare("UPDATE adulte SET nom=:nom, prenom=:prenom, mail=:mail, tel=:tel, mdp=:mdp WHERE idadulte=:id");
+        $query->bindValue(':id', $this->getIdAdulte(), PDO::PARAM_INT);
+        $query->bindValue(':nom', $this->getNom());
+        $query->bindValue(':prenom', $this->getPrenom());
+        $query->bindValue(':mail', $this->getMail());
+        $query->bindValue(':tel', $this->getTel());
+        $query->bindValue(':mdp', $this->getMdp());
+        try {
+            $query->execute();
+        } catch (PDOException $e) {
+            echo '{"Code" : ' . $GLOBALS['CODE']['CODE_5']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
+            exit(1);
+        }
+    }
+
+    public function supprimer()
+    {
+        $db = DatabaseObject::connect();
+        $query = $db->prepare("DELETE FROM adulte WHERE idAdulte=:idAdulte");
+        $query->bindValue(':idAdulte', $this->getIdAdulte(), PDO::PARAM_INT);
+        try {
+            $query->execute();
+        } catch (PDOException $e) {
+            echo '{"Code" : ' . $GLOBALS['CODE']['CODE_5']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
+            exit(1);
+        }
+    }
     public function jsonSerialize(){
         return '{"ID" : ' . $this->getIdAdulte() . ', "Nom" : "' . $this->getNom() . '", "Prenom" : "' . $this->getPrenom() . '", "Mail" : "'.$this->getMail().'", "Phone" : "'.$this->getTel().'", "Solde": '.$this->getSolde().'}';
 
