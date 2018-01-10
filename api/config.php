@@ -72,6 +72,8 @@ $GLOBALS['CODE'] = array(
         "Message" => "La date n'est pas correcte (format: dd/mm/YYYY ou en fran&ccirc;ais jj/mm/AAAA)."),
     "CODE_20" => array("Code" => 20,
         "Message" => "Enfant allergique &agrave; certains produits."),
+    "CODE_21" => array("Code" => 21,
+        "Message" => "Vous ne pouvez pas enregistrer cet enfant, il existe d&eacute;j&agrave; dans la base."),
     "CODE_403" => array("Code" => 403,
         "Message" => "Acc&eacute;s interdit."),
     "Code_501" => array("Code" => 501,

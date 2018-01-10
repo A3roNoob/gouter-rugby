@@ -329,4 +329,58 @@ class Enfant implements JsonSerializable
             exit(1);
         }
     }
+
+    public function enregistrer(){
+        if(!is_null($this->getIdEnfant())){
+            echo '{"Code" : ' . $GLOBALS['CODE']['CODE_21']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_21']['Message'] . '"}';
+            exit(1);
+        }
+        $db = DatabaseObject::connect();
+        $db->beginTransaction();
+        $query = $db->prepare("INSERT INTO enfant(nom, prenom, naissance) VALUES (:nom, :prenom, :naissance)");
+        $query->bindValue(':nom', $this->getNom());
+        $query->bindValue(':prenom', $this->getPrenom());
+        $query->bindValue(':naissance', $this->getNaissance()->format("Y-m-d"));
+        try{
+            $query->execute();
+        }catch(PDOException $e){
+            $db->rollBack();
+            echo '{"Code" : ' . $GLOBALS['CODE']['CODE_5']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
+            exit(1);
+        }
+
+        $this->setIdEnfant($db->lastInsertId());
+
+        $query = $db->prepare("INSERT INTO parent VALUES(:idAdulte, :idEnfant)");
+        $query->bindValue(':idAdulte', $this->getIdParent(), PDO::PARAM_INT);
+        $query->bindValue(':idEnfant', $this->getIdEnfant(), PDO::PARAM_INT);
+        try{
+            $query->execute();
+        }catch(PDOException $e){
+            $db->rollBack();
+            echo '{"Code" : ' . $GLOBALS['CODE']['CODE_5']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
+            exit(1);
+        }
+
+        $query = $db->prepare("INSERT INTO compte VALUES(:idEnfant, 0)");
+        $query->bindValue(':idEnfant', $this->getIdEnfant(), PDO::PARAM_INT);
+        try{
+            $query->execute();
+        }catch(PDOException $e){
+            $db->rollBack();
+            echo '{"Code" : ' . $GLOBALS['CODE']['CODE_5']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
+            exit(1);
+        }
+
+        $db->commit();
+    }
+
+    public static function creerEnfant($nom, $prenom, Adulte $parent, $naissance){
+        $enfant = new self();
+        $enfant->setNom($nom);
+        $enfant->setPrenom($prenom);
+        $enfant->setIdParent($parent->getIdAdulte());
+        $enfant->setNaissance($naissance);
+        return $enfant;
+    }
 }

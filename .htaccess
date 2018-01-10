@@ -17,6 +17,10 @@ Header set Access-Control-Allow-Origin "*"
 RewriteRule ^api/enfants/?$ api/user.php?action=enfants
 
 Header set Access-Control-Allow-Origin "*"
+RewriteRule ^api/adultes/?$ api/user.php?action=adultes
+
+
+Header set Access-Control-Allow-Origin "*"
 RewriteRule ^api/etatcomptes/?$ api/user.php?action=etatcomptes
 
 Header set Access-Control-Allow-Origin "*"
@@ -60,6 +64,9 @@ RewriteRule ^api/enfant/check/allergie/?$ api/user.php?action=checkallergie
 
 Header set Access-Control-Allow-Origin "*"
 RewriteRule ^api/enfant/allergies/?$ api/user.php?action=enfantallergie
+
+Header set Access-Control-Allow-Origin "*"
+RewriteRule ^api/enfant/ajouter/?$ api/user.php?action=ajouterenfant
 
 Header set Access-Control-Allow-Origin "*"
 RewriteRule ^api/enfant/modifier/?$ api/user.php?action=modifierenfant

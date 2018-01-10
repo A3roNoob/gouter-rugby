@@ -2,10 +2,10 @@
 INSERT INTO rang(nomRang) VALUES ('President'), ('Parent benevole'), ('Parent');
 
 /* CREATION DES ADULTES*/
-INSERT INTO adulte (nom, prenom, tel, mail, mdp) VALUES
-  ('Horn','Merritt','0384373435','merritt.horn@neque.net', '31a9d83e188e5c3af82911c2f7b6fd8f'),
-  ('Mcguire','Blythe','0206928802','blythe.mcguire@mit.edu', '9622537551976859729f86d870fde25b'),
-  ('Larson','Gannon','0781811731','test@test.ca', '098f6bcd4621d373cade4e832627b4f6');
+INSERT INTO adulte (nom, prenom, idRang, tel, mail, mdp) VALUES
+  ('Horn','Merritt', 3, '0384373435','merritt.horn@neque.net', '31a9d83e188e5c3af82911c2f7b6fd8f'),
+  ('Mcguire','Blythe', 2, '0206928802','blythe.mcguire@mit.edu', '9622537551976859729f86d870fde25b'),
+  ('Larson','Gannon', 1, '0781811731','test@test.ca', '098f6bcd4621d373cade4e832627b4f6');
 
 INSERT INTO adulte (nom, prenom, tel, mail) VALUES
   ('Deleon','Irma','0373791995','metus.In@dictumerat.com'),
