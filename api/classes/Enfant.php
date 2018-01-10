@@ -101,7 +101,7 @@ class Enfant implements JsonSerializable
     public function setNaissance($naissance)
     {
         $this->_naissance = DateTime::createFromFormat("d/m/Y", $naissance);
-        if(is_bool($this->_naissance))
+        if (is_bool($this->_naissance))
             $this->_naissance = DateTime::createFromFormat("Y-m-d", $naissance);
     }
 
@@ -120,6 +120,7 @@ class Enfant implements JsonSerializable
     {
         $this->_allergies = $allergies;
     }
+
     //endregion
 
     public function hydrate($data)
@@ -135,7 +136,7 @@ class Enfant implements JsonSerializable
                 $this->setPrenom($data['prenom']);
             if (isset($data['solde']))
                 $this->setSolde($data['solde']);
-            if(isset($data['naissance']))
+            if (isset($data['naissance']))
                 $this->setNaissance($data['naissance']);
         }
     }
@@ -217,13 +218,12 @@ class Enfant implements JsonSerializable
 
     function jsonSerialize()
     {
-        if(is_null($this->getAllergies()))
-        {
+        if (is_null($this->getAllergies())) {
             $allergie = new AllergieHandler();
             $allergie->loadAllergieFromEnfant($this);
             $this->setAllergies($allergie);
         }
-        return '{"ID" : ' . $this->getIdEnfant() . ', "Nom" : "' . $this->getNom() . '", "Prenom" : "' . $this->getPrenom() . '", "Solde" : ' . $this->getSolde() . ', '.$this->getAllergies()->jsonSerialize().'}';
+        return '{"ID" : ' . $this->getIdEnfant() . ', "Nom" : "' . $this->getNom() . '", "Prenom" : "' . $this->getPrenom() . '", "Solde" : ' . $this->getSolde() . ', ' . $this->getAllergies()->jsonSerialize() . ', "Naissance" : "' . $this->getNaissance()->format("Y-m-d") . '"}';
     }
 
     /**
@@ -279,59 +279,64 @@ class Enfant implements JsonSerializable
         }
     }
 
-    public function ajouterAllergie(Allergie $all){
+    public function ajouterAllergie(Allergie $all)
+    {
         $db = DatabaseObject::connect();
 
         $query = $db->prepare("REPLACE INTO allergieenfant VALUES (:idEnfant, :idAllergene);");
         $query->bindValue(':idEnfant', $this->getIdEnfant(), PDO::PARAM_INT);
         $query->bindValue(':idAllergene', $all->getIdAllergene(), PDO::PARAM_INT);
-        try{
+        try {
             $query->execute();
-        }catch(PDOException $e){
+        } catch (PDOException $e) {
             echo '{"Code" : ' . $GLOBALS['CODE']['CODE_5']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
             exit(1);
         }
     }
 
-    public function retirerAllergie(Allergie $all){
+    public function retirerAllergie(Allergie $all)
+    {
         $db = DatabaseObject::connect();
 
         $query = $db->prepare("DELETE FROM allergieenfant WHERE idEnfant=:idEnfant AND idAllergene=:idAllergene;");
         $query->bindValue(':idEnfant', $this->getIdEnfant(), PDO::PARAM_INT);
         $query->bindValue(':idAllergene', $all->getIdAllergene(), PDO::PARAM_INT);
-        try{
+        try {
             $query->execute();
-        }catch(PDOException $e){
+        } catch (PDOException $e) {
             echo '{"Code" : ' . $GLOBALS['CODE']['CODE_5']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
             exit(1);
         }
     }
 
-    public function checkAllergie(Allergie $all){
-        foreach($this->getAllergies()->getAllergies() as $allergie){
-            if($all->getIdAllergene() == $allergie->getIdAllergene())
+    public function checkAllergie(Allergie $all)
+    {
+        foreach ($this->getAllergies()->getAllergies() as $allergie) {
+            if ($all->getIdAllergene() == $allergie->getIdAllergene())
                 return true;
         }
         return false;
     }
 
-    public function update(){
+    public function update()
+    {
         $db = DatabaseObject::connect();
         $query = $db->prepare("UPDATE enfant SET nom=:nom, prenom=:prenom, naissance=:naiss WHERE idEnfant=:id");
         $query->bindValue(':id', $this->getIdEnfant(), PDO::PARAM_INT);
         $query->bindValue(':nom', $this->getNom());
         $query->bindValue(':prenom', $this->getPrenom());
         $query->bindValue(':naiss', $this->getNaissance()->format("Y-m-d"));
-        try{
+        try {
             $query->execute();
-        }catch(PDOException $e){
+        } catch (PDOException $e) {
             echo '{"Code" : ' . $GLOBALS['CODE']['CODE_5']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
             exit(1);
         }
     }
 
-    public function enregistrer(){
-        if(!is_null($this->getIdEnfant())){
+    public function enregistrer()
+    {
+        if (!is_null($this->getIdEnfant())) {
             echo '{"Code" : ' . $GLOBALS['CODE']['CODE_21']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_21']['Message'] . '"}';
             exit(1);
         }
@@ -341,9 +346,9 @@ class Enfant implements JsonSerializable
         $query->bindValue(':nom', $this->getNom());
         $query->bindValue(':prenom', $this->getPrenom());
         $query->bindValue(':naissance', $this->getNaissance()->format("Y-m-d"));
-        try{
+        try {
             $query->execute();
-        }catch(PDOException $e){
+        } catch (PDOException $e) {
             $db->rollBack();
             echo '{"Code" : ' . $GLOBALS['CODE']['CODE_5']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
             exit(1);
@@ -354,9 +359,9 @@ class Enfant implements JsonSerializable
         $query = $db->prepare("INSERT INTO parent VALUES(:idAdulte, :idEnfant)");
         $query->bindValue(':idAdulte', $this->getIdParent(), PDO::PARAM_INT);
         $query->bindValue(':idEnfant', $this->getIdEnfant(), PDO::PARAM_INT);
-        try{
+        try {
             $query->execute();
-        }catch(PDOException $e){
+        } catch (PDOException $e) {
             $db->rollBack();
             echo '{"Code" : ' . $GLOBALS['CODE']['CODE_5']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
             exit(1);
@@ -364,9 +369,9 @@ class Enfant implements JsonSerializable
 
         $query = $db->prepare("INSERT INTO compte VALUES(:idEnfant, 0)");
         $query->bindValue(':idEnfant', $this->getIdEnfant(), PDO::PARAM_INT);
-        try{
+        try {
             $query->execute();
-        }catch(PDOException $e){
+        } catch (PDOException $e) {
             $db->rollBack();
             echo '{"Code" : ' . $GLOBALS['CODE']['CODE_5']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
             exit(1);
@@ -375,12 +380,26 @@ class Enfant implements JsonSerializable
         $db->commit();
     }
 
-    public static function creerEnfant($nom, $prenom, Adulte $parent, $naissance){
+    public static function creerEnfant($nom, $prenom, Adulte $parent, $naissance)
+    {
         $enfant = new self();
         $enfant->setNom($nom);
         $enfant->setPrenom($prenom);
         $enfant->setIdParent($parent->getIdAdulte());
         $enfant->setNaissance($naissance);
         return $enfant;
+    }
+
+    public function supprimer()
+    {
+        $db = DatabaseObject::connect();
+        $query = $db->prepare("DELETE FROM enfant WHERE idEnfant=:idEnfant");
+        $query->bindValue(':idEnfant', $this->getIdEnfant(), PDO::PARAM_INT);
+        try {
+            $query->execute();
+        } catch (PDOException $e) {
+            echo '{"Code" : ' . $GLOBALS['CODE']['CODE_5']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
+            exit(1);
+        }
     }
 }
