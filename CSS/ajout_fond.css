@@ -40,3 +40,8 @@ textarea{
     min-height: 10vh;
     height:15vh;
 }
+
+select:disabled{
+    color:grey;
+    font:grey;
+}

@@ -323,8 +323,9 @@
                     var paramTemp = param+"&produits="+produitsString+"&idenfant="+document.getElementById('enfant').value;
                     httpPostAsync("/api/consommation/enregistrer",paramTemp,function(e){
                         var res = JSON.parse(e);
+                        console.log(res);
                         if(res['Code'] == 0){
-                            document.getElementById('retour').innerHTML = "Consommation enregistr&eacute;e !";
+                            document.getElementById('retour').innerHTML = "Consommation enregistr&eacute;e !<br>Le solde est de "+res['Solde']+"&euro;";
                             decocher(); 
                         }
                         else{

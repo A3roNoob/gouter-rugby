@@ -238,8 +238,27 @@
                 var nom = document.getElementById('name').value;
                 var prix = document.getElementById('prix').value;
                 var desc = document.getElementById('desc').value;
-                httpPostAsync("/api/produit/modifier",param+"&idproduit="+(id+1)+'&nom='+nom+'&prix='+prix+'&desc='+desc,function(e){
+                httpPostAsync("/api/produits",param,function(e){
                     var res = JSON.parse(e);
+                    var type = document.getElementById('produit').value.charAt(0);
+                    var id = (document.getElementById('produit').value.substr(1));
+                    var idP;
+                    if(type == 'P'){
+                        for(i=0;i<res['Produits'].length;i++){
+                            if(res['Produits'][i]['Id'] == id){
+                                idP = i;
+                                break;
+                            }
+                        }
+                        document.getElementById('add').disabled = true;
+                        document.getElementById('sup').disabled = false;
+                        document.getElementById('name').value = res['Produits'][idP]['Nom'];
+                        document.getElementById('prix').value = res['Produits'][idP]['Prix'];
+                        document.getElementById('desc').value = res['Produits'][idP]['Description'];
+                        httpPostAsync("/api/produit/modifier",param+"&idproduit="+(id+1)+'&nom='+nom+'&prix='+prix+'&desc='+desc,function(e){
+                            var res = JSON.parse(e);
+                        });
+                    }
                 });
             }
 

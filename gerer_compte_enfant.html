@@ -6,6 +6,7 @@
         <link href="https://fonts.googleapis.com/css?family=Barlow" rel="stylesheet">
         <link rel="stylesheet" href="CSS/style.css" />
         <link rel="stylesheet" href="CSS/menu.css" />
+        <link rel="stylesheet" href="/CSS/ajout_fond.css" />
     </head>
     <body>
         <script src="util.js"></script>
@@ -124,7 +125,45 @@
                 </a>
             </div>
             <div class="col-lg-9">
-
+                <div class="col-lg-4">
+                    <div class="row">
+                        Parent : <select disabled id="parent" style="width:90%;"></select>
+                    </div>
+                    <div class="row">
+                        &nbsp;
+                    </div>
+                    <div class="row">
+                        Enfant : <select id="enfant" style="width:90%;"></select>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="row margin">
+                        Nom : <input type="text" id="name" placeholder="Nom" />
+                    </div>
+                    <div class="row margin">
+                        Pr&eacute;nom : <input type="text" id="surname" placeholder="Pr&eacute;nom" />
+                    </div>
+                    <div class="row margin">
+                        Date de naissance : <input type="date" id="date" placeholder="1970-01-01"/>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="row">
+                        <button class="btn" onclick="confirmer()" id="conf" >Confirmer les changements</button>
+                    </div>
+                    <div class="row">
+                        <button class="btn" onclick="reset()" id="modif" >Annuler les changements</button>
+                    </div>
+                    <div class="row">
+                        <button class="btn" onclick="ajouter()" id="add" >Ajouter l'enfant</button>
+                    </div>
+                    <div class="row">
+                        <button class="btn" onclick="supprimer()" id="sup" >Supprimer l'enfant</button>
+                    </div>
+                    <div class="row">
+                        <span id="retour"></span>
+                    </div>
+                </div>
             </div>
         </div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -138,6 +177,194 @@
                 menuRang(rang);
                 hideRang(rang);
             });
+
+            reload();
+
+            document.getElementById('enfant').addEventListener('change',function(){
+                document.getElementById('retour').innerHTML = '';
+                httpPostAsync("/api/enfants",param,function(e){
+                    var res = JSON.parse(e);
+                    if(document.getElementById('enfant').value != 'N'){
+                        var id = document.getElementById('enfant').value;
+                        var idP;
+                        for(i=0;i<res['Enfants'].length;i++){
+                            if(res['Enfants'][i]['ID'] == id){
+                                idP = i;
+                                break;
+                            }
+                        }
+                        document.getElementById('parent').disabled = true;
+                        document.getElementById('add').disabled = true;
+                        document.getElementById('sup').disabled = false;
+                        document.getElementById('conf').disabled = false;
+                        document.getElementById('modif').disabled = false;
+                        document.getElementById('name').value = res['Enfants'][idP]['Nom'];
+                        document.getElementById('surname').value = res['Enfants'][idP]['Prenom'];
+                        document.getElementById('date').value = res['Enfants'][idP]['Naissance'];
+                    }
+                    else{
+                        document.getElementById('parent').disabled = false;
+                        document.getElementById('add').disabled = false;
+                        document.getElementById('sup').disabled = true;
+                        document.getElementById('conf').disabled = true;
+                        document.getElementById('modif').disabled = true;
+                        document.getElementById('name').value = "";
+                        document.getElementById('surname').value ="";
+                        document.getElementById('date').value = "";
+                    }
+                });
+            });
+
+            function reset(){
+                document.getElementById('retour').innerHTML = '';
+                httpPostAsync("/api/enfants",param,function(e){
+                    var res = JSON.parse(e);
+                    var id = document.getElementById('enfant').value;
+                    var idP;
+                    for(i=0;i<res['Enfants'].length;i++){
+                        if(res['Enfants'][i]['ID'] == id){
+                            idP = i;
+                            break;
+                        }
+                    }
+                    document.getElementById('name').value = res['Enfants'][idP]['Nom'];
+                    document.getElementById('surname').value = res['Enfants'][idP]['Prenom'];
+                    document.getElementById('date').value = res['Enfants'][idP]['Naissance'];
+                });
+            }
+
+            function confirmer(){
+                var nom = document.getElementById('name').value;
+                var prenom = document.getElementById('surname').value;
+                var date = dateToApi(document.getElementById('date').value);
+                var idEnfant = document.getElementById('enfant').value;
+                httpPostAsync("/api/enfant/modifier",param+"&idenfant="+idEnfant+'&nom='+nom+'&prenom='+prenom+'&naissance='+date,function(e){
+                    var res = JSON.parse(e);
+                    if(res['Code'] == 0){
+                        document.getElementById('retour').innerHTML = 'Modification effectu&eacute;e !';
+                        reload();
+                        httpPostAsync("/api/enfants",param,function(e){
+                            var res = JSON.parse(e);
+                            var idTemp;
+                            for(i=0;i<res['Enfants'].length;i++){
+                                if(res['Enfants'][i]['ID'] == idEnfant){
+                                    idTemp = i;
+                                    break;
+                                }
+                            }
+                            console.log('idTemp : '+idTemp);
+                            document.getElementById('enfant').selectedIndex = idTemp;
+                            document.getElementById('name').value = res['Enfants'][idTemp]['Nom'];
+                            document.getElementById('surname').value = res['Enfants'][idTemp]['Prenom'];
+                            document.getElementById('date').value = res['Enfants'][idTemp]['Naissance'];
+                        });
+                    }
+                    else{
+                        document.getElementById('retour').innerHTML = res['Message'];
+                    }
+                });
+            }
+
+            function ajouter(){
+                var nom = document.getElementById('name').value;
+                var prenom = document.getElementById('surname').value;
+                var date = dateToApi(document.getElementById('date').value);
+                var idParent = document.getElementById('parent').value;
+                httpPostAsync("/api/enfant/ajouter",param+"&idparent="+idParent+'&nom='+nom+'&prenom='+prenom+'&naissance='+date,function(e){
+                    var res = JSON.parse(e);
+                    var idEnfant = res['ID'];
+                    reload();
+                    if(res['Code'] == 0){
+                        document.getElementById('retour').innerHTML = 'Ajout effectu&eacute;e !';
+                        httpPostAsync("/api/enfants",param,function(e){
+                            var res = JSON.parse(e);
+                            var idTemp;
+                            for(i=0;i<res['Enfants'].length;i++){
+                                if(res['Enfants'][i]['ID'] == idEnfant){
+                                    idTemp = i;
+                                    break;
+                                }
+                            }
+                            console.log('idTemp : '+idTemp);
+                            document.getElementById('enfant').selectedIndex = idTemp;
+                            document.getElementById('name').value = res['Enfants'][idTemp]['Nom'];
+                            document.getElementById('surname').value = res['Enfants'][idTemp]['Prenom'];
+                            document.getElementById('date').value = res['Enfants'][idTemp]['Naissance'];
+                        });
+                    }
+                    else{
+                        document.getElementById('retour').innerHTML = res['Message'];
+                    }
+                });
+            }
+
+            function supprimer(){
+                var idP = document.getElementById('enfant').value;
+                httpPostAsync("/api/enfant/supprimer",param+"&idenfant="+idP,function(e){
+                    var res = JSON.parse(e);
+                    console.log(res);
+                    if(res['Code'] == 0){
+                        document.getElementById('retour').innerHTML = 'Suppression effectu&eacute;e !';
+                        reload();
+                    }
+                    else{
+                        document.getElementById('retour').innerHTML = res['Message'];
+                    }
+                });
+            }
+
+            function reload(){
+                httpPostAsync("/api/enfants",param,function(e){
+                    var res = JSON.parse(e);
+                    document.getElementById('enfant').innerHTML = "";
+                    for(i=0;i<res['Enfants'].length;i++){
+                        document.getElementById('enfant').innerHTML += "<option value=\""+res['Enfants'][i]['ID']+"\">"+res['Enfants'][i]['Prenom']+" "+res['Enfants'][i]['Nom'].toUpperCase()+"</option>";
+                    }
+                    document.getElementById('enfant').innerHTML += "<option value=\"N\" >Nouvel enfant...</option>";
+                    if(document.getElementById('enfant').value != 'N'){
+                        var id = document.getElementById('enfant').value;
+                        var idP;
+                        for(i=0;i<res['Enfants'].length;i++){
+                            if(res['Enfants'][i]['ID'] == id){
+                                idP = i;
+                                break;
+                            }
+                        }
+                        document.getElementById('parent').disabled = true;
+                        document.getElementById('add').disabled = true;
+                        document.getElementById('sup').disabled = false;
+                        document.getElementById('name').value = res['Enfants'][idP]['Nom'];
+                        document.getElementById('surname').value = res['Enfants'][idP]['Prenom'];
+                        document.getElementById('date').value = res['Enfants'][idP]['Naissance'];
+                    }
+                    else{
+                        document.getElementById('parent').disabled = false;
+                        document.getElementById('add').disabled = false;
+                        document.getElementById('sup').disabled = true;
+                        document.getElementById('conf').disabled = true;
+                        document.getElementById('modif').disabled = true;
+                        document.getElementById('name').value = "";
+                        document.getElementById('surname').value ="";
+                        document.getElementById('date').value = "";
+                    }
+                });
+                httpPostAsync("/api/adultes",param,function(e){
+                    var res = JSON.parse(e);
+                    document.getElementById('parent').innerHTML = "";
+                    for(i=0;i<res['Adultes'].length;i++){
+                        document.getElementById('parent').innerHTML += "<option value=\""+res['Adultes'][i]['ID']+"\">"+res['Adultes'][i]['Prenom']+" "+res['Adultes'][i]['Nom'].toUpperCase()+"</option>";
+                    }
+                });
+            }
+
+            function dateToApi(d){
+                var date = new Date(d);
+                var s = "";
+                s += date.getDate() + "/";
+                s += date.getMonth() + "/";
+                s += date.getFullYear();
+                return s;
+            }
 
             var nom = getCookie("nom");
             var prenom = getCookie("prenom");
