@@ -106,6 +106,10 @@ RewriteRule ^api/consommations/historique?$ api/user.php?action=historiqueconso
 Header set Access-Control-Allow-Origin "*"
 RewriteRule ^api/consommations/enfant/historique?$ api/user.php?action=historiqueenfantconsoc
 
+Header set Access-Control-Allow-Origin "*"
+RewriteRule ^api/produit/stock?$ api/produit.php?action=stock
+
+
 RedirectMatch 403 ^/api/classes/?$
 RedirectMatch 403 ^/api/config.php
 RedirectMatch 403 ^/api/credentials.json$
