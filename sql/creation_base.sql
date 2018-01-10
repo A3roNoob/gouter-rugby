@@ -150,7 +150,7 @@ CREATE TABLE consommation
     dateConso DATETIME,
 
     CONSTRAINT PK_Consommation PRIMARY KEY (idConso,idEnfant),
-    CONSTRAINT FK_EnfantConso FOREIGN KEY (idEnfant) REFERENCES enfant(idEnfant)
+    CONSTRAINT FK_EnfantConso FOREIGN KEY (idEnfant) REFERENCES enfant(idEnfant) ON DELETE CASCADE
 );
 
 /*CREATION DE LA TABLE DETAILCONSO*/

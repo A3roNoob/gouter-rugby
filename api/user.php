@@ -244,7 +244,7 @@ if (isGetSet("action") && $_GET['action'] == "connexion") {
                     $adulte = Adulte::loadById(test_input($_POST['idparent']));
                     $enfant = Enfant::creerEnfant(test_input($_POST['nom']), test_input($_POST['prenom']), $adulte, test_input($_POST['naissance']));
                     $enfant->enregistrer();
-                    echo '{"Code" : ' . $GLOBALS['CODE']['CODE_0']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_0']['Message'] . '"}';
+                    echo '{"Code" : ' . $GLOBALS['CODE']['CODE_0']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_0']['Message'] . '", "ID" : '.$enfant->getIdEnfant().'}';
 
                 } else {
                     echo '{"Code" : ' . $GLOBALS['CODE']['CODE_403']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_403']['Message'] . '"}';
@@ -397,6 +397,55 @@ if (isGetSet("action") && $_GET['action'] == "connexion") {
                 echo '{"Code": ' . $GLOBALS['CODE']['CODE_403']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_403']['Message'] . '"}';
             }
 
+        } else {
+            echo '{"Code": ' . $GLOBALS['CODE']['CODE_8']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_8']['Message'] . '"}';
+        }
+    } else {
+        echo '{"Code": ' . $GLOBALS['CODE']['CODE_1']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_1']['Message'] . '"}';
+    }
+}else if (isGetSet('action') && $_GET['action'] == 'historiquetransac') {
+    if (isPostSet('token') && isPostSet('login')) {
+        $token = test_input($_POST['token']);
+        $login = test_input($_POST['login']);
+        $adulte = Adulte::loadByLogin($login);
+        if ($adulte->checkToken($token)) {
+            if ($adulte->getIdRang() < 3) {
+                $trans = new TransactionHandler();
+                if(isPostSet('nbtrans'))
+                    $trans->loadOperations(test_input($_POST['nbtrans']));
+                else
+                    $trans->loadOperations(5);
+                echo '{"Code": ' . $GLOBALS['CODE']['CODE_0']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_0']['Message'] . '", ' . $trans->jsonSerialize() . '}';
+            } else {
+                echo '{"Code": ' . $GLOBALS['CODE']['CODE_403']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_403']['Message'] . '"}';
+            }
+
+        } else {
+            echo '{"Code": ' . $GLOBALS['CODE']['CODE_8']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_8']['Message'] . '"}';
+        }
+    } else {
+        echo '{"Code": ' . $GLOBALS['CODE']['CODE_1']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_1']['Message'] . '"}';
+    }
+} else if (isGetSet('action') && $_GET['action'] == 'historiqueenfanttransac') {
+    if (isPostSet('token') && isPostSet('login')) {
+        $token = test_input($_POST['token']);
+        $login = test_input($_POST['login']);
+        $adulte = Adulte::loadByLogin($login);
+        if ($adulte->checkToken($token)) {
+            if(isPostSet('idenfant')) {
+                if ($adulte->getIdRang() < 3) {
+                    $trans = new TransactionHandler();
+                    if (isPostSet('nbtrans'))
+                        $trans->loadEnfantOperations(test_input($_POST['nbtrans']), test_input($_POST['idenfant']));
+                    else
+                        $trans->loadEnfantOperations(5, test_input($_POST['idenfant']));
+                    echo '{"Code": ' . $GLOBALS['CODE']['CODE_0']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_0']['Message'] . '", ' . $trans->jsonSerialize() . '}';
+                } else {
+                    echo '{"Code": ' . $GLOBALS['CODE']['CODE_403']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_403']['Message'] . '"}';
+                }
+            }else {
+                echo '{"Code": ' . $GLOBALS['CODE']['CODE_1']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_1']['Message'] . '"}';
+            }
         } else {
             echo '{"Code": ' . $GLOBALS['CODE']['CODE_8']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_8']['Message'] . '"}';
         }

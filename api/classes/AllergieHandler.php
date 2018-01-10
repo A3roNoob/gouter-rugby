@@ -48,7 +48,7 @@ class AllergieHandler
         }
     }
 
-    function  loadAllergieFromEnfant(Enfant $enfant){
+    function loadAllergieFromEnfant(Enfant $enfant){
         $db = DatabaseObject::connect();
         $query = $db->prepare("SELECT * FROM allergene NATURAL JOIN allergieenfant WHERE idEnfant=:idEnfant;");
         $query->bindValue(':idEnfant', $enfant->getIdEnfant(), PDO::PARAM_INT);

@@ -94,6 +94,13 @@ RewriteRule ^api/consommation/enregistrer/?$ api/consommation.php?action=enregis
 Header set Access-Control-Allow-Origin "*"
 RewriteRule ^api/reset/?$ api/reset.php
 
+Header set Access-Control-Allow-Origin "*"
+RewriteRule ^api/transactions/historique?$ api/user.php?action=historiquetransac
+
+Header set Access-Control-Allow-Origin "*"
+RewriteRule ^api/transactions/enfant/historique?$ api/user.php?action=historiqueenfanttransac
+
+
 RedirectMatch 403 ^/api/classes/?$
 RedirectMatch 403 ^/api/config.php
 RedirectMatch 403 ^/api/credentials.json$
