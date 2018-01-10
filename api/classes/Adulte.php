@@ -362,7 +362,7 @@ class Adulte
         $db = DatabaseObject::connect();
         $db->beginTransaction();
 
-        $query = $db->prepare("INSERT INTO adulte(nom, prenom, mail, tel, mdp) VALUES (:nom, :prenom, :mail, :tel, :mdp)");
+        $query = $db->prepare("INSERT INTO adulte(nom, prenom, idRang, mail, tel, mdp) VALUES (:nom, :prenom, :rang, :mail, :tel, :mdp)");
         $query->bindValue(':nom', $this->getNom());
         $query->bindValue(':prenom', $this->getPrenom());
         $query->bindValue(':mail', $this->getMail());
@@ -413,7 +413,7 @@ class Adulte
         }
     }
     public function jsonSerialize(){
-        return '{"ID" : ' . $this->getIdAdulte() . ', "Nom" : "' . $this->getNom() . '", "Prenom" : "' . $this->getPrenom() . '", "Mail" : "'.$this->getMail().'", "Phone" : "'.$this->getTel().'", "Solde": '.$this->getSolde().'}';
+        return '{"ID" : ' . $this->getIdAdulte() . ', "Nom" : "' . $this->getNom() . '", "Prenom" : "' . $this->getPrenom() . '", "Mail" : "'.$this->getMail().'", "Phone" : "'.$this->getTel().'", "Solde": '.$this->getSolde().', "Rang" : '.$this->getIdRang().'}';
 
     }
 }

@@ -199,6 +199,20 @@ class Produit implements JsonSerializable{
         }
     }
 
+    public function checkStock(){
+        $db = DatabaseObject::connect();
+        $query = $db->prepare("SELECT alert FROM stockgestion WHERE idProduit=:id");
+        $query->bindValue(':id', $this->getIdProduit(), PDO::PARAM_INT);
+        try{
+            $query->execute();
+            $data = $query->fetch(PDO::FETCH_ASSOC);
+        }catch(PDOException $e){
+            echo '{"Code" : ' . $GLOBALS['CODE']['CODE_18']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_18']['Message'] . '", "IDS" : [' . $this->getIdProduit() . ']}';
+            exit(1);
+        }
+        return isset($data['alert']) && $data['alert'] == 1;
+    }
+
     public function jsonSerialize()
     {
         return '{"Id": ' . $this->getIdProduit() . ', "Nom": "' . $this->getNom() . '", "Description": "'.$this->getDescProduit().'", "Prix": '.$this->getPrix().', "Quantite": '.(is_null($this->getQuantite()) ? 0 : $this->getQuantite() ).'}';

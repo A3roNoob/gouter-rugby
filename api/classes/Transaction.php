@@ -83,7 +83,7 @@ class Transaction implements JsonSerializable
      */
     public function setDate($date)
     {
-        $this->_date = DateTime::createFromFormat("Y-m-d", $data);
+        $this->_date = new DateTime($date);
     }
     //endregion
 
@@ -92,6 +92,8 @@ class Transaction implements JsonSerializable
             $this->setIdOpe($data['idOperation']);
         if(isset($data['idAdulte']))
             $this->setAdulte($data['idAdulte']);
+        if(isset($data['idEnfant']))
+            $this->setEnfant($data['idEnfant']);
         if(isset($data['montant']))
             $this->setMontant($data['montant']);
         if(isset($data['dateOpe']))

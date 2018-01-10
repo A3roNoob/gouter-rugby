@@ -244,7 +244,7 @@ if (isGetSet("action") && $_GET['action'] == "connexion") {
                     $adulte = Adulte::loadById(test_input($_POST['idparent']));
                     $enfant = Enfant::creerEnfant(test_input($_POST['nom']), test_input($_POST['prenom']), $adulte, test_input($_POST['naissance']));
                     $enfant->enregistrer();
-                    echo '{"Code" : ' . $GLOBALS['CODE']['CODE_0']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_0']['Message'] . '", "ID" : '.$enfant->getIdEnfant().'}';
+                    echo '{"Code" : ' . $GLOBALS['CODE']['CODE_0']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_0']['Message'] . '", "ID" : ' . $enfant->getIdEnfant() . '}';
 
                 } else {
                     echo '{"Code" : ' . $GLOBALS['CODE']['CODE_403']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_403']['Message'] . '"}';
@@ -267,8 +267,9 @@ if (isGetSet("action") && $_GET['action'] == "connexion") {
             if (isPostSet('idenfant')) {
                 if ($adulte->getIdRang() < 3) {
                     $enfant = Enfant::loadById(test_input($_POST['idenfant']));
+                    $solde = $enfant->getSolde();
                     $enfant->supprimer();
-                    echo '{"Code" : ' . $GLOBALS['CODE']['CODE_0']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_0']['Message'] . '"}';
+                    echo '{"Code" : ' . $GLOBALS['CODE']['CODE_0']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_0']['Message'] . '", "Solde" : ' . $solde . '}';
 
                 } else {
                     echo '{"Code" : ' . $GLOBALS['CODE']['CODE_403']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_403']['Message'] . '"}';
@@ -311,7 +312,7 @@ if (isGetSet("action") && $_GET['action'] == "connexion") {
                 if ($adulte->getIdRang() < 2) {
                     $adulte = Adulte::creerAdulte(test_input($_POST['nom']), test_input($_POST['prenom']), Rang::loadById(test_input($_POST['idrang']))->getIdRang(), test_input($_POST['mail']), test_input($_POST['tel']), test_input($_POST['mdp']));
                     $adulte->enregistrer();
-                    echo '{"Code" : ' . $GLOBALS['CODE']['CODE_0']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_0']['Message'] . '"}';
+                    echo '{"Code" : ' . $GLOBALS['CODE']['CODE_0']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_0']['Message'] . '", "ID" : ' . $adulte->getIdRang() . '}';
                 } else {
                     echo '{"Code" : ' . $GLOBALS['CODE']['CODE_403']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_403']['Message'] . '"}';
                 }
@@ -360,7 +361,7 @@ if (isGetSet("action") && $_GET['action'] == "connexion") {
     } else {
         echo '{"Code" : ' . $GLOBALS['CODE']['CODE_1']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_1']['Message'] . '"}';
     }
-}else if (isGetSet('action') && $_GET['action'] == 'supprimeradulte') {
+} else if (isGetSet('action') && $_GET['action'] == 'supprimeradulte') {
     if (isPostSet('token') && isPostSet('login')) {
         $token = test_input($_POST['token']);
         $login = test_input($_POST['login']);
@@ -403,7 +404,7 @@ if (isGetSet("action") && $_GET['action'] == "connexion") {
     } else {
         echo '{"Code": ' . $GLOBALS['CODE']['CODE_1']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_1']['Message'] . '"}';
     }
-}else if (isGetSet('action') && $_GET['action'] == 'historiquetransac') {
+} else if (isGetSet('action') && $_GET['action'] == 'historiquetransac') {
     if (isPostSet('token') && isPostSet('login')) {
         $token = test_input($_POST['token']);
         $login = test_input($_POST['login']);
@@ -411,7 +412,7 @@ if (isGetSet("action") && $_GET['action'] == "connexion") {
         if ($adulte->checkToken($token)) {
             if ($adulte->getIdRang() < 3) {
                 $trans = new TransactionHandler();
-                if(isPostSet('nbtrans'))
+                if (isPostSet('nbtrans'))
                     $trans->loadOperations(test_input($_POST['nbtrans']));
                 else
                     $trans->loadOperations(5);
@@ -432,7 +433,7 @@ if (isGetSet("action") && $_GET['action'] == "connexion") {
         $login = test_input($_POST['login']);
         $adulte = Adulte::loadByLogin($login);
         if ($adulte->checkToken($token)) {
-            if(isPostSet('idenfant')) {
+            if (isPostSet('idenfant')) {
                 if ($adulte->getIdRang() < 3) {
                     $trans = new TransactionHandler();
                     if (isPostSet('nbtrans'))
@@ -443,7 +444,56 @@ if (isGetSet("action") && $_GET['action'] == "connexion") {
                 } else {
                     echo '{"Code": ' . $GLOBALS['CODE']['CODE_403']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_403']['Message'] . '"}';
                 }
-            }else {
+            } else {
+                echo '{"Code": ' . $GLOBALS['CODE']['CODE_1']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_1']['Message'] . '"}';
+            }
+        } else {
+            echo '{"Code": ' . $GLOBALS['CODE']['CODE_8']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_8']['Message'] . '"}';
+        }
+    } else {
+        echo '{"Code": ' . $GLOBALS['CODE']['CODE_1']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_1']['Message'] . '"}';
+    }
+} else if (isGetSet('action') && $_GET['action'] == 'historiqueconso') {
+    if (isPostSet('token') && isPostSet('login')) {
+        $token = test_input($_POST['token']);
+        $login = test_input($_POST['login']);
+        $adulte = Adulte::loadByLogin($login);
+        if ($adulte->checkToken($token)) {
+            if ($adulte->getIdRang() < 3) {
+                $conso = new ConsommationHistoriqueHandler();
+                if (isPostSet('nbtrans'))
+                    $conso->loadOperations(test_input($_POST['nbtrans']));
+                else
+                    $conso->loadOperations(5);
+                echo '{"Code": ' . $GLOBALS['CODE']['CODE_0']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_0']['Message'] . '", ' . $conso->jsonSerialize() . '}';
+            } else {
+                echo '{"Code": ' . $GLOBALS['CODE']['CODE_403']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_403']['Message'] . '"}';
+            }
+
+        } else {
+            echo '{"Code": ' . $GLOBALS['CODE']['CODE_8']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_8']['Message'] . '"}';
+        }
+    } else {
+        echo '{"Code": ' . $GLOBALS['CODE']['CODE_1']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_1']['Message'] . '"}';
+    }
+} else if (isGetSet('action') && $_GET['action'] == 'historiqueenfantconsoc') {
+    if (isPostSet('token') && isPostSet('login')) {
+        $token = test_input($_POST['token']);
+        $login = test_input($_POST['login']);
+        $adulte = Adulte::loadByLogin($login);
+        if ($adulte->checkToken($token)) {
+            if (isPostSet('idenfant')) {
+                if ($adulte->getIdRang() < 3) {
+                    $conso = new ConsommationHistoriqueHandler();
+                    if (isPostSet('nbtrans'))
+                        $conso->loadEnfantOperations(test_input($_POST['nbtrans']), test_input($_POST['idenfant']));
+                    else
+                        $conso->loadEnfantOperations(5, test_input($_POST['idenfant']));
+                    echo '{"Code": ' . $GLOBALS['CODE']['CODE_0']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_0']['Message'] . '", ' . $conso->jsonSerialize() . '}';
+                } else {
+                    echo '{"Code": ' . $GLOBALS['CODE']['CODE_403']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_403']['Message'] . '"}';
+                }
+            } else {
                 echo '{"Code": ' . $GLOBALS['CODE']['CODE_1']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_1']['Message'] . '"}';
             }
         } else {

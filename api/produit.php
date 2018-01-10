@@ -29,7 +29,7 @@ if (isGetSet('action') && $_GET['action'] == "produits") {
     } else {
         echo '{"Code" : ' . $GLOBALS['CODE']['CODE_1']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_1']['Message'] . '"}';
     }
-} else if(isGetSet('action') && $_GET['action'] == 'supprimer'){
+} else if (isGetSet('action') && $_GET['action'] == 'supprimer') {
     if (isPostSet('token') && isPostSet('login')) {
         $token = test_input($_POST['token']);
         $login = test_input($_POST['login']);
@@ -53,7 +53,7 @@ if (isGetSet('action') && $_GET['action'] == "produits") {
     } else {
         echo '{"Code" : ' . $GLOBALS['CODE']['CODE_1']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_1']['Message'] . '"}';
     }
-}else if(isGetSet('action') && $_GET['action'] == 'ajouter'){
+} else if (isGetSet('action') && $_GET['action'] == 'ajouter') {
     if (isPostSet('token') && isPostSet('login')) {
         $token = test_input($_POST['token']);
         $login = test_input($_POST['login']);
@@ -63,7 +63,7 @@ if (isGetSet('action') && $_GET['action'] == "produits") {
                 if ($adulte->getIdRang() < 3) {
                     $produit = Produit::creerProduit(test_input($_POST["nom"]), test_input($_POST['desc']), test_input($_POST['prix']));
                     $produit->enregistrerProduit();
-                    echo '{"Code" : ' . $GLOBALS['CODE']['CODE_0']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_0']['Message'] . '", "id" : '.$produit->getIdProduit().'}';
+                    echo '{"Code" : ' . $GLOBALS['CODE']['CODE_0']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_0']['Message'] . '", "id" : ' . $produit->getIdProduit() . '}';
                 } else {
                     echo '{"Code" : ' . $GLOBALS['CODE']['CODE_403']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_403']['Message'] . '"}';
                 }
@@ -76,7 +76,7 @@ if (isGetSet('action') && $_GET['action'] == "produits") {
     } else {
         echo '{"Code" : ' . $GLOBALS['CODE']['CODE_1']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_1']['Message'] . '"}';
     }
-}else if(isGetSet('action') && $_GET['action'] == 'modifier'){
+} else if (isGetSet('action') && $_GET['action'] == 'modifier') {
     if (isPostSet('token') && isPostSet('login')) {
         $token = test_input($_POST['token']);
         $login = test_input($_POST['login']);
@@ -85,15 +85,15 @@ if (isGetSet('action') && $_GET['action'] == "produits") {
             if (isPostSet('idproduit') && (isPostSet('nom') || isPostSet("desc") || isPostSet("prix"))) {
                 if ($adulte->getIdRang() < 3) {
                     $produit = Produit::loadProduit(test_input($_POST['idproduit']));
-                    if(is_bool($produit)){
+                    if (is_bool($produit)) {
                         echo '{"Code" : ' . $GLOBALS['CODE']['CODE_18']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_18']['Message'] . '", "IDS" : [' . $_POST['idproduit'] . ']}';
                         exit(1);
                     }
-                    if(isPostSet('nom'))
+                    if (isPostSet('nom'))
                         $produit->setNom(test_input($_POST['nom']));
-                    if(isPostSet('desc'))
+                    if (isPostSet('desc'))
                         $produit->setDescProduit(test_input($_POST['desc']));
-                    if(isPostSet('prix'))
+                    if (isPostSet('prix'))
                         $produit->setPrix(test_input($_POST['prix']));
                     $produit->updateProduit();
                     echo '{"Code" : ' . $GLOBALS['CODE']['CODE_0']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_0']['Message'] . '"}';
@@ -109,6 +109,30 @@ if (isGetSet('action') && $_GET['action'] == "produits") {
     } else {
         echo '{"Code" : ' . $GLOBALS['CODE']['CODE_1']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_1']['Message'] . '"}';
     }
-}else {
+}
+if (isGetSet('action') && $_GET['action'] == "stock") {
+    if (isPostSet('token') && isPostSet('login')) {
+        $token = test_input($_POST['token']);
+        $login = test_input($_POST['login']);
+        $adulte = Adulte::loadByLogin($login);
+        if ($adulte->checkToken($token)) {
+            if (isPostSet('idproduit')) {
+                $produit = Produit::loadProduit(test_input($_POST['idproduit']));
+                if ($produit->checkStock()) {
+                    $v = 1;
+                } else {
+                    $v = 0;
+                }
+                echo '{"Code" : ' . $GLOBALS['CODE']['CODE_0']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_0']['Message'] . '", "AlerteStock" : ' . $v . '}';
+            } else {
+                echo '{"Code" : ' . $GLOBALS['CODE']['CODE_1']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_1']['Message'] . '"}';
+            }
+        } else {
+            echo '{"Code" : ' . $GLOBALS['CODE']['CODE_8']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_8']['Message'] . '"}';
+        }
+    } else {
+        echo '{"Code" : ' . $GLOBALS['CODE']['CODE_1']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_1']['Message'] . '"}';
+    }
+} else {
     header('Location: /api/');
 }
