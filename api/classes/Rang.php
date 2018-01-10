@@ -51,7 +51,7 @@ class Rang implements JsonSerializable
         $query->bindValue(':id', $id, PDO::PARAM_INT);
         try{
             $query->execute();
-            $data = $query->fetch(PDO::PARAM_INT);
+            $data = $query->fetch(PDO::FETCH_ASSOC);
         }catch(PDOException $e){
             echo '{"Code" : ' . $GLOBALS['CODE']['CODE_5']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
             exit(1);

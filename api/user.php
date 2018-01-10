@@ -311,7 +311,7 @@ if (isGetSet("action") && $_GET['action'] == "connexion") {
                 if ($adulte->getIdRang() < 2) {
                     $adulte = Adulte::creerAdulte(test_input($_POST['nom']), test_input($_POST['prenom']), Rang::loadById(test_input($_POST['idrang']))->getIdRang(), test_input($_POST['mail']), test_input($_POST['tel']), test_input($_POST['mdp']));
                     $adulte->enregistrer();
-                    echo '{"Code" : ' . $GLOBALS['CODE']['CODE_0']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_0']['Message'] . '"}';
+                    echo '{"Code" : ' . $GLOBALS['CODE']['CODE_0']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_0']['Message'] . '", "ID" : '.$adulte->getIdRang().'}';
                 } else {
                     echo '{"Code" : ' . $GLOBALS['CODE']['CODE_403']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_403']['Message'] . '"}';
                 }
