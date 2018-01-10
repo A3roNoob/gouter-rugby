@@ -91,6 +91,8 @@ RewriteRule ^api/course/enregistrer/?$ api/course.php?action=enregistrercourse
 Header set Access-Control-Allow-Origin "*"
 RewriteRule ^api/consommation/enregistrer/?$ api/consommation.php?action=enregistrerconsommation
 
+Header set Access-Control-Allow-Origin "*"
+RewriteRule ^api/reset/?$ api/reset.php
 
 RedirectMatch 403 ^/api/classes/?$
 RedirectMatch 403 ^/api/config.php

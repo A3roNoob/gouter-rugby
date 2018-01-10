@@ -223,7 +223,7 @@ class Enfant implements JsonSerializable
             $allergie->loadAllergieFromEnfant($this);
             $this->setAllergies($allergie);
         }
-        return '{"ID" : ' . $this->getIdEnfant() . ', "Nom" : "' . $this->getNom() . '", "Prenom" : "' . $this->getPrenom() . '", "Solde" : ' . $this->getSolde() . ', ' . $this->getAllergies()->jsonSerialize() . ', "Naissance" : "' . $this->getNaissance()->format("d/m/Y") . '"}';
+        return '{"ID" : ' . $this->getIdEnfant() . ', "Nom" : "' . $this->getNom() . '", "Prenom" : "' . $this->getPrenom() . '", "Solde" : ' . $this->getSolde() . ', ' . $this->getAllergies()->jsonSerialize() . ', "Naissance" : "' . $this->getNaissance()->format("Y-m-d") . '"}';
     }
 
     /**
