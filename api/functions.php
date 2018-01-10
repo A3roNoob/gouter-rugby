@@ -135,3 +135,10 @@ set_error_handler('errorHandler');
 function htmltojson($json){
     return str_replace('&quot;', '"', $json);
 }
+
+function var_dump_pre($mixed = null) {
+    echo '<pre>';
+    var_dump($mixed);
+    echo '</pre>';
+    return null;
+}

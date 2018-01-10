@@ -113,6 +113,8 @@ class Produit implements JsonSerializable{
             echo '{"Code" : ' . $GLOBALS['CODE']['CODE_5']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
             exit(1);
         }
+
+        $this->setIdProduit($db->lastInsertId());
     }
 
     public function hydrate(array $data){
@@ -199,6 +201,6 @@ class Produit implements JsonSerializable{
 
     public function jsonSerialize()
     {
-        return '{"Id": ' . $this->getIdProduit() . ', "Nom": "' . $this->getNom() . '", "Description": "'.$this->getDescProduit().'", "Prix": '.$this->getPrix().', "Quantite": '.is_null($this->getQuantite()) ? 0 : $this->getQuantite() .'}';
+        return '{"Id": ' . $this->getIdProduit() . ', "Nom": "' . $this->getNom() . '", "Description": "'.$this->getDescProduit().'", "Prix": '.$this->getPrix().', "Quantite": '.(is_null($this->getQuantite()) ? 0 : $this->getQuantite() ).'}';
     }
 }

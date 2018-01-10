@@ -63,7 +63,7 @@ if (isGetSet('action') && $_GET['action'] == "produits") {
                 if ($adulte->getIdRang() < 3) {
                     $produit = Produit::creerProduit(test_input($_POST["nom"]), test_input($_POST['desc']), test_input($_POST['prix']));
                     $produit->enregistrerProduit();
-                    echo '{"Code" : ' . $GLOBALS['CODE']['CODE_0']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_0']['Message'] . '"}';
+                    echo '{"Code" : ' . $GLOBALS['CODE']['CODE_0']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_0']['Message'] . '", "id" : '.$produit->getIdProduit().'}';
                 } else {
                     echo '{"Code" : ' . $GLOBALS['CODE']['CODE_403']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_403']['Message'] . '"}';
                 }

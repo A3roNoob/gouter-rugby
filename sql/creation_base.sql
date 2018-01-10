@@ -26,7 +26,7 @@ CREATE TABLE adulte
     mdp VARCHAR(255),
 
     CONSTRAINT PK_Adulte PRIMARY KEY (idAdulte),
-    CONSTRAINT FK_AdulteRang FOREIGN KEY (idRang) REFERENCES rang(idRang)
+    CONSTRAINT FK_AdulteRang FOREIGN KEY (idRang) REFERENCES rang(idRang) ON DELETE CASCADE
 );
 
 /*CREATION DE LA TABLE ENFANT*/
@@ -36,6 +36,7 @@ CREATE TABLE enfant
     idEnfant INT(4) AUTO_INCREMENT,
     nom VARCHAR(30),
     prenom VARCHAR(30),
+    naissance DATE,
 
     CONSTRAINT PK_Enfant PRIMARY KEY (idEnfant)
 );
@@ -67,8 +68,8 @@ CREATE TABLE composproduit
     idProduit INT(4),
 
     CONSTRAINT PK_composProduit PRIMARY KEY (idProduit, idProduitCompos),
-    CONSTRAINT FK_ProduitCompos FOREIGN KEY (idProduitCompos) REFERENCES produitcompose(idProduitCompos),
-    CONSTRAINT FK_Produit FOREIGN KEY (idProduit) REFERENCES produit(idProduit)
+    CONSTRAINT FK_ProduitCompos FOREIGN KEY (idProduitCompos) REFERENCES produitcompose(idProduitCompos) ON DELETE CASCADE,
+    CONSTRAINT FK_Produit FOREIGN KEY (idProduit) REFERENCES produit(idProduit) ON DELETE CASCADE
 );
 
 /*CREATION DE LA TABLE ALLERGENE*/
@@ -112,8 +113,8 @@ CREATE TABLE parent
     idEnfant INT(4),
 
     CONSTRAINT PK_Parent PRIMARY KEY (idAdulte,idEnfant),
-    CONSTRAINT FK_AdulteParent FOREIGN KEY(idAdulte) REFERENCES adulte(idAdulte),
-    CONSTRAINT FK_EnfantParent FOREIGN KEY(idEnfant) REFERENCES enfant(idEnfant)
+    CONSTRAINT FK_AdulteParent FOREIGN KEY(idAdulte) REFERENCES adulte(idAdulte) ON DELETE CASCADE,
+    CONSTRAINT FK_EnfantParent FOREIGN KEY(idEnfant) REFERENCES enfant(idEnfant) ON DELETE CASCADE
 );
 
 /*CREATION DE LA TABLE CATENFANT*/
@@ -124,8 +125,8 @@ CREATE TABLE catenfant
     idCat INT(2),
 
     CONSTRAINT PK_CatEnfant PRIMARY KEY (idEnfant,idCat),
-    CONSTRAINT FK_EnfantCat FOREIGN KEY(idEnfant) REFERENCES enfant(idEnfant),
-    CONSTRAINT FK_CatCat FOREIGN KEY(idCat) REFERENCES categorieenfant(idCat)
+    CONSTRAINT FK_EnfantCat FOREIGN KEY(idEnfant) REFERENCES enfant(idEnfant) ON DELETE CASCADE,
+    CONSTRAINT FK_CatCat FOREIGN KEY(idCat) REFERENCES categorieenfant(idCat) ON DELETE CASCADE
 );
 
 /*CREATION DE LA TABLE STOCK*/
@@ -136,7 +137,7 @@ CREATE TABLE stock
     quantite INT(4) DEFAULT 0,
 
     CONSTRAINT PK_Stock PRIMARY KEY (idProduit),
-    CONSTRAINT FK_ProduitStock FOREIGN KEY (idProduit) REFERENCES produit(idProduit)
+    CONSTRAINT FK_ProduitStock FOREIGN KEY (idProduit) REFERENCES produit(idProduit) ON DELETE CASCADE
 );
 
 /*CREATION DE LA TABLE CONSOMMATION*/
@@ -161,8 +162,8 @@ CREATE TABLE detailconso
     quantite INT(2) DEFAULT 0,
 
     CONSTRAINT PK_DetailConso PRIMARY KEY (idConso,idProduit),
-    CONSTRAINT FK_ConsoDetailConso FOREIGN KEY (idConso) REFERENCES consommation(idConso),
-    CONSTRAINT FK_ProduitDetailConso FOREIGN KEY (idProduit) REFERENCES produit(idProduit)
+    CONSTRAINT FK_ConsoDetailConso FOREIGN KEY (idConso) REFERENCES consommation(idConso) ON DELETE CASCADE,
+    CONSTRAINT FK_ProduitDetailConso FOREIGN KEY (idProduit) REFERENCES produit(idProduit) ON DELETE CASCADE
 );
 
 /*CREATION DE LA TABLE ALLERGIEENFANT*/
@@ -173,8 +174,8 @@ CREATE TABLE allergieenfant
     idAllergene INT(3),
 
     CONSTRAINT PK_AllergieEnfant PRIMARY KEY (idEnfant,idAllergene),
-    CONSTRAINT FK_EnfantAll_E FOREIGN KEY(idEnfant) REFERENCES enfant(idEnfant),
-    CONSTRAINT FK_AllAll_E FOREIGN KEY(idAllergene) REFERENCES allergene(idAllergene)
+    CONSTRAINT FK_EnfantAll_E FOREIGN KEY(idEnfant) REFERENCES enfant(idEnfant) ON DELETE CASCADE,
+    CONSTRAINT FK_AllAll_E FOREIGN KEY(idAllergene) REFERENCES allergene(idAllergene) ON DELETE CASCADE
 );
 
 /*CREATION DE LA TABLE ALLERGIEPRODUIT*/
@@ -185,8 +186,8 @@ CREATE TABLE allergieproduit
     idAllergene INT(3),
 
     CONSTRAINT PK_AllergieProduit PRIMARY KEY (idProduit,idAllergene),
-    CONSTRAINT FK_ProduitAll_P FOREIGN KEY(idProduit) REFERENCES produit(idProduit),
-    CONSTRAINT FK_AllAllE FOREIGN KEY(idAllergene) REFERENCES allergene(idAllergene)
+    CONSTRAINT FK_ProduitAll_P FOREIGN KEY(idProduit) REFERENCES produit(idProduit) ON DELETE CASCADE,
+    CONSTRAINT FK_AllAllE FOREIGN KEY(idAllergene) REFERENCES allergene(idAllergene) ON DELETE CASCADE
 );
 
 /*CREATION DE LA TABLE COMPTE*/
@@ -197,7 +198,7 @@ CREATE TABLE compte
     solde DECIMAL(6,2),
 
     CONSTRAINT PK_Compte PRIMARY KEY (idEnfant),
-    CONSTRAINT FK_EnfantCompte FOREIGN KEY (idEnfant) REFERENCES enfant(idEnfant)
+    CONSTRAINT FK_EnfantCompte FOREIGN KEY (idEnfant) REFERENCES enfant(idEnfant) ON DELETE CASCADE
 );
 
 /*CREATION DE LA TABLE CATPRODUIT*/
@@ -208,8 +209,8 @@ CREATE TABLE catproduit
     idCat INT(2),
 
     CONSTRAINT PK_CatProduit PRIMARY KEY (idProduit, idCat),
-    CONSTRAINT FK_ProduitCatProduit FOREIGN KEY (idProduit) REFERENCES produit(idProduit),
-    CONSTRAINT FK_CatCatProduit FOREIGN KEY (idCat) REFERENCES categorieproduit(idCat)
+    CONSTRAINT FK_ProduitCatProduit FOREIGN KEY (idProduit) REFERENCES produit(idProduit) ON DELETE CASCADE,
+    CONSTRAINT FK_CatCatProduit FOREIGN KEY (idCat) REFERENCES categorieproduit(idCat) ON DELETE CASCADE
 );
 
 /*CREATION DE LA TABLE COURSE*/
@@ -222,7 +223,7 @@ CREATE TABLE course
     dateCourse DATE,
 
     CONSTRAINT PK_Course PRIMARY KEY(idCourse,idAdulte),
-    CONSTRAINT FK_AdulteCourse FOREIGN KEY (idAdulte) REFERENCES adulte(idAdulte)
+    CONSTRAINT FK_AdulteCourse FOREIGN KEY (idAdulte) REFERENCES adulte(idAdulte) ON DELETE CASCADE
 );
 
 /*CREATION DE LA TABLE COURSEDETAIL*/
@@ -234,8 +235,8 @@ CREATE TABLE detailcourse
     quantite INT(3),
 
     CONSTRAINT PK_DetailCourse PRIMARY KEY (idCourse,idProduit),
-    CONSTRAINT FK_ProduitDetailCourse FOREIGN KEY (idCourse) REFERENCES course(idCourse),
-    CONSTRAINT FK_ProduitDetailProduit FOREIGN KEY (idProduit) REFERENCES produit(idProduit)
+    CONSTRAINT FK_ProduitDetailCourse FOREIGN KEY (idCourse) REFERENCES course(idCourse) ON DELETE CASCADE,
+    CONSTRAINT FK_ProduitDetailProduit FOREIGN KEY (idProduit) REFERENCES produit(idProduit) ON DELETE CASCADE
 
 );
 
@@ -249,20 +250,20 @@ CREATE TABLE operationsolde
     montant DECIMAL(6,2),
     dateOpe DATETIME,
 
-    CONSTRAINT FK_AdulteOperation FOREIGN KEY (idAdulte) REFERENCES adulte(idAdulte),
-    CONSTRAINT FK_EnfantOperation FOREIGN KEY (idEnfant) REFERENCES enfant(idEnfant)
+    CONSTRAINT FK_AdulteOperation FOREIGN KEY (idAdulte) REFERENCES adulte(idAdulte) ON DELETE CASCADE,
+    CONSTRAINT FK_EnfantOperation FOREIGN KEY (idEnfant) REFERENCES enfant(idEnfant) ON DELETE CASCADE
 );
 
 CREATE TABLE connexion
 (
     idAdulte INT(4) PRIMARY KEY,
     token VARCHAR(72) DEFAULT NULL,
-    CONSTRAINT FK_connexion FOREIGN KEY (idAdulte) REFERENCES adulte(idAdulte)
+    CONSTRAINT FK_connexion FOREIGN KEY (idAdulte) REFERENCES adulte(idAdulte) ON DELETE CASCADE
 );
 
 CREATE TABLE stockgestion
 (
     idProduit INT(4) PRIMARY KEY,
     alert BOOL DEFAULT FALSE,
-    CONSTRAINT FK_stockgestion FOREIGN KEY (idProduit) REFERENCES stock(idProduit)
+    CONSTRAINT FK_stockgestion FOREIGN KEY (idProduit) REFERENCES stock(idProduit) ON DELETE CASCADE
 );

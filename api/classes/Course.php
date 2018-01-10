@@ -61,16 +61,15 @@ class Course
         if (isset($produits["Produits"])) {
             $produits = $produits["Produits"];
             $this->_produits = array();
-            $this->_failProduit = false;
+            $this->_failProduit = array();
             foreach ($produits as $produit) {
                 $prod = Produit::createCourseProduit($produit["idproduit"], $produit["quantite"]);
                 if (!$prod->verifierProduit()) {
-                    $this->_failProduit = array();
                     array_push($this->_failProduit, $prod->getIdProduit());
-                }
-                array_push($this->_produits, $prod);
+                }else
+                    array_push($this->_produits, $prod);
             }
-            if (is_array($this->_failProduit)) {
+            if (count($this->_failProduit) > 0) {
                 $strId = join(",", $this->_failProduit);
                 echo '{"Code" : ' . $GLOBALS['CODE']['CODE_18']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_18']['Message'] . '", "IDS" : [' . $strId . ']}';
                 exit(1);
