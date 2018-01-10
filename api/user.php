@@ -452,6 +452,55 @@ if (isGetSet("action") && $_GET['action'] == "connexion") {
     } else {
         echo '{"Code": ' . $GLOBALS['CODE']['CODE_1']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_1']['Message'] . '"}';
     }
+}else if (isGetSet('action') && $_GET['action'] == 'historiqueconso') {
+    if (isPostSet('token') && isPostSet('login')) {
+        $token = test_input($_POST['token']);
+        $login = test_input($_POST['login']);
+        $adulte = Adulte::loadByLogin($login);
+        if ($adulte->checkToken($token)) {
+            if ($adulte->getIdRang() < 3) {
+                $conso = new ConsommationHistoriqueHandler();
+                if(isPostSet('nbtrans'))
+                    $conso->loadOperations(test_input($_POST['nbtrans']));
+                else
+                    $conso->loadOperations(5);
+                echo '{"Code": ' . $GLOBALS['CODE']['CODE_0']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_0']['Message'] . '", ' . $conso->jsonSerialize() . '}';
+            } else {
+                echo '{"Code": ' . $GLOBALS['CODE']['CODE_403']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_403']['Message'] . '"}';
+            }
+
+        } else {
+            echo '{"Code": ' . $GLOBALS['CODE']['CODE_8']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_8']['Message'] . '"}';
+        }
+    } else {
+        echo '{"Code": ' . $GLOBALS['CODE']['CODE_1']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_1']['Message'] . '"}';
+    }
+} else if (isGetSet('action') && $_GET['action'] == 'historiqueenfantconsoc') {
+    if (isPostSet('token') && isPostSet('login')) {
+        $token = test_input($_POST['token']);
+        $login = test_input($_POST['login']);
+        $adulte = Adulte::loadByLogin($login);
+        if ($adulte->checkToken($token)) {
+            if(isPostSet('idenfant')) {
+                if ($adulte->getIdRang() < 3) {
+                    $conso = new ConsommationHistoriqueHandler();
+                    if (isPostSet('nbtrans'))
+                        $conso->loadEnfantOperations(test_input($_POST['nbtrans']), test_input($_POST['idenfant']));
+                    else
+                        $conso->loadEnfantOperations(5, test_input($_POST['idenfant']));
+                    echo '{"Code": ' . $GLOBALS['CODE']['CODE_0']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_0']['Message'] . '", ' . $conso->jsonSerialize() . '}';
+                } else {
+                    echo '{"Code": ' . $GLOBALS['CODE']['CODE_403']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_403']['Message'] . '"}';
+                }
+            }else {
+                echo '{"Code": ' . $GLOBALS['CODE']['CODE_1']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_1']['Message'] . '"}';
+            }
+        } else {
+            echo '{"Code": ' . $GLOBALS['CODE']['CODE_8']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_8']['Message'] . '"}';
+        }
+    } else {
+        echo '{"Code": ' . $GLOBALS['CODE']['CODE_1']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_1']['Message'] . '"}';
+    }
 } else {
     header('Location: /api/');
 }

@@ -1,12 +1,12 @@
 <?php
 
-class TransactionHandler
+class ConsommationHistoriqueHandler implements JsonSerializable
 {
-    private $_transactions;
+    private $_consommations;
 
     public function loadEnfantOperations($nbOperations, $idEnfant){
         $db = DatabaseObject::connect();
-        $query = $db->prepare("SELECT * FROM operationsolde WHERE idEnfant=:idEnfant LIMIT :limite");
+        $query = $db->prepare("SELECT * FROM consommation WHERE idEnfant=:idEnfant LIMIT :limite");
         $query->bindValue(':idEnfant', $idEnfant, PDO::PARAM_INT);
         $query->bindValue(':limite', $nbOperations, PDO::PARAM_INT);
         try{
@@ -18,18 +18,19 @@ class TransactionHandler
         }
 
         if(!is_bool($data)){
-            $this->_transactions = array();
-            foreach($data as $tr){
-                $transaction = new Transaction();
-                $transaction->hydrate($tr);
-                array_push($this->_transactions, $transaction);
+            $this->_consommations = array();
+            foreach($data as $conso){
+                $consommation = new ConsommationHistorique();
+                $consommation->hydrate($conso);
+                $consommation->loadProduits();
+                array_push($this->_consommations, $consommation);
             }
         }
     }
 
     public function loadOperations($nbOperations){
         $db = DatabaseObject::connect();
-        $query = $db->prepare("SELECT * FROM operationsolde LIMIT :limite");
+        $query = $db->prepare("SELECT * FROM consommation LIMIT :limite");
         $query->bindValue(':limite', $nbOperations, PDO::PARAM_INT);
         try{
             $query->execute();
@@ -40,24 +41,25 @@ class TransactionHandler
         }
 
         if(!is_bool($data)){
-            $this->_transactions = array();
-            foreach($data as $tr){
-                $transaction = new Transaction();
-                $transaction->hydrate($tr);
-                array_push($this->_transactions, $transaction);
+            $this->_consommations = array();
+            foreach($data as $conso){
+                $consommation = new ConsommationHistorique();
+                $consommation->hydrate($conso);
+                $consommation->loadProduits();
+                array_push($this->_consommations, $consommation);
             }
         }
     }
 
-    public function getTransactions(){
-        return $this->_transactions;
+    public function getConsommations(){
+        return $this->_consommations;
     }
 
     public function jsonSerialize(){
-        $string = '"Transactions": [';
+        $string = '"Consommations": [';
         $cnt = 0;
-        foreach($this->getTransactions() as $transaction){
-            $string .= $transaction->jsonSerialize() . ', ';
+        foreach($this->getConsommations() as $consommation){
+            $string .= $consommation->jsonSerialize() . ', ';
             $cnt++;
         }
         if($cnt > 0)
@@ -65,5 +67,4 @@ class TransactionHandler
         $string .= ']';
         return $string;
     }
-
 }

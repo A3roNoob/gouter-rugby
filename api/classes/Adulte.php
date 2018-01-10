@@ -413,7 +413,7 @@ class Adulte
         }
     }
     public function jsonSerialize(){
-        return '{"ID" : ' . $this->getIdAdulte() . ', "Nom" : "' . $this->getNom() . '", "Prenom" : "' . $this->getPrenom() . '", "Mail" : "'.$this->getMail().'", "Phone" : "'.$this->getTel().'", "Solde": '.$this->getSolde().'}';
+        return '{"ID" : ' . $this->getIdAdulte() . ', "Nom" : "' . $this->getNom() . '", "Prenom" : "' . $this->getPrenom() . '", "Mail" : "'.$this->getMail().'", "Phone" : "'.$this->getTel().'", "Solde": '.$this->getSolde().', "Rang" : '.$this->getIdRang().'}';
 
     }
 }
