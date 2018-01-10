@@ -19,6 +19,8 @@ RewriteRule ^api/enfants/?$ api/user.php?action=enfants
 Header set Access-Control-Allow-Origin "*"
 RewriteRule ^api/adultes/?$ api/user.php?action=adultes
 
+Header set Access-Control-Allow-Origin "*"
+RewriteRule ^api/enfant/supprimer/?$ api/user.php?action=supprimerenfant
 
 Header set Access-Control-Allow-Origin "*"
 RewriteRule ^api/etatcomptes/?$ api/user.php?action=etatcomptes

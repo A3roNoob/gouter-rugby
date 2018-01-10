@@ -383,4 +383,16 @@ class Enfant implements JsonSerializable
         $enfant->setNaissance($naissance);
         return $enfant;
     }
+
+    public function supprimer(){
+        $db = DatabaseObject::connect();
+        $query = $db->prepare("DELETE FROM enfant WHERE idEnfant=:idEnfant");
+        $query->bindValue(':idEnfant', $this->getIdEnfant(), PDO::PARAM_INT);
+        try{
+            $query->execute();
+        }catch(PDOException $e){
+            echo '{"Code" : ' . $GLOBALS['CODE']['CODE_5']['Code'] . ', "Message" : "' . $GLOBALS['CODE']['CODE_5']['Message'] . '", "INFOS" : "' . $e->getMessage() . '"}';
+            exit(1);
+        }
+    }
 }
