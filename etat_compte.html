@@ -127,40 +127,7 @@
                     <div class="row"><h2><strong>Historique</strong></h2></div>
                     <div class="row overflow">
                         <div class="col-lg-1">&nbsp;</div>
-                        <div class="col-lg-11" style="height:60vh;overflow: auto;">
-                            <div class="row histo">
-                                <div class="row">
-                                    <div class="col-lg-3">
-                                        <span class="nom">Kamal Larson</span>
-                                    </div>
-                                    <div class="col-lg-3">&nbsp;</div><div class="col-lg-3"></div>
-                                </div>
-                                <div class="row">
-                                    Ajout de <span class="solde">100</span> &euro; par <span class="nom">Gannon LARSON</span>, le <span class="date">27/11/2017 &agrave; 14h38</span>
-                                </div>
-                            </div>
-                            <div class="row histo">
-                                <div class="row">
-                                    <div class="col-lg-3">
-                                        <span class="nom">Kamal LARSON</span>
-                                    </div>
-                                    <div class="col-lg-3">&nbsp;</div><div class="col-lg-3"></div>
-                                </div>
-                                <div class="row">
-                                    Transfert de <span class="solde">27.50</span> &euro; vers <span class="nom">Flynn LARSON</span> par <span class="nom">Gannon LARSON</span>, le <span class="date">27/11/2017 &agrave; 14h57</span>
-                                </div>
-                            </div>
-                            <div class="row histo">
-                                <div class="row">
-                                    <div class="col-lg-3">
-                                        <span class="nom">Kamal LARSON</span>
-                                    </div>
-                                    <div class="col-lg-3">&nbsp;</div><div class="col-lg-3"></div>
-                                </div>
-                                <div class="row">
-                                    A achet&eacute; <strong>Gouter Fran&ccedil;ais</strong> pour <span class="solde">34.35</span> &euro; &agrave; <span class="nom">Ethan PRINCE</span>, le <span class="date">13/12/2017 &agrave; 9h32</span>
-                                </div>
-                            </div>
+                        <div class="col-lg-11" style="height:60vh;overflow: auto;"  id="histo">
                         </div>
                     </div>
                 </div>
@@ -202,12 +169,48 @@
                 var numEnfant = findGetParameter('nb');
                 httpPostAsync("/api/etatcomptes",param,function(e){
                     var res = JSON.parse(e);
+                    var idE = res['Enfants'][numEnfant]['ID'];
                     var nomE = res['Enfants'][numEnfant]['Nom'].toUpperCase();
                     var prenomE = res['Enfants'][numEnfant]['Prenom'];
                     var soldeE = res['Enfants'][numEnfant]['Solde'];
                     document.getElementById('nomEtat').innerHTML = nomE.toUpperCase();
                     document.getElementById('prenomEtat').innerHTML = prenomE;
                     document.getElementById('solde').innerHTML = soldeE;
+                    httpPostAsync("/api/transactions/enfant/historique",param+"&idenfant="+idE,function(e){
+                        var res = JSON.parse(e);
+                        for(i=0;i<res['Transactions'].length;i++){
+                            document.getElementById('histo').innerHTML += "<div class=\"row histo\"><div class=\"row\"><div class=\"col-lg-3\"><span class=\"nom\">"+res["Transactions"][i]["Enfant"]["Prenom"]+" "+res["Transactions"][i]["Enfant"]["Nom"].toUpperCase()+"</span></div><div class=\"col-lg-3\">&nbsp;</div><div class=\"col-lg-3\"></div></div><div class=\"row\"><span class=\"solde\">"+res["Transactions"][i]["Montant"]+"</span> &euro; par <span class=\"nom\">"+res["Transactions"][i]["Adulte"]["Prenom"]+" "+res["Transactions"][i]["Adulte"]["Nom"].toUpperCase()+"</span>, le <span class=\"date\">"+res["Transactions"][i]["DateOperation"]+"</span></div></div>";
+                        }
+                    });
+                    httpPostAsync("/api/consommations/enfant/historique",param+"&idenfant="+idE,function(e){
+                        var res = JSON.parse(e);
+                        console.log(res);
+                        for(i=0;i<res['Consommations'].length;i++){
+                            var produits = [];
+                            var cpt = 0;
+                            (function(i){
+                                httpPostAsync('/api/produits',param,function(e){
+                                    var resProd = JSON.parse(e);
+                                    console.log(resProd);
+                                    console.log('i :'+i);
+                                    for(k=0;k<resProd['Produits'].length;k++){
+                                        for(j=0;j<res['Consommations'][i]['Produits'].length;j++){
+                                            if(resProd['Produits'][k]['Id'] == res['Consommations'][i]['Produits'][j]){
+                                                produits[cpt] = resProd['Produits'][k]['Nom'];
+                                                cpt++;
+                                            }
+                                        }
+                                    }
+                                    console.log(produits);
+                                    var produitsString = "";
+                                    produits.forEach(function(e){
+                                        produitsString+= e + ", ";
+                                    });
+                                    document.getElementById('histo').innerHTML += "<div class=\"row histo\"><div class=\"row\"><div class=\"col-lg-3\">"+"Achat de "+produitsString+" pour "+"<span class=\"nom\">"+res["Consommations"][i]["Enfant"]["Prenom"]+" "+res["Consommations"][i]["Enfant"]["Nom"].toUpperCase()+"</span></div><div class=\"col-lg-3\">&nbsp;</div><div class=\"col-lg-3\"></div></div><div class=\"row\"><span class=\"solde\">"+res["Consommations"][i]["Total"]+"</span> &euro;, le <span class=\"date\">"+res["Consommations"][i]["DateConso"]+"</span></div></div>";
+                                });
+                            })(i);
+                        }
+                    });
                 });
             }
             var cpt = 1;

@@ -274,7 +274,20 @@
                         var res = JSON.parse(e);
                         if(res['Code'] == 0){
                             document.getElementById('retour').innerHTML = "Consommation enregistr&eacute;e !";
-                            decocher(); 
+                            decocher();
+                            httpPostAsync("/api/produits",param,function(e){
+                                var res = JSON.parse(e);
+                                console.log(res);
+                                for(i=0;i<res['Produits'];i++){
+                                    httpPostAsync("/api/produit/stock",param+"&idproduit="+res['Produit'][i]['Id'],function(e){
+                                        var resp = JSON.parse(e);
+                                        console.log(resp);
+                                        if(resp['AlerteStock'] == 1){
+                                            alert('Ce produit est presque epuise : '+res['Produit'][i]['Nom']);
+                                        }
+                                    });
+                                }
+                            });
                         }
                         else{
                             document.getElementById('retour').innerHTML = res['Message'];
@@ -326,7 +339,23 @@
                         console.log(res);
                         if(res['Code'] == 0){
                             document.getElementById('retour').innerHTML = "Consommation enregistr&eacute;e !<br>Le solde est de "+res['Solde']+"&euro;";
-                            decocher(); 
+                            decocher();
+                            httpPostAsync("/api/produits",param,function(e){
+                                var res = JSON.parse(e);
+                                console.log(res);
+                                for(i=0;i<res['Produits'].length;i++){
+                                    (function(res,i){
+                                        httpPostAsync("/api/produit/stock",param+"&idproduit="+res['Produits'][i]['Id'],function(e){
+                                            var resp = JSON.parse(e);
+                                            console.log(resp);
+                                            if(resp['AlerteStock'] == 1){
+                                                alert('Ce produit est presque epuise : '+res['Produits'][i]['Nom']);
+                                            }
+                                        });
+                                    }
+                                    )(res,i);
+                                }
+                            });
                         }
                         else{
                             document.getElementById('retour').innerHTML = res['Message'];

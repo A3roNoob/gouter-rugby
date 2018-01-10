@@ -252,6 +252,8 @@
                         }
                         document.getElementById('add').disabled = true;
                         document.getElementById('sup').disabled = false;
+                        document.getElementById('conf').disabled = false;
+                        document.getElementById('modif').disabled = false;
                         document.getElementById('name').value = res['Produits'][idP]['Nom'];
                         document.getElementById('prix').value = res['Produits'][idP]['Prix'];
                         document.getElementById('desc').value = res['Produits'][idP]['Description'];
@@ -281,6 +283,10 @@
                             }
                         }
                         console.log('idTemp : '+idTemp);
+                        document.getElementById('add').disabled = true;
+                        document.getElementById('sup').disabled = false;
+                        document.getElementById('conf').disabled = false;
+                        document.getElementById('modif').disabled = false;
                         document.getElementById('produit').selectedIndex = idTemp;
                         document.getElementById('name').value = res['Produits'][idTemp]['Nom'];
                         document.getElementById('prix').value = res['Produits'][idTemp]['Prix'];

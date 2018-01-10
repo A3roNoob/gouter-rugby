@@ -275,7 +275,7 @@
                     var idEnfant = res['ID'];
                     reload();
                     if(res['Code'] == 0){
-                        document.getElementById('retour').innerHTML = 'Ajout effectu&eacute;e !';
+                        document.getElementById('retour').innerHTML = 'Ajout effectu&eacute; !';
                         httpPostAsync("/api/enfants",param,function(e){
                             var res = JSON.parse(e);
                             var idTemp;
@@ -305,6 +305,14 @@
                     console.log(res);
                     if(res['Code'] == 0){
                         document.getElementById('retour').innerHTML = 'Suppression effectu&eacute;e !';
+                        if(res['Solde'] !=0){
+                            if(res['Solde']>0){
+                                alert("Il faut lui donner "+res['Solde']+" euro(s)");
+                            }
+                            else{
+                                alert("Il nous doit "+(-res['Solde'])+" euro(s)");
+                            }
+                        }
                         reload();
                     }
                     else{

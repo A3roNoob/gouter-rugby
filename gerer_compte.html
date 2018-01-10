@@ -6,6 +6,7 @@
         <link href="https://fonts.googleapis.com/css?family=Barlow" rel="stylesheet">
         <link rel="stylesheet" href="CSS/style.css" />
         <link rel="stylesheet" href="CSS/menu.css" />
+        <link rel="stylesheet" href="/CSS/ajout_fond.css" />
     </head>
     <body>
         <script src="util.js"></script>
@@ -124,7 +125,54 @@
                 </a>
             </div>
             <div class="col-lg-9">
-
+                <div class="col-lg-4">
+                    <div class="row">
+                        Adulte : <select id="adulte" style="width:90%;"></select>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="row margin">
+                        Nom : <input type="text" id="name" placeholder="Nom" />
+                    </div>
+                    <div class="row margin">
+                        Pr&eacute;nom : <input type="text" id="surname" placeholder="Pr&eacute;nom" />
+                    </div>
+                    <div class="row margin">
+                        Mail : <input type="mail" id="mail" placeholder="mail@truc-online.fr" />
+                    </div>
+                    <div class="row margin">
+                        Tel : <input type="tel" id="tel" placeholder="0102030405" />
+                    </div>
+                    <div class="row margin">
+                        Mot de passe : <input type="password" id="mdp" placeholder="" />
+                    </div>
+                    <div class="row margin">
+                        Rang :  <select id="rang"></select>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="row">
+                        <button class="btn" onclick="confirmer()" id="conf" >Confirmer les changements</button>
+                    </div>
+                    <div class="row">
+                        <button class="btn" onclick="reset()" id="modif" >Annuler les changements</button>
+                    </div>
+                    <div class="row">
+                        <button class="btn" onclick="ajouter()" id="add" >Ajouter l'adulte</button>
+                    </div>
+                    <div class="row">
+                        <button class="btn" onclick="supprimer()" id="sup" >Supprimer l'adulte</button>
+                    </div>
+                    <div class="row">
+                        <span id="retour"></span>
+                    </div>
+                    <div class="row">
+                        &nbsp;
+                    </div>
+                    <div class="row">
+                        <button class="btn" style="background-color:rgb(146, 31, 31);color:white;" id='resetDB'>R&eacute;initialiser la base de donn&eacute;es</button>
+                    </div>
+                </div>
             </div>
         </div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -137,6 +185,261 @@
                 }   
                 menuRang(rang);
                 hideRang(rang);
+            });
+
+            var rangs = [];
+
+            reload();
+
+            document.getElementById('adulte').addEventListener('change',function(){
+                document.getElementById('retour').innerHTML = '';
+                httpPostAsync("/api/adultes",param,function(e){
+                    var res = JSON.parse(e);
+                    if(document.getElementById('adulte').value != 'N'){
+                        var id = document.getElementById('adulte').value;
+                        var idP;
+                        var rangAdulte;
+                        httpPostAsync("/api/rangs",param,function(e){
+                            var resRang = JSON.parse(e);
+                            console.log(resRang);
+                            for(i=0;i<resRang['Rangs'].length;i++){
+                                document.getElementById('rang').innerHTML += "<option value=\""+resRang['Rangs'][i]['ID']+"\">"+resRang['Rangs'][i]['Nom']+"</option>";
+                                rangs[i] = resRang['Rangs'][i]['ID'];
+                            }
+                            for(i=0;i<res['Adultes'].length;i++){
+                                if(res['Adultes'][i]['ID'] == id){
+                                    idP = i;
+                                    break;
+                                }
+                            }
+                            console.log(res['Adultes'][idP]['Rang']);
+                            for(i=0;i<rangs.length;i++){
+                                console.log(rangs[i] + " " + res['Adultes'][idP]['Rang']);
+                                if(rangs[i] == res['Adultes'][idP]['Rang']){
+                                    rangAdulte = i;
+                                    break;
+                                }
+                            }
+                            console.log(rangAdulte);
+                            document.getElementById('add').disabled = true;
+                            document.getElementById('sup').disabled = false;
+                            document.getElementById('conf').disabled = false;
+                            document.getElementById('modif').disabled = false;
+                            document.getElementById('name').value = res['Adultes'][idP]['Nom'];
+                            document.getElementById('surname').value = res['Adultes'][idP]['Prenom'];
+                            document.getElementById('mail').value = res['Adultes'][idP]['Mail'];
+                            document.getElementById('tel').value = res['Adultes'][idP]['Phone'];
+                            document.getElementById('mdp').value = '';
+                            document.getElementById('rang').selectedIndex = rangAdulte;
+                        });
+                    }
+                    else{
+                        document.getElementById('add').disabled = false;
+                        document.getElementById('sup').disabled = true;
+                        document.getElementById('conf').disabled = true;
+                        document.getElementById('modif').disabled = true;
+                        document.getElementById('name').value = "";
+                        document.getElementById('surname').value = "";
+                        document.getElementById('mail').value = '';
+                        document.getElementById('tel').value = '';
+                        document.getElementById('mdp').value = '';
+                        document.getElementById('rang').selectedIndex = 0;
+                    }
+                });
+            });
+
+            function reset(){
+                document.getElementById('retour').innerHTML = '';
+                httpPostAsync("/api/adultes",param,function(e){
+                    var res = JSON.parse(e);
+                    var id = document.getElementById('adulte').value;
+                    var idP;
+                    for(i=0;i<res['Adultes'].length;i++){
+                        if(res['Adultes'][i]['ID'] == id){
+                            idP = i;
+                            break;
+                        }
+                    }
+                    document.getElementById('name').value = res['Adultes'][idP]['Nom'];
+                    document.getElementById('surname').value = res['Adultes'][idP]['Prenom'];
+                    document.getElementById('mail').value = res['Adultes'][idP]['Mail'];
+                    document.getElementById('tel').value = res['Adultes'][idP]['Phone'];
+                });
+            }
+
+            function confirmer(){
+                var nom = document.getElementById('name').value;
+                var prenom = document.getElementById('surname').value;
+                var mail = document.getElementById('mail').value;
+                var tel = document.getElementById('tel').value;
+                var idRang = document.getElementById('rang').value;
+                var mdp = document.getElementById('mdp').value
+                var idAdulte = document.getElementById('adulte').value;
+                var paramTemp = param+"&idadulte="+idAdulte+"&idrang="+idRang+'&nom='+nom+'&prenom='+prenom+'&mail='+mail+"&tel="+tel+"&mdp="+mdp;
+                httpPostAsync("/api/adulte/modifier",paramTemp,function(e){
+                    var res = JSON.parse(e);
+                    if(res['Code'] == 0){
+                        document.getElementById('retour').innerHTML = 'Modification effectu&eacute;e !';
+                        reload();
+                        httpPostAsync("/api/adultes",param,function(e){
+                            var res = JSON.parse(e);
+                            var idTemp;
+                            for(i=0;i<res['Adultes'].length;i++){
+                                if(res['Adultes'][i]['ID'] == idAdulte){
+                                    idTemp = i;
+                                    break;
+                                }
+                            }
+                            console.log('idTemp : '+idTemp);
+                            document.getElementById('enfant').selectedIndex = idTemp;
+                            document.getElementById('name').value = res['Enfants'][idTemp]['Nom'];
+                            document.getElementById('surname').value = res['Enfants'][idTemp]['Prenom'];
+                            document.getElementById('date').value = res['Enfants'][idTemp]['Naissance'];
+                        });
+                    }
+                    else{
+                        document.getElementById('retour').innerHTML = res['Message'];
+                    }
+                });
+            }
+
+            function ajouter(){
+                var nom = document.getElementById('name').value;
+                var prenom = document.getElementById('surname').value;
+                var mail = document.getElementById('mail').value;
+                var tel = document.getElementById('tel').value;
+                var idRang = document.getElementById('rang').value;
+                var mdp = document.getElementById('mdp').value
+                var paramTemp = param+"&idrang="+idRang+'&nom='+nom+'&prenom='+prenom+'&mail='+mail+"&tel="+tel+"&mdp="+mdp;
+                console.log(paramTemp);
+                httpPostAsync("/api/adulte/ajouter",paramTemp,function(e){
+                    var res = JSON.parse(e);
+                    var idAdulte = res['ID'];
+                    reload();
+                    if(res['Code'] == 0){
+                        document.getElementById('retour').innerHTML = 'Ajout effectu&eacute; !';
+                        httpPostAsync("/api/adultes",param,function(e){
+                            var res = JSON.parse(e);
+                            var idTemp;
+                            if(document.getElementById('adulte').value != 'N'){
+                                for(i=0;i<res['Adultes'].length;i++){
+                                    if(res['Adultes'][i]['ID'] == idAdulte){
+                                        idTemp = i;
+                                        break;
+                                    }
+                                }
+                                console.log('idTemp : '+idTemp);
+                                document.getElementById('enfant').selectedIndex = idTemp;
+                                document.getElementById('name').value = res['Adultes'][idP]['Nom'];
+                                document.getElementById('surname').value = res['Adultes'][idP]['Prenom'];
+                                document.getElementById('mail').value = res['Adultes'][idP]['Mail'];
+                                document.getElementById('tel').value = res['Adultes'][idP]['Phone'];
+                                document.getElementById('mdp').value = '';
+                                document.getElementById('rang').selectedIndex = rangAdulte;
+                            }
+                            else{
+                                document.getElementById('name').value = "";
+                                document.getElementById('surname').value = "";
+                                document.getElementById('mail').value = '';
+                                document.getElementById('tel').value = '';
+                                document.getElementById('mdp').value = '';
+                                document.getElementById('rang').selectedIndex = 0;
+                            }
+                        });
+                    }
+                    else{
+                        document.getElementById('retour').innerHTML = res['Message'];
+                    }
+                });
+            }
+
+            function supprimer(){
+                var idP = document.getElementById('adulte').value;
+                httpPostAsync("/api/adulte/supprimer",param+"&idadulte="+idP,function(e){
+                    var res = JSON.parse(e);
+                    console.log(res);
+                    if(res['Code'] == 0){
+                        document.getElementById('retour').innerHTML = 'Suppression effectu&eacute;e !';
+                        reload();
+                    }
+                    else{
+                        document.getElementById('retour').innerHTML = res['Message'];
+                    }
+                });
+            }
+
+            function reload(){
+                httpPostAsync("/api/adultes",param,function(e){
+                    var res = JSON.parse(e);
+                    console.log(res);
+                    document.getElementById('adulte').innerHTML = "";
+                    for(i = 0;i<res['Adultes'].length;i++){
+                        document.getElementById('adulte').innerHTML += "<option value=\""+res['Adultes'][i]['ID']+"\">"+res['Adultes'][i]['Prenom']+" "+res['Adultes'][i]['Nom'].toUpperCase()+"</option>";
+                    }
+                    document.getElementById('adulte').innerHTML += "<option value=\"N\">Nouvel adulte...</option>";
+                    if(document.getElementById('adulte').value != 'N'){
+                        var id = document.getElementById('adulte').value;
+                        var idP;
+                        var rangAdulte;
+                        httpPostAsync("/api/rangs",param,function(e){
+                            var resRang = JSON.parse(e);
+                            console.log(resRang);
+                            for(i=0;i<resRang['Rangs'].length;i++){
+                                document.getElementById('rang').innerHTML += "<option value=\""+resRang['Rangs'][i]['ID']+"\">"+resRang['Rangs'][i]['Nom']+"</option>";
+                                rangs[i] = resRang['Rangs'][i]['ID'];
+                            }
+                            for(i=0;i<res['Adultes'].length;i++){
+                                if(res['Adultes'][i]['ID'] == id){
+                                    idP = i;
+                                    break;
+                                }
+                            }
+                            console.log(res['Adultes'][idP]['Rang']);
+                            for(i=0;i<rangs.length;i++){
+                                console.log(rangs[i] + " " + res['Adultes'][idP]['Rang']);
+                                if(rangs[i] == res['Adultes'][idP]['Rang']){
+                                    rangAdulte = i;
+                                    break;
+                                }
+                            }
+                            console.log(rangAdulte);
+                            document.getElementById('add').disabled = true;
+                            document.getElementById('sup').disabled = false;
+                            document.getElementById('conf').disabled = false;
+                            document.getElementById('modif').disabled = false;
+                            document.getElementById('name').value = res['Adultes'][idP]['Nom'];
+                            document.getElementById('surname').value = res['Adultes'][idP]['Prenom'];
+                            document.getElementById('mail').value = res['Adultes'][idP]['Mail'];
+                            document.getElementById('tel').value = res['Adultes'][idP]['Phone'];
+                            document.getElementById('mdp').value = '';
+                            document.getElementById('rang').selectedIndex = rangAdulte;
+                        });
+                    }
+                    else{
+                        document.getElementById('add').disabled = false;
+                        document.getElementById('sup').disabled = true;
+                        document.getElementById('conf').disabled = true;
+                        document.getElementById('modif').disabled = true;
+                        document.getElementById('name').value = "";
+                        document.getElementById('surname').value = "";
+                        document.getElementById('mail').value = '';
+                        document.getElementById('tel').value = '';
+                        document.getElementById('mdp').value = '';
+                        document.getElementById('rang').selectedIndex = 0;
+                    }
+                });
+            }
+
+            document.getElementById('resetDB').addEventListener('click',function(){
+                var rep = confirm("Voulez vous vraiment reinitialiser la base de donnees ?");
+                if(rep){
+                    httpPostAsync("/api/reset",param,function(e){
+                        alert("Base de donnees reinitialisee")
+                    });
+                }
+                else{
+                    return;
+                }
             });
 
             var nom = getCookie("nom");
